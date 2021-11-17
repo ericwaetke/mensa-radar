@@ -1,12 +1,39 @@
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 var parseString = require("xml2js").parseString;
+import 'tailwindcss/tailwind.css'
 
 export default function Mensa(props) {
-    console.log(props)
+	const router = useRouter()
+  	const { mensa } = router.query
+
     return (
-        <div>
+        <div className="container mx-auto space-y-6">
+
+			<Link href="/">
+				<a className="p-6 my-3 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400">
+					<svg xmlns="http://www.w3.org/2000/svg" className="flex-initial" width="44" height="44" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+						<line x1="5" y1="12" x2="19" y2="12" />
+						<line x1="5" y1="12" x2="11" y2="18" />
+						<line x1="5" y1="12" x2="11" y2="6" />
+					</svg>
+					<h1 className="font-bold text-xl flex-initial">Guckst du Essen</h1>
+				</a>
+			</Link>
+
+			<h2 className="font-display text-5xl capitalize">{mensa}</h2>
+
             {props.foodOffers.map(offer => {
-				return <p key={offer.angebot}>{offer.angebot} - {offer.beschreibung}</p>
+				console.log(offer)
+				return <div className="flex-initial rounded-xl border border-gray-200 p-8">
+					<p className="uppercase font-semibold text-sm text-gray-500">{offer.titel}</p>
+					<p className="text-2xl font-medium">{offer.beschreibung}</p>
+					<div className="mt-9 flex justify-between">
+						<p><span className="font-black">{offer.preise.preis_s} €</span> | {offer.preise.preis_g} €</p>
+						<p className="capitalize font-bold">{offer.labels.filter}</p>
+					</div>
+				</div>
 			})}
         </div>
     )
@@ -113,7 +140,6 @@ export async function getServerSideProps(context) {
 		var angebote = [];
 		for (let i = 0; i < day.angebotnr.length; i++){
 			var ref = day.angebotnr[i];
-			var dataIsValid = ref.preis_s[0] !== '';
 	
 			if(ref.labels[0].length == 0) {		
 				let emptyLabel = { label : { 0 : 'empty'}}
@@ -130,15 +156,19 @@ export async function getServerSideProps(context) {
 				} else {
 					beschreibung = ref.beschreibung[0]
 				}
-	
+				console.log(ref)
 				angebote[i] = {
 					titel,
 					beschreibung,
-					// labels: foodTypeChecker(ref.labels[0].label[0].$.name)
-					labels: foodTypeChecker(ref.labels[0].label[0].$?.name)
+					labels: foodTypeChecker(ref.labels[0].label[0].$?.name),
+					preise: {
+						preis_s: ref.preis_s,
+						preis_m: ref.preis_m,
+						preis_g: ref.preis_g
+					}
 				}
 			} else {
-				angebote[i] = { angebot:'', beschreibung:'', labels: ''}
+				angebote[i] = {angebot:'', beschreibung:'', labels: '', preise: {}}
 			}
 		}
 
