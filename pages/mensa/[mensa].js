@@ -35,6 +35,9 @@ export default function Mensa(props) {
 					</div>
 				</div>
 			})}
+		<footer className="py-9">
+			<p>Designed and Developed by <a href="https://ericwaetke.com" target="_blank" className="text-blue-400">Eric Wätke</a> + <a href="https://martinzerr.de" target="_blank" className="text-blue-400">Martin Zerr</a></p>
+		</footer>
         </div>
     )
 }
