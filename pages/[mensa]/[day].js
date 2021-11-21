@@ -7,22 +7,28 @@ export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
+	console.log(props)	
+
+
     return (
         <div className="container mx-auto space-y-6">
 
 			<Link href="/">
-				<a className="p-6 my-3 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400">
-					<svg xmlns="http://www.w3.org/2000/svg" className="flex-initial" width="44" height="44" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-						<line x1="5" y1="12" x2="19" y2="12" />
-						<line x1="5" y1="12" x2="11" y2="18" />
-						<line x1="5" y1="12" x2="11" y2="6" />
-					</svg>
-					<h1 className="font-bold text-xl flex-initial">Guckst du Essen</h1>
+				<a className="p-6 my-3 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400 hover:text-blue-400">
+					<h1 className="font-bold text-xl flex-initial">&larr; Guckst du Essen</h1>
 				</a>
 			</Link>
 
 			<h2 className="font-display text-5xl capitalize">{mensa}</h2>
+
+			{/* Day Selection */}
+			<div className="space-x-4">
+				{
+					props.days.map((day, i) => {
+						return <Link href={`/${mensa}/${day.url}`}><a className={`px-6 py-4 my-3 inline-flex flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${i == props.selectedWeekday ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p>{day.subText}</a></Link>
+					})
+				}
+			</div>
 
             {props.foodOffers.map(offer => {
 				console.log(offer)
@@ -44,10 +50,94 @@ export default function Mensa(props) {
 
 export async function getServerSideProps(context) {
 
+
+	let selectedWeekday = 0;
+	switch (context.query.day) {
+		case "montag":
+			selectedWeekday = 0
+			break;
+		case "dienstag":
+			selectedWeekday = 1
+			break;
+		case "mittwoch":
+			selectedWeekday = 2
+			break;
+		case "donnerstag":
+			selectedWeekday = 3
+			break;
+		case "freitag":
+			selectedWeekday = 4
+			break;
+		case "samstag":
+			selectedWeekday = 5
+			break;
+		case "sonntag":
+			selectedWeekday = 6
+			break;
+		default:
+			break;
+	}
+
+	// console.log(mensa, day, selectedWeekday)
+
+	const currentDate = new Date()
+	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
+	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
+	const isWeekday = currentWeekday < 5;
+	let days = [
+		{
+			mainText: "Mo",
+			subText: "",
+			url: "montag",
+		},
+		{
+			mainText: "Di",
+			subText: "",
+			url: "dienstag",
+		},
+		{
+			mainText: "Mi",
+			subText: "",
+			url: "mittwoch",
+		},
+		{
+			mainText: "Do",
+			subText: "",
+			url: "donnerstag",
+		},
+		{
+			mainText: "Fr",
+			subText: "",
+			url: "freitag",
+		},
+		{
+			mainText: "Sa",
+			subText: "",
+			url: "samstag",
+		},
+		{
+			mainText: "So",
+			subText: "",
+			url: "sonntag",
+		},
+	]
+
+	// Get Dates
+	for (let i = 0; i < 7; i++) {
+		let tempDate = new Date(currentDate)
+		if(i === currentWeekday){
+			days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
+			days[i].mainText = "Heute"
+		} else {
+			tempDate.setDate(currentDate.getDate() + (i - currentWeekday))
+			days[i].subText = `${tempDate.getDate()}.`
+		}
+	}
+
+	days = days.slice(currentWeekday)
+
     // const router = useRouter()
     // const {mensa} = router.query
-
-    console.log(context.query.mensa)
 
     const urls = {
         golm: "https://xml.stw-potsdam.de/xmldata/go/xml.php",
@@ -115,14 +205,11 @@ export async function getServerSideProps(context) {
 	  }
 	}
 	
-
-	console.log("getting food data")
 	const response = await fetch(url)
 	const xml = await response.text()
 	
-	
 	// 0 = Heute
-	let dateRef = 0;
+	let dateRef = (selectedWeekday - currentWeekday) < 0 ? 0 : selectedWeekday - currentWeekday;
 
 	let foodOffers;
 	
@@ -141,37 +228,38 @@ export async function getServerSideProps(context) {
 		}
 	
 		var angebote = [];
-		for (let i = 0; i < day.angebotnr.length; i++){
-			var ref = day.angebotnr[i];
-	
-			if(ref.labels[0].length == 0) {		
-				let emptyLabel = { label : { 0 : 'empty'}}
-	
-				ref.labels[0] = emptyLabel;
-			}	
-	
-			if(ref.preis_s[0] !== '' || ref.beschreibung[0] !== "" || ref.beschreibung[0] !== ".") {
-				let titel = ref.titel[0]
-				let beschreibung
-	
-				if(ref.beschreibung == '.') {
-					beschreibung = "Angebot nicht mehr verfügbar"
-				} else {
-					beschreibung = ref.beschreibung[0]
-				}
-				console.log(ref)
-				angebote[i] = {
-					titel,
-					beschreibung,
-					labels: foodTypeChecker(ref.labels[0].label[0].$?.name),
-					preise: {
-						preis_s: ref.preis_s,
-						preis_m: ref.preis_m,
-						preis_g: ref.preis_g
+		if(day.angebotnr?.length !== 0 && day.angebotnr !== undefined) {
+			for (let i = 0; i < day.angebotnr.length; i++){
+				var ref = day.angebotnr[i];
+		
+				if(ref.labels[0].length == 0) {		
+					let emptyLabel = { label : { 0 : 'empty'}}
+		
+					ref.labels[0] = emptyLabel;
+				}	
+		
+				if(ref.preis_s[0] !== '' || ref.beschreibung[0] !== "" || ref.beschreibung[0] !== ".") {
+					let titel = ref.titel[0]
+					let beschreibung
+		
+					if(ref.beschreibung == '.') {
+						beschreibung = "Angebot nicht mehr verfügbar"
+					} else {
+						beschreibung = ref.beschreibung[0]
 					}
+					angebote[i] = {
+						titel,
+						beschreibung,
+						labels: foodTypeChecker(ref.labels[0].label[0].$?.name),
+						preise: {
+							preis_s: ref.preis_s,
+							preis_m: ref.preis_m,
+							preis_g: ref.preis_g
+						}
+					}
+				} else {
+					angebote[i] = {angebot:'', beschreibung:'', labels: '', preise: {}}
 				}
-			} else {
-				angebote[i] = {angebot:'', beschreibung:'', labels: '', preise: {}}
 			}
 		}
 
@@ -180,7 +268,9 @@ export async function getServerSideProps(context) {
 
 	return {
 	  props: {
-		foodOffers
+		foodOffers,
+		selectedWeekday,
+		days
 	  }
 	}
 }

@@ -38,7 +38,7 @@ export default function Home(props) {
         <div className="space-y-3 inline-flex flex-col my-9">
           {
             mensen.map(mensa => {
-              return <Link href={'/mensa/'+mensa.url}>
+              return <Link href={'/'+mensa.url}>
                       <a className="inline-flex flex-initial rounded-xl border border-gray-200 px-8 py-4 hover:border-blue-400"><h3 className="text-xl font-bold">{mensa.name} &rarr;</h3></a>
                     </Link>
             })

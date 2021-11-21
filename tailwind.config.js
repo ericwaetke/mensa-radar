@@ -9,7 +9,14 @@ module.exports = {
       'sans': ['DM Sans'],
       'display': ['Sen']
     },
-    extend: {},
+    extend: {
+      colors: {
+        green: {
+          DEFAULT: '#BDF8CE',
+          border: '#47C992'
+        }
+      },
+    },
   },
   variants: {
     extend: {},
