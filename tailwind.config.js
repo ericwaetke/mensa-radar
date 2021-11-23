@@ -16,6 +16,9 @@ module.exports = {
           border: '#47C992'
         }
       },
+      screens: {
+        'xs': '370px'
+      }
     },
   },
   variants: {

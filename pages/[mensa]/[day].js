@@ -44,7 +44,7 @@ export default function Mensa(props) {
 			<h2 className="font-display text-5xl capitalize mx-8">{mensa}</h2>
 
 			{/* Day Selection */}
-			<div className="space-x-4">
+			<div className="space-x-4 flex overflow-x-scroll overflow-y-hidden">
 				{
 					props.days.map((day, i) => {
 						return <Link href={`/${mensa}/${day.url}`}><a className={`px-8 py-4 my-3 inline-flex flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${i == props.selectedWeekday - props.days.length ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p>{day.subText}</a></Link> //TODO: Current Day Border does not work yet
@@ -58,9 +58,9 @@ export default function Mensa(props) {
 						<div className="p-8 pb-4">
 							<p className="font-medium text-sm text-gray-400">{offer.titel}</p>
 							<p className="text-2xl font-medium">{offer.beschreibung}</p>
-							<div className="mt-9 flex justify-between">
-								<p className="font-bold text-gray-400"><span className="bg-green rounded-full py-2 px-6 text-black inline-block">{offer.preise.preis_s} €</span> {offer.preise.preis_g} €</p>
-								{offer.labels.filter !== "all" && <p className="capitalize font-bold bg-green rounded-full py-2 px-6">{offer.labels.filter}</p>}
+							<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
+								<p className="font-bold text-gray-400 text-sm"><span className="bg-green rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> {offer.preise.preis_g} €</p>
+								{offer.labels.filter !== "all" && <p className="capitalize font-bold text-sm bg-green rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
 							</div>
 						</div>
 						<div className="">
