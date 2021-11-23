@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from 'next/link'
 
 import 'tailwindcss/tailwind.css'
+import Footer from "../assets/components/footer";
 
 
 export default function Home(props) {
@@ -45,10 +46,7 @@ export default function Home(props) {
           }
         </div>
       </main>
-
-      <footer>
-        <p>Designed and Developed by <a href="https://ericwaetke.com" target="_blank" className="text-blue-400">Eric Wätke</a> + <a href="https://martinzerr.de" target="_blank" className="text-blue-400">Martin Zerr</a></p>
-      </footer>
+          <Footer />
     </div>
   );
 }

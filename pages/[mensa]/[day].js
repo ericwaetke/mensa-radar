@@ -3,56 +3,76 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import {Collapse} from 'react-collapse';
+import Footer from '../../assets/components/footer';
 // import "../../assets/css/mensa.module.css"
 
 export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
-	  console.log(props);
-
-	const [offers, setOffers] = useState(props.foodOffers)
-
+	// Switcher for Nutiotional Intformation is not yet working
+	const [offers, setOffers] = useState([])
+	
 	const collapseNutrionionInfo = (index) => {
-		// setOffers(() => [
-		// 	...offers.slice(0, index),
-		// 	{
-		// 		...offers[index],
-		// 		nutrientsOpen: !offers[index.nutrientsOpen]
-		// 	},
-		// 	...offers.slice(index++)
-		// ])
-
 		let tempOffers = [...offers]
-		let tempOffer = {...tempOffers[index]}
-		tempOffer.nutrientsOpen = !tempOffer.nutrientsOpen
+		let tempOffer = tempOffers[index]
+		tempOffer = !tempOffer
 		tempOffers[index] = tempOffer
-
+		
 		setOffers(tempOffers)
 	}
 
     return (
-        <div className="container mx-auto space-y-6">
-
+        <div className="space-y-6 break-words max-w-screen-2xl 2xl:mx-auto">
+			<style jsx>
+				{`
+					.daySelection{
+						position: relative;
+					}
+					.daySelection::before{
+						content: "";
+						position: absolute;
+						right: 0;
+						width: 20%;
+						height: 100%;
+						background: linear-gradient(270deg, white, transparent);
+						pointer-events: none;
+					}
+					.open {
+						transition: .3s;
+						transform: rotate(180deg)
+					}
+					.closed {
+						transition: .3s;
+						transform: rotate(0);
+					}
+					.ReactCollapse--collapse {
+						transition: height 500ms;
+						}
+				`}
+			</style>
 			<Link href="/">
-				<a className="p-6 my-3 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400 hover:text-blue-400">
+				<a className="p-6 my-3 mx-9 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400 hover:text-blue-400">
 					<h1 className="font-bold text-xl flex-initial">&larr; Guckst du Essen</h1>
 				</a>
 			</Link>
 
-			<h2 className="font-display text-5xl capitalize mx-8">{mensa}</h2>
+			<h2 className="font-display text-5xl capitalize mx-9 px-8">{mensa}</h2>
 
 			{/* Day Selection */}
-			<div className="space-x-4 flex overflow-x-scroll overflow-y-hidden">
-				{
-					props.days.map((day, i) => {
-						return <Link href={`/${mensa}/${day.url}`}><a className={`px-8 py-4 my-3 inline-flex flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${i == props.selectedWeekday - props.days.length ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p>{day.subText}</a></Link> //TODO: Current Day Border does not work yet
-					})
-				}
+			<div className="daySelection">
+				<div className="px-9 space-x-4 flex overflow-x-scroll overflow-y-hidden">
+					{
+						props.days.map((day, i) => {
+							let isSelected = props.selectedWeekday - (5 - props.days.length) === i
+							return <button href={`/${mensa}/${day.url}`} onClick={() => {router.push(`/${mensa}/${day.url}`)}}><a className={`px-8 py-4 my-3 inline-flex min-w-max flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${isSelected ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p><p>{day.subText}</p></a></button> //TODO: Current Day Border does not work yet
+						})
+					}
+				</div>
 			</div>
 
-            {offers.map((offer, i) => {
+			<div className="mx-9 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
+            {props.foodOffers.map((offer, i) => {
 				return (
 					<div className="flex-initial rounded-xl border border-gray-200">
 						<div className="p-8 pb-4">
@@ -65,40 +85,24 @@ export default function Mensa(props) {
 						</div>
 						<div className="">
 							<button className="px-8 py-4 border-t w-full flex items-center gap-2" onClick={() => collapseNutrionionInfo(i)}>
-								<style jsx>
-									{`
-										.open {
-											transition: .3s;
-											transform: rotate(180deg)
-										}
-										.closed {
-											transition: .3s;
-											transform: rotate(0);
-										}
-										.ReactCollapse--collapse {
-											transition: height 500ms;
-										  }
-									`}
-								</style>
-								<svg width="6" height="6" fill="none" xmlns="http://www.w3.org/2000/svg" className={offer.nutrientsOpen ? "open" : "closed"}>
+								<svg width="6" height="6" fill="none" xmlns="http://www.w3.org/2000/svg" className={offers[i] ? "open" : "closed"}>
 									<path d="M3.83 4.74a1 1 0 0 1-1.66 0L.56 2.3A1 1 0 0 1 1.39.75h3.22a1 1 0 0 1 .83 1.55l-1.6 2.44Z" fill="#000"/>
 								</svg>
 								<p className="font-medium">Nährwerte</p>
 							</button>
-							<Collapse isOpened={offer.nutrientsOpen}>
+							{offers[i] && (
 								<div className="px-8 pb-4">
 									{offer.nutrients?.map(nutrient => {
 										return <p>{nutrient}</p>
 									})}
 								</div>
-							</Collapse>
+							)}
 						</div>
 					</div>
 				)
 			})}
-		<footer className="py-9">
-			<p>Designed and Developed by <a href="https://ericwaetke.com" target="_blank" className="text-blue-400">Eric Wätke</a> + <a href="https://martinzerr.de" target="_blank" className="text-blue-400">Martin Zerr</a></p>
-		</footer>
+			</div>
+			<Footer />
         </div>
     )
 }
@@ -127,7 +131,7 @@ export async function getServerSideProps(context) {
 			break;
 	}
 
-	// console.log(mensa, day, selectedWeekday)
+	console.log(context.query.mensa, context.query.day, selectedWeekday)
 
 	const currentDate = new Date()
 	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
@@ -252,14 +256,19 @@ export async function getServerSideProps(context) {
 
 	let foodOffers;
 	
-	parseString(xml, function (err, result) {
+	await parseString(xml, function (err, result) {
+		console.log("parsing string")
 		if(result.hasOwnProperty('p')){
 			console.log('Database is temporary not responding')
 		}
 		if(result.menu.datum.length == 0){
 			console.log("Fatal error in FH XML database")
 		}
-		const day = result.menu.datum[dateRef];
+
+		// Day which the food is fetched for
+		// This is seemingly not updated on Route Pushes
+		let day = result.menu.datum[dateRef];
+		console.log(day)
 	
 		// Checks if the dataset for today is empty
 		if(day.angebotnr === 'undefined' || day.angebotnr == undefined) {
@@ -281,7 +290,6 @@ export async function getServerSideProps(context) {
 				if(ref.preis_s[0] !== '' && ref.beschreibung[0] !== "" && ref.beschreibung[0] !== ".") {
 					let titel = ref.titel[0]
 					let beschreibung
-					console.log(ref.beschreibung[0])
 		
 					// if(ref.beschreibung == '.') {
 					// 	beschreibung = "Angebot nicht mehr verfügbar"
@@ -317,7 +325,6 @@ export async function getServerSideProps(context) {
 							preis_g: ref.preis_g
 						},
 						nutrients,
-						nutrientsOpen: false
 					})
 				} else {
 					// Dont Push Angebnot into array
