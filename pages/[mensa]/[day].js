@@ -211,9 +211,9 @@ export async function getServerSideProps(context) {
 	  }
 	
 	  const filterTypes = {
-		VEGETARISCH: "vegetarisch",
-		VEGAN: "🌽 Vegan",
-		PESCETARISCH: "pescetarisch",
+		VEGETARISCH: "🥛 Vegetarisch",
+		VEGAN: "🌱 Vegan",
+		PESCETARISCH: "🐟 Pescetarisch",
 		ALL: "all"
 	  }
 	
