@@ -1,14 +1,36 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
+import {Collapse} from 'react-collapse';
+// import "../../assets/css/mensa.module.css"
 
 export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
-	console.log(props)	
+	  console.log(props);
 
+	const [offers, setOffers] = useState(props.foodOffers)
+
+	const collapseNutrionionInfo = (index) => {
+		// setOffers(() => [
+		// 	...offers.slice(0, index),
+		// 	{
+		// 		...offers[index],
+		// 		nutrientsOpen: !offers[index.nutrientsOpen]
+		// 	},
+		// 	...offers.slice(index++)
+		// ])
+
+		let tempOffers = [...offers]
+		let tempOffer = {...tempOffers[index]}
+		tempOffer.nutrientsOpen = !tempOffer.nutrientsOpen
+		tempOffers[index] = tempOffer
+
+		setOffers(tempOffers)
+	}
 
     return (
         <div className="container mx-auto space-y-6">
@@ -19,27 +41,60 @@ export default function Mensa(props) {
 				</a>
 			</Link>
 
-			<h2 className="font-display text-5xl capitalize">{mensa}</h2>
+			<h2 className="font-display text-5xl capitalize mx-8">{mensa}</h2>
 
 			{/* Day Selection */}
 			<div className="space-x-4">
 				{
 					props.days.map((day, i) => {
-						return <Link href={`/${mensa}/${day.url}`}><a className={`px-6 py-4 my-3 inline-flex flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${i == props.selectedWeekday ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p>{day.subText}</a></Link>
+						return <Link href={`/${mensa}/${day.url}`}><a className={`px-8 py-4 my-3 inline-flex flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${i == props.selectedWeekday - props.days.length ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p>{day.subText}</a></Link> //TODO: Current Day Border does not work yet
 					})
 				}
 			</div>
 
-            {props.foodOffers.map(offer => {
-				console.log(offer)
-				return <div className="flex-initial rounded-xl border border-gray-200 p-8">
-					<p className="uppercase font-semibold text-sm text-gray-500">{offer.titel}</p>
-					<p className="text-2xl font-medium">{offer.beschreibung}</p>
-					<div className="mt-9 flex justify-between">
-						<p><span className="font-black">{offer.preise.preis_s} €</span> | {offer.preise.preis_g} €</p>
-						<p className="capitalize font-bold">{offer.labels.filter}</p>
+            {offers.map((offer, i) => {
+				return (
+					<div className="flex-initial rounded-xl border border-gray-200">
+						<div className="p-8 pb-4">
+							<p className="font-medium text-sm text-gray-400">{offer.titel}</p>
+							<p className="text-2xl font-medium">{offer.beschreibung}</p>
+							<div className="mt-9 flex justify-between">
+								<p className="font-bold text-gray-400"><span className="bg-green rounded-full py-2 px-6 text-black inline-block">{offer.preise.preis_s} €</span> {offer.preise.preis_g} €</p>
+								{offer.labels.filter !== "all" && <p className="capitalize font-bold bg-green rounded-full py-2 px-6">{offer.labels.filter}</p>}
+							</div>
+						</div>
+						<div className="">
+							<button className="px-8 py-4 border-t w-full flex items-center gap-2" onClick={() => collapseNutrionionInfo(i)}>
+								<style jsx>
+									{`
+										.open {
+											transition: .3s;
+											transform: rotate(180deg)
+										}
+										.closed {
+											transition: .3s;
+											transform: rotate(0);
+										}
+										.ReactCollapse--collapse {
+											transition: height 500ms;
+										  }
+									`}
+								</style>
+								<svg width="6" height="6" fill="none" xmlns="http://www.w3.org/2000/svg" className={offer.nutrientsOpen ? "open" : "closed"}>
+									<path d="M3.83 4.74a1 1 0 0 1-1.66 0L.56 2.3A1 1 0 0 1 1.39.75h3.22a1 1 0 0 1 .83 1.55l-1.6 2.44Z" fill="#000"/>
+								</svg>
+								<p className="font-medium">Nährwerte</p>
+							</button>
+							<Collapse isOpened={offer.nutrientsOpen}>
+								<div className="px-8 pb-4">
+									{offer.nutrients?.map(nutrient => {
+										return <p>{nutrient}</p>
+									})}
+								</div>
+							</Collapse>
+						</div>
 					</div>
-				</div>
+				)
 			})}
 		<footer className="py-9">
 			<p>Designed and Developed by <a href="https://ericwaetke.com" target="_blank" className="text-blue-400">Eric Wätke</a> + <a href="https://martinzerr.de" target="_blank" className="text-blue-400">Martin Zerr</a></p>
@@ -67,12 +122,6 @@ export async function getServerSideProps(context) {
 			break;
 		case "freitag":
 			selectedWeekday = 4
-			break;
-		case "samstag":
-			selectedWeekday = 5
-			break;
-		case "sonntag":
-			selectedWeekday = 6
 			break;
 		default:
 			break;
@@ -110,20 +159,10 @@ export async function getServerSideProps(context) {
 			subText: "",
 			url: "freitag",
 		},
-		{
-			mainText: "Sa",
-			subText: "",
-			url: "samstag",
-		},
-		{
-			mainText: "So",
-			subText: "",
-			url: "sonntag",
-		},
 	]
 
 	// Get Dates
-	for (let i = 0; i < 7; i++) {
+	for (let i = 0; i < 5; i++) {
 		let tempDate = new Date(currentDate)
 		if(i === currentWeekday){
 			days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
@@ -173,7 +212,7 @@ export async function getServerSideProps(context) {
 	
 	  const filterTypes = {
 		VEGETARISCH: "vegetarisch",
-		VEGAN: "vegan",
+		VEGAN: "🌽 Vegan",
 		PESCETARISCH: "pescetarisch",
 		ALL: "all"
 	  }
@@ -238,16 +277,37 @@ export async function getServerSideProps(context) {
 					ref.labels[0] = emptyLabel;
 				}	
 		
-				if(ref.preis_s[0] !== '' || ref.beschreibung[0] !== "" || ref.beschreibung[0] !== ".") {
+				// Angebot vorhanden
+				if(ref.preis_s[0] !== '' && ref.beschreibung[0] !== "" && ref.beschreibung[0] !== ".") {
 					let titel = ref.titel[0]
 					let beschreibung
+					console.log(ref.beschreibung[0])
 		
-					if(ref.beschreibung == '.') {
-						beschreibung = "Angebot nicht mehr verfügbar"
-					} else {
-						beschreibung = ref.beschreibung[0]
+					// if(ref.beschreibung == '.') {
+					// 	beschreibung = "Angebot nicht mehr verfügbar"
+					// } else {
+					// }
+					beschreibung = ref.beschreibung[0]
+
+					// Setting Nutrient Array
+					let nutrients = ref.nutrients[0].nutrient ? ref.nutrients[0].nutrient : []
+					
+					// Check if Array is filled to calculate kcal
+					if(nutrients.length !== 0) {
+						let tempEnergy = nutrients[0].wert[0]
+						let kcal = Math.round(nutrients[0].wert[0] * 0.2390057361)
+						// nutrients.splice(1, 0,  {name: ["Energiewert (Kcal)"], wert: [kcal], einheit: ["kcal"]})
+						// nutrients[0].wert[0] = `${tempEnergy} / ${kcal}`
+
+						for (let i = 0; i < nutrients.length; i++) {
+							const tempNutrient = nutrients[i];
+							nutrients[i] = `${tempNutrient.name[0]}: ${tempNutrient.wert[0]} ${tempNutrient.einheit[0]}`
+						}
+
+						nutrients[0] = `Energie: ${tempEnergy} kJ / ${kcal} kcal`
 					}
-					angebote[i] = {
+
+					angebote.push({
 						titel,
 						beschreibung,
 						labels: foodTypeChecker(ref.labels[0].label[0].$?.name),
@@ -255,10 +315,12 @@ export async function getServerSideProps(context) {
 							preis_s: ref.preis_s,
 							preis_m: ref.preis_m,
 							preis_g: ref.preis_g
-						}
-					}
+						},
+						nutrients,
+						nutrientsOpen: false
+					})
 				} else {
-					angebote[i] = {angebot:'', beschreibung:'', labels: '', preise: {}}
+					// Dont Push Angebnot into array
 				}
 			}
 		}
