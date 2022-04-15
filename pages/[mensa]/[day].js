@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import Footer from '../../assets/components/footer';
+import Footer from '../../components/footer';
 // import "../../assets/css/mensa.module.css"
 
 export default function Mensa(props) {
