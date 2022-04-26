@@ -6,44 +6,43 @@ import Link from 'next/link'
 import 'tailwindcss/tailwind.css'
 import Footer from "../components/footer";
 
+export const mensaData = [
+  {
+    name: "Golm",
+    url: "golm",
+    coords: {
+      latitude: 52.40795670687466, 
+      longitude: 12.978685326538164
+    },
+    opening: 11,
+    closing: 14.5
+  },
+  {
+    name: "Neues Palais",
+    url: "neues-palais",
+    coords: {
+      latitude: 52.402868541881624, 
+      longitude: 13.011995232289776
+    },
+    opening: 11,
+    closing: 14.5
+  },
+  {
+    name: "FHP",
+    url: "fhp",
+    coords: {
+      latitude: 52.41324028310374, 
+      longitude: 13.051182387706824 
+    },
+    opening: 11,
+    closing: 14.5
+  }
+]
 
 export default function Home(props) {
   const d = new Date();
   const currentTime = d.getHours() + d.getMinutes()/60
   const currentDay = d.getDay()
-
-  const mensaData = [
-    {
-      name: "Golm",
-      url: "golm",
-      coords: {
-        latitude: 52.40795670687466, 
-        longitude: 12.978685326538164
-      },
-      opening: 11,
-      closing: 14.5
-    },
-    {
-      name: "Neues Palais",
-      url: "neues-palais",
-      coords: {
-        latitude: 52.402868541881624, 
-        longitude: 13.011995232289776
-      },
-      opening: 11,
-      closing: 14.5
-    },
-    {
-      name: "FHP",
-      url: "fhp",
-      coords: {
-        latitude: 52.41324028310374, 
-        longitude: 13.051182387706824 
-      },
-      opening: 11,
-      closing: 14.5
-    }
-  ]
 
   const [mensen, setMensen] = useState([])
   const [locationPermission, setLocationPermission] = useState(false)
@@ -102,46 +101,43 @@ export default function Home(props) {
 
 
   return (
-    <div className="container mx-auto space-y-6">
+    <div className="mx-5 mt-12 space-y-6">
       <Head>
         <title>Guckst du Essen — Mensen Potsdam</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className="font-display text-4xl mt-9">
+        <h1 className="font-display text-4xl mt-5">
           Guckst du Essen
         </h1>
         <p className="mt-3">Die (etwas bessere) Mensa Übersicht für Potsdam</p>
 
         <h2 className="font-display text-xl mt-16 mb-8">Mensen</h2>
-        <div className="space-y-2 flex flex-col divide-y-2 divide-gray-200 border-y-2 border-gray-200">
+        <div className="space-y-2 flex flex-col divide-y-2 divide-green-border border-y-2 border-green-border bg-green-3 rounded-xl">
           {
             mensen.map(mensa => {
               return <Link href={'/'+mensa.url}>
-                      <a className="flex flex-initial py-4 justify-between">
-                        <h3 className="text-xl font-bold">{mensa.name}</h3>
+                      <a className="flex flex-initial py-4 justify-between px-4">
+                        <h3 className="text-xl font-bold flex self-center">{mensa.name}</h3>
                         <div className="space-x-4">
                           {
                             // Checking if current time is between opening times and the day is between monday and friday
                             mensa.opening < currentTime && mensa.closing > currentTime && currentDay > 0 && currentDay < 6 ? <>
-                            <span className="bg-green-200 py-2 px-6 boder rounded-full inline-flex items-center gap-2">
-                              <span className="bg-green-600 w-2 h-2 rounded-full"></span>
+                            <div className="font-medium bg-green-3 py-1.5 px-4 rounded-full inline-flex items-center gap-2">
+                              <span className="bg-green-2 w-2 h-2 rounded-full"></span>
                               offen
-                            </span>
+                            </div>
                             </> : null
                           }
                           {
                             // Display Distance if Location Permissions are granted
                             locationPermission ? <>
-                            <span className="bg-gray-200 py-2 px-6 boder rounded-full inline-flex">
+                            <span className="bg-white py-1.5 px-4 boder rounded-full inline-flex text-green-w7">
                               {mensa.distance}km
                             </span>
                             </> : null
                           }
-                          <span>
-                            &rarr;
-                          </span>
                         </div>
                       </a>
                     </Link>

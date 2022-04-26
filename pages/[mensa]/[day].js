@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
 import Footer from '../../components/footer';
+import { mensaData } from '..';
+import { DayButton } from '../../components/dayButton';
 // import "../../assets/css/mensa.module.css"
 
 export default function Mensa(props) {
@@ -23,7 +25,7 @@ export default function Mensa(props) {
 	}
 
     return (
-        <div className="space-y-6 break-words max-w-screen-2xl 2xl:mx-auto">
+        <div className="space-y-6 break-words mx-5 mt-12">
 			<style jsx>
 				{`
 					.daySelection{
@@ -51,35 +53,58 @@ export default function Mensa(props) {
 						}
 				`}
 			</style>
-			<Link href="/">
-				<a className="p-6 my-3 mx-9 inline-flex flex-row items-center rounded-xl border border-gray-200 hover:border-blue-400 hover:text-blue-400">
-					<h1 className="font-bold text-xl flex-initial">&larr; Guckst du Essen</h1>
-				</a>
-			</Link>
 
-			<h2 className="font-display text-5xl capitalize mx-9 px-8">{mensa}</h2>
+			<div>
+				<Link href="/">
+					<a className="p-6 pl-0 absolute ">
+					&larr;
+					</a>
+				</Link>
+
+				<h2 className="capitalize text-2xl text-center py-6">{mensa}</h2>
+			</div>
+
+			<div className="flex justify-between">
+				{
+					props.openingTimes.open ? 
+					<>
+						<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full inline-flex items-center gap-2">
+							<span className="bg-green-2 w-2 h-2 rounded-full"></span>
+							offen bis {props.openingTimes.openUntil}
+						</div>
+					</> : 
+					<>
+						<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full">öffnet um {props.openingTimes.openFrom}</div>
+					</>
+				}
+
+				{/* <div className='flex items-center gap-2'>
+					<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full text-green-w7">1.5km</div>
+					<a href='#'>Route &rarr;</a>
+				</div> */}
+			</div>
 
 			{/* Day Selection */}
 			<div className="daySelection">
-				<div className="px-9 space-x-4 flex overflow-x-scroll overflow-y-hidden">
+				<div className="space-x-4 flex overflow-x-scroll overflow-y-hidden">
 					{
 						props.days.map((day, i) => {
 							let isSelected = props.selectedWeekday - (5 - props.days.length) === i
-							return <button href={`/${mensa}/${day.url}`} onClick={() => {router.push(`/${mensa}/${day.url}`)}}><a className={`px-8 py-4 my-3 inline-flex min-w-max flex-col items-start rounded-xl border-2 border-green bg-green hover:bg-green-border hover:border-green-border hover:text-white ${isSelected ? "border-green-border border-2" : ""}`}><p className="font-bold">{day.mainText}</p><p>{day.subText}</p></a></button> //TODO: Current Day Border does not work yet
+							return <DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/>
 						})
 					}
 				</div>
 			</div>
 
-			<div className="mx-9 space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
+			<div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
             {props.foodOffers.map((offer, i) => {
 				return (
-					<div className="flex-initial rounded-xl border border-gray-200">
+					<div className="flex-initial rounded-xl bg-green-3">
 						<div className="p-8 pb-4">
 							<p className="font-medium text-sm text-gray-400">{offer.titel}</p>
 							<p className="text-2xl font-medium">{offer.beschreibung}</p>
 							<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
-								<p className="font-bold text-gray-400 text-sm"><span className="bg-green rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> {offer.preise.preis_g} €</p>
+								<p className="font-bold text-gray-400 text-sm"><span className="bg-green rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> <span className='text-green-w7'>{offer.preise.preis_g} €</span></p>
 								{offer.labels.filter !== "all" && <p className="capitalize font-bold text-sm bg-green rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
 							</div>
 						</div>
@@ -88,7 +113,7 @@ export default function Mensa(props) {
 								<svg width="6" height="6" fill="none" xmlns="http://www.w3.org/2000/svg" className={offers[i] ? "open" : "closed"}>
 									<path d="M3.83 4.74a1 1 0 0 1-1.66 0L.56 2.3A1 1 0 0 1 1.39.75h3.22a1 1 0 0 1 .83 1.55l-1.6 2.44Z" fill="#000"/>
 								</svg>
-								<p className="font-medium">Nährwerte</p>
+								<p className="font-medium text-green-w7">Nährwerte</p>
 							</button>
 							{offers[i] && (
 								<div className="px-8 pb-4">
@@ -131,7 +156,7 @@ export async function getServerSideProps(context) {
 			break;
 	}
 
-	console.log(context.query.mensa, context.query.day, selectedWeekday)
+	// console.log(context.query.mensa, context.query.day, selectedWeekday)
 
 	const currentDate = new Date()
 	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
@@ -169,7 +194,8 @@ export async function getServerSideProps(context) {
 	for (let i = 0; i < 5; i++) {
 		let tempDate = new Date(currentDate)
 		if(i === currentWeekday){
-			days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
+			days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}.${tempDate.getMonth()}`
+			// days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
 			days[i].mainText = "Heute"
 		} else {
 			tempDate.setDate(currentDate.getDate() + (i - currentWeekday))
@@ -268,7 +294,7 @@ export async function getServerSideProps(context) {
 		// Day which the food is fetched for
 		// This is seemingly not updated on Route Pushes
 		let day = result.menu.datum[dateRef];
-		console.log(day)
+		// console.log(day)
 	
 		// Checks if the dataset for today is empty
 		if(day.angebotnr === 'undefined' || day.angebotnr == undefined) {
@@ -335,11 +361,43 @@ export async function getServerSideProps(context) {
 		foodOffers = angebote
 	});
 
+
+	const floatTimeToString = (floatTime) => {
+		let hours = Math.floor(floatTime)
+		let minutes = Math.round((floatTime - hours) * 60)
+		if (minutes < 10) {
+			minutes = "0" + minutes
+		}
+		return hours + ":" + minutes
+	}
+
+	const findObjectInArrayByKey = (array, key, value) => {
+		for (var i = 0; i < array.length; i++) {
+			if (array[i][key] === value) {
+				return array[i];
+			}
+		}
+		return null;
+	}
+
+	const openFrom = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', context.query.mensa).opening)
+	const openUntil = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', context.query.mensa).closing)
+console.log(openFrom, openUntil)
+	const d = new Date();
+  	const currentTime = d.getHours() + d.getMinutes()/60
+
+	const open = currentTime >= openFrom && currentTime <= openUntil
+
 	return {
 	  props: {
 		foodOffers,
 		selectedWeekday,
-		days
+		days,
+		openingTimes: {
+			openFrom,
+			openUntil,
+			open
+		}
 	  }
 	}
 }

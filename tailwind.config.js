@@ -30,8 +30,14 @@ module.exports = {
       colors: {
         green: {
           DEFAULT: '#BDF8CE',
-          border: '#47C992'
-        }
+          border: '#D8E7D9'
+        },
+        'green-old': '#A3F0B9',
+        'green-2': '#30D35D',
+        'green-3': '#EAF4ED',
+        'green-border': '#D8E7D9',
+        'green-w3': '#F3FFF7',
+        'green-w7': '#657C67',
       },
       // screens: {
       //   'xs': '370px'
