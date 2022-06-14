@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from 'next/link'
 
-import 'tailwindcss/tailwind.css'
 import Footer from "../components/footer";
 
 export const mensaData = [
@@ -109,17 +108,16 @@ export default function Home(props) {
 
       <main>
         <h1 className="font-display text-4xl mt-5">
-          Guckst du Essen
+          Guckst du Mensa
         </h1>
-        <p className="mt-3">Die (etwas bessere) Mensa Übersicht für Potsdam</p>
 
         <h2 className="font-display text-xl mt-16 mb-8">Mensen</h2>
-        <div className="space-y-2 flex flex-col divide-y-2 divide-green-border border-y-2 border-green-border bg-green-3 rounded-xl">
+        <div className="space-y-2 flex flex-col divide-y-2 divide-black-border border-y-2 border-green-border bg-green-3 rounded-xl bg-custom-white">
           {
             mensen.map(mensa => {
               return <Link href={'/'+mensa.url}>
                       <a className="flex flex-initial py-4 justify-between px-4">
-                        <h3 className="text-xl font-bold flex self-center">{mensa.name}</h3>
+                        <h3 className="text-xl font-normal flex self-center">{mensa.name}</h3>
                         <div className="space-x-4">
                           {
                             // Checking if current time is between opening times and the day is between monday and friday
@@ -133,8 +131,12 @@ export default function Home(props) {
                           {
                             // Display Distance if Location Permissions are granted
                             locationPermission ? <>
-                            <span className="bg-white py-1.5 px-4 boder rounded-full inline-flex text-green-w7">
-                              {mensa.distance}km
+                            <span className="bg-custom-light-gray py-1.5 px-4 boder rounded-full inline-flex text-green-w7 items-center gap-2">
+                              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1.75781 6.05078L5.23926 6.06055C5.2653 6.06055 5.27995 6.06217 5.2832 6.06543C5.28971 6.06543 5.29297 6.08008 5.29297 6.10937L5.29785 9.57617C5.29785 9.77799 5.3418 9.94727 5.42969 10.084C5.52083 10.2207 5.63802 10.32 5.78125 10.3818C5.92448 10.4469 6.07585 10.4714 6.23535 10.4551C6.39811 10.4421 6.55111 10.3851 6.69434 10.2842C6.83757 10.1833 6.95313 10.0368 7.04102 9.84473L10.6201 2.04687C10.7373 1.78646 10.7812 1.55208 10.752 1.34375C10.7259 1.13216 10.6445 0.961263 10.5078 0.831055C10.3711 0.700846 10.1969 0.624349 9.98535 0.601562C9.77376 0.578776 9.53939 0.625977 9.28223 0.743164L1.45996 4.32227C1.27441 4.4069 1.13281 4.51921 1.03516 4.65918C0.940755 4.79915 0.885417 4.94889 0.869141 5.1084C0.85612 5.2679 0.882161 5.41927 0.947266 5.5625C1.01237 5.70573 1.11165 5.82292 1.24512 5.91406C1.38184 6.00521 1.55273 6.05078 1.75781 6.05078Z" fill="black"/>
+                              </svg>
+
+                              <span>{mensa.distance}km</span>
                             </span>
                             </> : null
                           }

@@ -3,17 +3,18 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import Footer from '../../components/footer';
-import { mensaData } from '..';
-import { DayButton } from '../../components/dayButton';
+import Footer from '../../../components/footer';
+import { mensaData } from '../..';
+import { DayButton } from '../../../components/dayButton';
 // import "../../assets/css/mensa.module.css"
 
-import clientPromise from '../../lib/mongodb'
-import foodTypeChecker from '../../lib/foodTypeChecker';
-import { getWeekdayByName } from '../../lib/getWeekdayByName';
-import { getWeekNumber } from '../../lib/getWeekNumber';
-import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
-import { formatDate } from '../../lib/formatDate';
+import clientPromise from '/lib/mongodb'
+import foodTypeChecker from '/lib/foodTypeChecker';
+import { getWeekdayByName } from '/lib/getWeekdayByName';
+import { getWeekNumber } from '/lib/getWeekNumber';
+import { getAllMensaDataFromSTW } from '/lib/getMensaData';
+import { formatDate } from '/lib/formatDate';
+import { allergyChecker } from '../../../lib/allergyChecker';
 
 
 export default function Mensa(props) {
@@ -45,7 +46,7 @@ export default function Mensa(props) {
 						right: 0;
 						width: 20%;
 						height: 100%;
-						background: linear-gradient(270deg, white, transparent);
+						background: linear-gradient(270deg, #E5E7E5, transparent);
 						pointer-events: none;
 					}
 					.open {
@@ -76,13 +77,13 @@ export default function Mensa(props) {
 				{
 					props.openingTimes.open ? 
 					<>
-						<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full inline-flex items-center gap-2">
+						<div className="font-medium bg-custom-light-gray py-1.5 px-4 rounded-full inline-flex items-center gap-2">
 							<span className="bg-green-2 w-2 h-2 rounded-full"></span>
 							offen bis {props.openingTimes.openUntil}
 						</div>
 					</> : 
 					<>
-						<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full">öffnet um {props.openingTimes.openFrom}</div>
+						<div className="font-medium bg-custom-light-gray py-1.5 px-4 rounded-full">öffnet um {props.openingTimes.openFrom}</div>
 					</>
 				}
 
@@ -107,31 +108,18 @@ export default function Mensa(props) {
 			<div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
             {props.foodOffers.map((offer, i) => {
 				return (
-					<div className="flex-initial rounded-xl bg-green-3">
-						<div className="p-8 pb-4">
-							<p className="font-medium text-sm text-gray-400">{offer.titel}</p>
-							<p className="text-2xl font-medium">{offer.beschreibung}</p>
-							<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
-								<p className="font-bold text-gray-400 text-sm"><span className="bg-green rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> <span className='text-green-w7'>{offer.preise.preis_g} €</span></p>
-								{offer.labels.filter !== "all" && <p className="capitalize font-bold text-sm bg-green rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
-							</div>
-						</div>
-						<div className="">
-							<button className="px-8 py-4 border-t w-full flex items-center gap-2" onClick={() => collapseNutrionionInfo(i)}>
-								<svg width="6" height="6" fill="none" xmlns="http://www.w3.org/2000/svg" className={offers[i] ? "open" : "closed"}>
-									<path d="M3.83 4.74a1 1 0 0 1-1.66 0L.56 2.3A1 1 0 0 1 1.39.75h3.22a1 1 0 0 1 .83 1.55l-1.6 2.44Z" fill="#000"/>
-								</svg>
-								<p className="font-medium text-green-w7">Nährwerte</p>
-							</button>
-							{offers[i] && (
-								<div className="px-8 pb-4">
-									{offer.nutrients?.map(nutrient => {
-										return <p>{nutrient}</p>
-									})}
+					<Link href={`/[mensa]/[day]/[food]`} as={`/${mensa}/${router.query.day}/${offer._id}`}>
+						<a className="flex-initial rounded-xl bg-custom-white">
+							<div className="p-8">
+								{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
+								<p className="text-2xl font-bold">{offer.beschreibung}</p>
+								<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
+									<p className="font-medium text-gray-400 text-sm"><span className="bg-custom-light-gray rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> <span className='text-green-w7'>{offer.preise.preis_g} €</span></p>
+									{offer.labels.filter !== "all" && <p className="capitalize font-medium text-sm bg-custom-light-gray rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
 								</div>
-							)}
-						</div>
-					</div>
+							</div>
+						</a>
+					</Link>
 				)
 			})}
 			</div>
@@ -141,6 +129,9 @@ export default function Mensa(props) {
 }
 
 export async function getServerSideProps(context) {
+
+	console.log(allergyChecker("Wei"))
+
 	const selectedWeekday = getWeekdayByName(context.query.day);
 
 	const currentDate = new Date()
@@ -180,7 +171,7 @@ export async function getServerSideProps(context) {
 	for (let i = 0; i < 5; i++) {
 		let tempDate = new Date(currentDate)
 		if(i === currentWeekday){
-			days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}.${tempDate.getMonth()}`
+			days[i].subText = `${days[i].mainText} · ${tempDate.getDate()}.${tempDate.getMonth()}`
 			// days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
 			days[i].mainText = "Heute"
 		} else {
@@ -212,8 +203,10 @@ export async function getServerSideProps(context) {
 			console.log("No Data for this day, adding...")
 			await coll.insertMany(await getAllMensaDataFromSTW(context.query.mensa));
 		}
-
-		const cursor = coll.find(dayQuery, {projection: {_id: 0}});
+		// getAllMensaDataFromSTW(context.query.mensa)
+		const cursor = coll.find(dayQuery);
+		// ID Suppresion
+		//const cursor = coll.find(dayQuery, {projection: {_id: 0}});
 		await cursor.forEach((e) => {
 			foodOffers.push(e)
 		})
@@ -249,6 +242,11 @@ export async function getServerSideProps(context) {
   	const currentTime = d.getHours() + d.getMinutes()/60
 
 	const open = currentTime >= openFrom && currentTime <= openUntil
+
+	// Change ID of every item in foodOffers
+	foodOffers.forEach((foodOffer) => {
+		foodOffer._id = foodOffer._id.toString()
+	})
 
 	return {
 	  props: {

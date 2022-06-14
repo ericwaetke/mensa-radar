@@ -7,7 +7,7 @@ module.exports = {
     },
     fontFamily: {
       'sans': ['DM Sans'],
-      'display': ['Sen']
+      'serif': ['IBM Plex Serif', 'serif']
     },
     screens: {
       'xs': '400px',
@@ -32,12 +32,19 @@ module.exports = {
           DEFAULT: '#BDF8CE',
           border: '#D8E7D9'
         },
-        'green-old': '#A3F0B9',
-        'green-2': '#30D35D',
-        'green-3': '#EAF4ED',
-        'green-border': '#D8E7D9',
-        'green-w3': '#F3FFF7',
-        'green-w7': '#657C67',
+        'custom-bg': "#E5E7E5",
+        'custom-black': '#161616',
+        'custom-green': '#88E2A1',
+        'custom-half-green': '#DBDBDB',
+        'custom-dark': '#969996',
+        'custom-light-gray': '#F2F2F2',
+        'custom-dark-green': '#70BA19',
+        'custom-white': '#FFFFFF',
+        'custom-nutrient-orange': '#FF9C54',
+        'custom-nutrient-red': '#FF4040',
+        'custom-nutrient-green': '#82C236',
+        'custom-nutrient-purple': '#6B5FFF',
+        'custom-nutrient-stopper': '#CD4848',
       },
       // screens: {
       //   'xs': '370px'
