@@ -7,7 +7,13 @@ import Footer from '../../components/footer';
 import { mensaData } from '..';
 import { DayButton } from '../../components/dayButton';
 // import "../../assets/css/mensa.module.css"
+
 import clientPromise from '../../lib/mongodb'
+import foodTypeChecker from '../../lib/foodTypeChecker';
+import { getWeekdayByName } from '../../lib/getWeekdayByName';
+import { getWeekNumber } from '../../lib/getWeekNumber';
+import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
+import { formatDate } from '../../lib/formatDate';
 
 
 export default function Mensa(props) {
@@ -135,47 +141,13 @@ export default function Mensa(props) {
 }
 
 export async function getServerSideProps(context) {
-	function getWeekNumber(d) {
-		// Copy date so don't modify original
-		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-		// Set to nearest Thursday: current date + 4 - current day number
-		// Make Sunday's day number 7
-		d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-		// Get first day of year
-		var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-		// Calculate full weeks to nearest Thursday
-		var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-		// Return array of year and week number
-		return `${d.getUTCFullYear()}${weekNo}`;
-	}
-
-	let selectedWeekday = 0;
-	switch (context.query.day) {
-		case "montag":
-			selectedWeekday = 0
-			break;
-		case "dienstag":
-			selectedWeekday = 1
-			break;
-		case "mittwoch":
-			selectedWeekday = 2
-			break;
-		case "donnerstag":
-			selectedWeekday = 3
-			break;
-		case "freitag":
-			selectedWeekday = 4
-			break;
-		default:
-			break;
-	}
-
-	// console.log(context.query.mensa, context.query.day, selectedWeekday)
+	const selectedWeekday = getWeekdayByName(context.query.day);
 
 	const currentDate = new Date()
 	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
 	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
 	const isWeekday = currentWeekday < 5;
+
 	let days = [
 		{
 			mainText: "Mo",
@@ -219,192 +191,35 @@ export async function getServerSideProps(context) {
 
 	days = days.slice(currentWeekday)
 
-	// const router = useRouter()
-	// const {mensa} = router.query
+	const today = new Date()
+	const selectedDay = new Date(today)
+	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
+	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
 
-	const urls = {
-		golm: "https://xml.stw-potsdam.de/xmldata/go/xml.php",
-		fhp: "https://xml.stw-potsdam.de/xmldata/ka/xml.php",
-		neues_palais: "https://xml.stw-potsdam.de/xmldata/np/xml.php"
-	}
-	let url;
-
-	switch (context.query.mensa) {
-		case "golm":
-			url = urls.golm
-			break;
-		case "fhp":
-			url = urls.fhp
-			break;
-		case "neues-palais":
-			url = urls.neues_palais
-		default:
-			url = urls.fhp
-			break;
-	}
-
-	function foodTypeChecker(label){
-	const foodTypes = {
-		SCHWEIN: "schweinefleisch",
-		GEFLUEGEL: "gefluegel",
-		LAMM: "lamm",
-		RIND: "rindfleisch",
-		FISCH: "fisch",
-		VEGETARISCH: "vegetarisch",
-		VEGAN: "vegan"
-	}
-	
-	const filterTypes = {
-		VEGETARISCH: "🥛 Vegetarisch",
-		VEGAN: "🌱 Vegan",
-		PESCETARISCH: "🐟 Pescetarisch",
-		ALL: "all"
-	}
-	
-	switch (label) {
-		case foodTypes.SCHWEIN:
-		return {foodType: foodTypes.SCHWEIN, filter: filterTypes.ALL}
-	
-		case foodTypes.GEFLUEGEL:
-		return {foodType: foodTypes.GEFLUEGEL, filter: filterTypes.ALL}
-	
-		case foodTypes.LAMM:
-		return {foodType: foodTypes.LAMM, filter: filterTypes.ALL}
-		
-		case foodTypes.RIND:
-		return {foodType: foodTypes.RIND, filter: filterTypes.ALL}
-		
-		case foodTypes.FISCH:
-		return {foodType: foodTypes.FISCH, filter: filterTypes.PESCETARISCH}
-		
-		case foodTypes.VEGETARISCH:
-		return {foodType: foodTypes.VEGETARISCH, filter: filterTypes.VEGETARISCH}
-		
-		case foodTypes.VEGAN:
-		return {foodType: foodTypes.VEGAN, filter: filterTypes.VEGAN}
-		
-		default:
-		return {foodType: "", filter: filterTypes.ALL};
-	}
-	}
-					
-	let foodOffers = [];
+	let foodOffers = []
 	try {
 		const client = await clientPromise;
 		const db = client.db("guckstDuEssen");
 
-		const coll = db.collection("fhp");
-	
-		// const result = await coll.insertMany(docs);
-		// console.log(result)
+		const coll = db.collection(context.query.mensa);
 
-		const cursor = coll.find({week: getWeekNumber(new Date())});
-		// await console.log(cursor)
-		await cursor.forEach(console.log);
+		// Get the amount of Food-Offers for the current day
+		const dayQuery = {date: selectedDayFormatted}
+		const dayCount = await coll.countDocuments(dayQuery)
 
-		if (true) {
-			console.log("GETTING DATA FROM STUDENTENWERK")
-			const response = await fetch(url)
-			const xml = await response.text()
-			
-			// 0 = Heute
-			let dateRef = (selectedWeekday - currentWeekday) < 0 ? 0 : selectedWeekday - currentWeekday;
-			
-			await parseString(xml, async function (err, result) {
-				console.log("")
-				console.log("")
-				console.log("")
-				console.log("")
-				console.log("")
-				console.log("parsing string")
-				if(result.hasOwnProperty('p')){
-					console.log('Database is temporary not responding')
-				}
-				if(result.menu.datum.length == 0){
-					console.log("Fatal error in FH XML database")
-				}
-
-				// Day which the food is fetched for
-				// This is seemingly not updated on Route Pushes
-				let day = result.menu.datum[dateRef];
-				console.log(day)
-				result.menu.datum.forEach((day, index) => {
-					// Checks if the dataset for today is empty
-					if(day.angebotnr === 'undefined' || day.angebotnr == undefined) {
-						
-					} else {
-						// Fetches the food offers for the selected day
-						var angebote = [];
-						if(day.angebotnr?.length !== 0 && day.angebotnr !== undefined) {
-							for (let i = 0; i < day.angebotnr.length; i++){
-								var ref = day.angebotnr[i];
-						
-								if(ref.labels[0].length == 0) {		
-									let emptyLabel = { label : { 0 : 'empty'}}
-						
-									ref.labels[0] = emptyLabel;
-								}	
-						
-								// Angebot vorhanden
-								if(ref.preis_s[0] !== '' && ref.beschreibung[0] !== "" && ref.beschreibung[0] !== ".") {
-									let titel = ref.titel[0]
-									let beschreibung
-						
-									// if(ref.beschreibung == '.') {
-									// 	beschreibung = "Angebot nicht mehr verfügbar"
-									// } else {
-									// }
-									beschreibung = ref.beschreibung[0]
-		
-									// Setting Nutrient Array
-									let nutrients = ref.nutrients[0].nutrient ? ref.nutrients[0].nutrient : []
-									
-									// Check if Array is filled to calculate kcal
-									if(nutrients.length !== 0) {
-										let tempEnergy = nutrients[0].wert[0]
-										let kcal = Math.round(nutrients[0].wert[0] * 0.2390057361)
-										// nutrients.splice(1, 0,  {name: ["Energiewert (Kcal)"], wert: [kcal], einheit: ["kcal"]})
-										// nutrients[0].wert[0] = `${tempEnergy} / ${kcal}`
-		
-										for (let i = 0; i < nutrients.length; i++) {
-											const tempNutrient = nutrients[i];
-											nutrients[i] = `${tempNutrient.name[0]}: ${tempNutrient.wert[0]} ${tempNutrient.einheit[0]}`
-										}
-		
-										nutrients[0] = `Energie: ${tempEnergy} kJ / ${kcal} kcal`
-									}
-		
-									angebote.push({
-										titel,
-										beschreibung,
-										labels: foodTypeChecker(ref.labels[0].label[0].$?.name),
-										preise: {
-											preis_s: ref.preis_s,
-											preis_m: ref.preis_m,
-											preis_g: ref.preis_g
-										},
-										nutrients,
-										week: getWeekNumber(new Date()),
-										day: dateRef
-									})
-								} else {
-									// Dont Push Angebnot into array
-								}
-							}
-						}
-					}
-					if (angebote && angebote?.length !== 0) {
-						// console.log(angebote)
-
-						foodOffers = [...foodOffers, ...angebote]
-					}
-				})
-				const dbResult = await coll.insertMany(foodOffers);
-				console.log(dbResult.insertedIds);
-			});
-		} else {
-			console.log("Database is not empty", await cursor.toArray().length)
+		if (dayCount === 0) {
+			// Add the current STUDENTENWERK Data to the Database
+			console.log("No Data for this day, adding...")
+			await coll.insertMany(await getAllMensaDataFromSTW(context.query.mensa));
 		}
+
+		const cursor = coll.find(dayQuery, {projection: {_id: 0}});
+		await cursor.forEach((e) => {
+			foodOffers.push(e)
+		})
+		// await cursor.forEach(console.log);
+
+		
 
 	} catch (e) {
 		console.error(e)
@@ -430,7 +245,6 @@ export async function getServerSideProps(context) {
 
 	const openFrom = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', context.query.mensa).opening)
 	const openUntil = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', context.query.mensa).closing)
-console.log(openFrom, openUntil)
 	const d = new Date();
   	const currentTime = d.getHours() + d.getMinutes()/60
 
