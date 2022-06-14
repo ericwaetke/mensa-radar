@@ -110,7 +110,7 @@ export default function Mensa(props) {
 				return (
 					<Link href={`/[mensa]/[day]/[food]`} as={`/${mensa}/${router.query.day}/${offer._id}`}>
 						<a className="flex-initial rounded-xl bg-custom-white">
-							<div className="p-8">
+							<div className="my-4 p-8 flex-initial rounded-xl bg-custom-white">
 								{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
 								<p className="text-2xl font-bold">{offer.beschreibung}</p>
 								<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">

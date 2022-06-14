@@ -90,8 +90,8 @@ export default function Mensa(props) {
 					</div>
 					<div className="py-4">
 						<p className="px-8 font-bold text-xs text-custom-black opacity-40 uppercase">Nährwerte</p>
-						<div className='flex flex-none break-all'>
-							<div className="px-8 pb-4 w-1/3 flex flex-col gap-2">
+						<div className='px-6 flex flex-none break-all'>
+							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
 								<p className='text-sm'>
 								{`${offer.nutrients[1].value}${offer.nutrients[1].unit}`}
 								</p>
@@ -105,7 +105,7 @@ export default function Mensa(props) {
 								{offer.nutrients[1].name}
 								</p>
 							</div>
-							<div className="px-8 pb-4 w-1/3 flex flex-col gap-2">
+							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
 								<p className='text-sm'>
 								{`${offer.nutrients[2].value}${offer.nutrients[2].unit}`}
 								</p>
@@ -119,7 +119,7 @@ export default function Mensa(props) {
 								{offer.nutrients[2].name}
 								</p>
 							</div>
-							<div className="px-8 pb-4 w-1/3 flex flex-col gap-2">
+							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
 								<p className='text-sm'>
 								{`${offer.nutrients[3].value}${offer.nutrients[3].unit}`}
 								</p>
