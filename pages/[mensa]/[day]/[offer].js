@@ -18,55 +18,37 @@ import { ObjectId } from 'mongodb';
 import { QualityRatingComponent } from '../../../components/ratings/qualityRatingComponent';
 import { makeId } from '../../../lib/makeId';
 import { getItem, setItem } from '../../../lib/localStorageHelper';
+import postData, { saveQualityReviewToDB } from '../../../lib/postData';
+import { NutrientOverview } from '../../../components/nutrients/nutrientOverview';
 
 export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
+	const calculateAverage = (array) => {
+		let sum = 0
+		array.forEach((num) => { sum += num.rating })
+		return sum / array.length
+	}
+
 	const offer = props.offer
-	
-	// const [qualityRating, setQualityRating] = useState(0)
-	// const [userQualityRating, setUserQualityRating] = useState(0)
-	// const handleUserQualityRating = async (rating) => {
-    //     let sessionId = getItem("sessionId")
-    //     if (!sessionId) {
-    //         sessionId = makeId()
-    //         setItem("sessionId", sessionId)
-    //     }
+	console.log(offer.qualityRating)
+	const [qualityRating, setQualityRating] = useState(
+		offer.qualityRating ? calculateAverage(offer.qualityRating) : 0
+	)
+	const [userQualityRating, setUserQualityRating] = useState(0)
+	const handleUserQualityRating = async (rating) => {
+        let sessionId = getItem("sessionId")
+        if (!sessionId) {
+            sessionId = makeId()
+            setItem("sessionId", sessionId)
+        }
 
-    //     setUserQualityRating(rating)
-    //     console.log(offer)
+        setUserQualityRating(rating)
+		saveQualityReviewToDB(offer, rating, router.query.mensa, sessionId)
+    }
 
-	// 	// Update in Database
-	// 	try {
-	// 		const client = await clientPromise
-	// 		const db = client.db("mensa")
-	// 		const coll = db.collection(context.query.mensa);
-
-	// 		const filter = {
-	// 			"_id": ObjectId(offer._id)
-	// 		}
-
-	// 		const update = {
-	// 			$set: {
-	// 				"qualityRating": [...offer.qualityRating, {
-	// 					"sessionId": sessionId,
-	// 					"rating": rating
-	// 				}],
-	// 			}
-	// 		}
-
-	// 		const result = await coll.updateOne(filter, update)
-	// 		console.log(result)
-
-	// 	} catch (error) {
-	// 		console.log(error)
-	// 	}
-    // }
-
-	console.log(offer.nutrients[0].value / 8368 * 100)
-
-    return (
+	return (
         <div className="space-y-6 break-words mx-5 mt-12">
 			<div>
                 <Link href={`/[mensa]/[day]/`} as={`/${mensa}/${router.query.day}/`}>
@@ -90,64 +72,8 @@ export default function Mensa(props) {
 					</div>
 					<div className="py-4">
 						<p className="px-8 font-bold text-xs text-custom-black opacity-40 uppercase">Nährwerte</p>
-						<div className='px-6 flex flex-none break-all'>
-							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
-								<p className='text-sm'>
-								{`${offer.nutrients[1].value}${offer.nutrients[1].unit}`}
-								</p>
-
-								{/* Bar */}
-								<div className='h-1 w-full bg-custom-light-gray relative rounded-full'>
-									<div className='h-1 bg-custom-nutrient-orange absolute border-r-2 border-custom-white' style={{width: `${offer.nutrients[1].value / (72 * 1.1) * 100}%`}}></div>
-									<div className='h-4 w-1 bg-custom-nutrient-stopper absolute border-r-2 border-custom-white' style={{top: "-6px", right: `${72*1.1 / 72*.1 * 100 }%`}}></div>
-								</div>
-								<p className='text-sm font-serif'>
-								{offer.nutrients[1].name}
-								</p>
-							</div>
-							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
-								<p className='text-sm'>
-								{`${offer.nutrients[2].value}${offer.nutrients[2].unit}`}
-								</p>
-
-								{/* Bar */}
-								<div className='h-1 w-full bg-custom-light-gray relative rounded-full'>
-									<div className='h-1 bg-custom-nutrient-purple absolute border-r-2 border-custom-white' style={{width: `${offer.nutrients[2].value / (264 * 1.1) * 100}%`}}></div>
-									<div className='h-4 w-1 bg-custom-nutrient-stopper absolute border-r-2 border-custom-white' style={{top: "-6px", right: `${264 * 1.1 / 264*.1 * 100 }%`}}></div>
-								</div>
-								<p className='text-sm font-serif'>
-								{offer.nutrients[2].name}
-								</p>
-							</div>
-							<div className="px-2 pb-4 w-1/3 flex flex-col gap-2">
-								<p className='text-sm'>
-								{`${offer.nutrients[3].value}${offer.nutrients[3].unit}`}
-								</p>
-
-								{/* Bar */}
-								<div className='h-1 w-full bg-custom-light-gray relative rounded-full'>
-									<div className='h-1 bg-custom-nutrient-red absolute border-r-2 border-custom-white' style={{width: `${offer.nutrients[3].value / (66 * 1.1) * 100}%`}}></div>
-									<div className='h-4 w-1 bg-custom-nutrient-stopper absolute border-r-2 border-custom-white' style={{top: "-6px", right: `${66 * 1.1 / 66* .1 * 100 }%`}}></div>
-								</div>
-								<p className='text-sm font-serif'>
-								{offer.nutrients[3].name}
-								</p>
-							</div>
-						</div>
-						<div className="px-8 pb-4 flex flex-col gap-2">
-							<p className='text-sm'>
-							{`${offer.nutrients[0].value}${offer.nutrients[0].unit}`}
-							</p>
-
-							{/* Bar */}
-							<div className='h-1 w-full bg-custom-light-gray relative rounded-full'>
-								<div className='h-1 bg-custom-nutrient-green absolute border-r-2 border-custom-white' style={{width: `${offer.nutrients[0].value / (8368*1.1) * 100}%`}}></div>
-								<div className='h-4 w-1 bg-custom-nutrient-stopper absolute border-r-2 border-custom-white' style={{top: "-6px", right: `${8368*1.1 / 8368 * .1 * 100 }%`}}></div>
-							</div>
-							<p className='text-sm font-serif'>
-							{offer.nutrients[0].name}
-							</p>
-						</div>
+						
+						<NutrientOverview nutrients={offer.nutrients} />
 						<p className='px-8 text-sm opacity-40 italic font-serif'>Verglichen nach dem Tagesbedarf der Optimalen Nährwerteverteilung nach DGE</p>
 					</div>
 					<div className="py-4">
@@ -156,7 +82,7 @@ export default function Mensa(props) {
 								{offer.allergene.join(", ")}
 							</div>
 					</div>
-					{/* <QualityRatingComponent handleUserQualityRating={handleUserQualityRating} qualityRating={qualityRating} userQualityRating={userQualityRating}/> */}
+					<QualityRatingComponent handleUserQualityRating={handleUserQualityRating} qualityRating={qualityRating} userQualityRating={userQualityRating}/>
 				</div>
 			</div>
 			<Footer />
