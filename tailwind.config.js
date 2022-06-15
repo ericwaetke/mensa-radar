@@ -38,13 +38,9 @@ module.exports = {
         'custom-half-green': '#DBDBDB',
         'custom-dark': '#969996',
         'custom-light-gray': '#F2F2F2',
-        'custom-dark-green': '#70BA19',
+        'custom-dark-green': '#43BC63',
         'custom-white': '#FFFFFF',
-        'custom-nutrient-orange': '#FF9C54',
-        'custom-nutrient-red': '#FF4040',
-        'custom-nutrient-green': '#82C236',
-        'custom-nutrient-purple': '#6B5FFF',
-        'custom-nutrient-stopper': '#CD4848',
+        'custom-divider': '#C1C5C1',
       },
       // screens: {
       //   'xs': '370px'

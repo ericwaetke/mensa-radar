@@ -15,7 +15,8 @@ class MyDocument extends Document {
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sen:wght@800&display=swap" rel="stylesheet" />
             <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital@0;1&display=swap" rel="stylesheet" /> 
         </Head>
-        <body style={{background: '#E5E7E5'}}>
+        {/* <body style={{background: '#E5E7E5'}}> */}
+        <body>
           <Main />
           <NextScript />
         </body>
