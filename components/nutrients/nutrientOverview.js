@@ -11,7 +11,7 @@ export const NutrientOverview = ({nutrients}) => {
 			</div>
 
 			<div className="px-8 py-2">
-				<div className='h-4 w-1 bg-custom-black absolute border-r-2 border-custom-white rounded-full my-1'></div>
+				<div className='h-4 w-1 bg-custom-black absolute border-r-2 border-custom-bg rounded-full my-1'></div>
 				
 				<p className='px-2 text-sm opacity-40 italic font-serif'>Verglichen nach dem Tagesbedarf der Optimalen Nährwerteverteilung nach DGE</p>
 			</div>

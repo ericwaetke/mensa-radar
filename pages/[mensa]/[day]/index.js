@@ -114,12 +114,12 @@ export default function Mensa(props) {
 				return (
 					<Link href={`/[mensa]/[day]/[food]`} as={`/${mensa}/${router.query.day}/${offer._id}`}>
 						<a>
-							<div className="my-4 p-8 flex gap-8 rounded-xl bg-custom-bg">
+							<div className="my-4 p-5 flex gap-8 rounded-xl bg-custom-bg">
 								{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
 								<div className='flex-initial'>
 									<p className="text-2xl font-bold">{offer.beschreibung}</p>
 									<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
-										<p className="font-medium text-gray-400 text-sm">
+										<p className="font-medium text-gray-400 text-sm flex gap-2 items-center">
 											<span className="bg-custom-white rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span>
 											<span className='text-green-w7'>{offer.preise.preis_g} €</span>
 										</p>
@@ -130,7 +130,7 @@ export default function Mensa(props) {
 												</svg>
 												{calculateAverage(offer.qualityRating)}
 												</p>}
-											{offer.labels.filter !== "all" && <p className="capitalize font-medium text-sm bg-custom-white rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
+											{offer.labels.filter !== "all" && <p className="capitalize font-medium text-sm bg-custom-white rounded-full py-1 px-3 inline-block">{offer.labels.filter}</p>}
 										</div>
 									</div>
 								</div>

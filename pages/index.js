@@ -112,7 +112,8 @@ export default function Home(props) {
         </h1>
 
         <h2 className="font-display text-xl mt-16 mb-8">Mensen</h2>
-        <div className="space-y-2 flex flex-col divide-y-2 divide-black-border border-y-2 border-green-border bg-green-3 rounded-xl bg-custom-white">
+        <div className="space-y-2 flex flex-col divide-y-2 border-y-2 divide-custom-divider bg-green-3 rounded-xl bg-custom-bg
+        ">
           {
             mensen.map(mensa => {
               return <Link href={'/'+mensa.url}>

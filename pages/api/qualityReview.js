@@ -10,12 +10,17 @@ export default async function handler(req, res) {
         
         const filter = {_id: ObjectId(req.body.offer._id)}
 
+
+        let tempQualityRatings = req.body.offer.qualityRating
+        // Filter Out new Rating if same sessionId has rated before
+        tempQualityRatings = tempQualityRatings.filter(rating => rating.sessionId !== req.body.sessionId)
+
         let update;
         // Temporary Workaround for Food Offers which dont have rating fields yet
         if (req.body.offer.qualityRating) {
             update = {
                 $set: {
-                    "qualityRating": [...req.body.offer.qualityRating, {
+                    "qualityRating": [...tempQualityRatings, {
                         "sessionId": req.body.sessionId,
                         "rating": req.body.rating
                     }],

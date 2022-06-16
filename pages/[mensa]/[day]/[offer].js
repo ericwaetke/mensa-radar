@@ -7,6 +7,7 @@ import Footer from '../../../components/footer';
 import { mensaData } from '../..';
 import { DayButton } from '../../../components/dayButton';
 // import "../../assets/css/mensa.module.css"
+import Modal from 'react-modal';
 
 import clientPromise from '/lib/mongodb'
 import foodTypeChecker from '/lib/foodTypeChecker';
@@ -23,18 +24,18 @@ import { NutrientOverview } from '../../../components/nutrients/nutrientOverview
 import { RatingOverview } from '../../../components/ratings/ratingOverview';
 import { mensaClearName } from '../../../lib/mensaClearName';
 import {calculateAverage} from "/lib/calculateAverage"
+import { InteractiveQualityRatingComponent } from '../../../components/ratings/interactiveRatingComponents/interactiveQualityRatingComponent';
 
 export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
-	
-
 	const offer = props.offer
-	console.log(offer.qualityRating)
+
 	const [qualityRating, setQualityRating] = useState(
 		offer.qualityRating ? calculateAverage(offer.qualityRating) : 0
 	)
+	console.log(offer.qualityRating)
 	const [userQualityRating, setUserQualityRating] = useState(0)
 	const handleUserQualityRating = async (rating) => {
         let sessionId = getItem("sessionId")
@@ -47,8 +48,45 @@ export default function Mensa(props) {
 		saveQualityReviewToDB(offer, rating, router.query.mensa, sessionId)
     }
 
+	// Modal Stuff
+	const [showRatingModal, setShowRatingModal] = useState(false)
+	const openRatingModal = () => {
+		setShowRatingModal(true)
+	}
+	const closeRatingModal = () => {
+		setShowRatingModal(false)
+	}
+
+
 	return (
         <div className="space-y-6 break-words mx-5 mt-12">
+			<Modal
+				isOpen={showRatingModal}
+				onRequestClose={() => console.log("request close")}
+				className="modal"
+				overlayClassName="bg-custom-white"
+				ariaHideApp={false}
+				// shouldCloseOnOverlayClick={true}
+				style={{
+					overlay: {
+						backgroundColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}}
+			>
+				<div className='w-full h-full bg-custom-white bg-opacity-50 fixed top-0 left-0 backdrop-blur-md flex items-center justify-center'>
+					<div className='bg-custom-white rounded-xl p-8 max-w-prose pointer-events-auto'>
+						<p className='font-bold text-xl'>
+							Essen bewerten
+						</p>
+						<p>
+							{offer.beschreibung}
+						</p>
+						<InteractiveQualityRatingComponent handleUserQualityRating={handleUserQualityRating} userQualityRating={userQualityRating} />	
+						<button className='bg-custom-green text-custom-black px-6 py-2 rounded-md' onClick={closeRatingModal}>Bewertung speichern!</button>
+					</div>	
+				</div>	
+				</Modal>
+			
 			<div>
                 <Link href={`/[mensa]/[day]/`} as={`/${mensa}/${router.query.day}/`}>
 					<a className="p-6 pl-0 flex items-center gap-4">
@@ -72,8 +110,7 @@ export default function Mensa(props) {
 						</div>
 					</div>
 
-					<RatingOverview ratingCount={offer.qualityRating ? offer.qualityRating.length : 0} handleUserQualityRating={handleUserQualityRating} qualityRating={qualityRating} userQualityRating={userQualityRating} />
-
+					<RatingOverview ratingCount={offer.qualityRating ? offer.qualityRating.length : 0} handleUserQualityRating={handleUserQualityRating} qualityRating={qualityRating} userQualityRating={userQualityRating} openRatingModal={openRatingModal}/>
 					<NutrientOverview nutrients={offer.nutrients} />
 
 					<div className="py-4">
