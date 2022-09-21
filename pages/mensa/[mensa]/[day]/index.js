@@ -16,6 +16,15 @@ import { mensaClearName } from '../../../../lib/mensaClearName';
 
 
 export default function Mensa(props) {
+
+	let openingTimes = props && props.openingTimes ? props.openingTimes : {
+		openFrom: "10:00",
+		openUntil: "12:00",
+		open: false
+	}
+
+	let foodOffers = props && props.foodOffers ? props.foodOffers : []
+
 	const router = useRouter()
   	const { mensa } = router.query
 
@@ -75,15 +84,15 @@ export default function Mensa(props) {
 
 			<div className="flex justify-between">
 				{
-					props.openingTimes.open ? 
+					openingTimes.open ? 
 					<>
 						<div className="font-medium bg-custom-light-gray py-1.5 px-4 rounded-full inline-flex items-center gap-2">
 							<span className="bg-green-2 w-2 h-2 rounded-full"></span>
-							offen bis {props.openingTimes.openUntil}
+							offen bis {openingTimes.openUntil}
 						</div>
 					</> : 
 					<>
-						<div className="font-medium bg-custom-light-gray py-1.5 px-4 rounded-full">öffnet um {props.openingTimes.openFrom}</div>
+						<div className="font-medium bg-custom-light-gray py-1.5 px-4 rounded-full">öffnet um {openingTimes.openFrom}</div>
 					</>
 				}
 
@@ -107,7 +116,7 @@ export default function Mensa(props) {
 
 			<div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
             {
-				props.foodOffers.map((offer, i) => {
+				foodOffers.map((offer, i) => {
 					return (
 						<Link href={`/mensa/${mensa}/${router.query.day}/${offer._id}`}>
 							<a>
@@ -178,16 +187,16 @@ export function getStaticPaths() {
 	]
 
 	let paths = [];
-	mensaData.map(mensa => {
-		days.map(day => {
-			paths.push({
-				params: {
-					mensa: mensa.url,
-					day: day.url
-				},
-			})
-		})
-	})
+	// mensaData.map(mensa => {
+	// 	days.map(day => {
+	// 		paths.push({
+	// 			params: {
+	// 				mensa: mensa.url,
+	// 				day: day.url
+	// 			},
+	// 		})
+	// 	})
+	// })
 
 	return {
 		paths,
@@ -305,7 +314,7 @@ export async function getStaticProps(context) {
 	const d = new Date();
   	const currentTime = d.getHours() +":"+ d.getMinutes()/60
 
-	const open = currentTime >= openFrom && currentTime <= openUntil
+	const open = currentTime && openFrom && openUntil ? currentTime >= openFrom && currentTime <= openUntil : false
 
 	// Change ID of every item in foodOffers
 	foodOffers.forEach((foodOffer) => {
@@ -320,7 +329,7 @@ export async function getStaticProps(context) {
 			openingTimes: {
 				openFrom,
 				openUntil,
-				open
+				open: open || false
 			}
 		},
 		revalidate: 60
