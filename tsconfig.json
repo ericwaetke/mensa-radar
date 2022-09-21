@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "pages/mensa/[mensa]/[day]/[offer].js"  ],
   "exclude": [
     "node_modules"
   ]

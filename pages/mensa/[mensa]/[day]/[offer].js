@@ -31,12 +31,30 @@ export default function Mensa(props) {
 	const router = useRouter()
   	const { mensa } = router.query
 
-	const offer = props.offer
+	const offer = props.offer ? props.offer : {
+		title: "loading",
+		beschreibung: "loading",
+		preise: {
+			preis_g: "loading",
+			preis_s: "loading",
+		},
+		labels: {
+			filter: "loading",
+		},
+		allergene: ["loading"],
+		nutrients: [
+			{
+				name: "Fett",
+			reference: 66,
+			unit: "g"
+			}
+		]
+	};
 
 	const [qualityRating, setQualityRating] = useState(
-		offer.qualityRating ? calculateAverage(offer.qualityRating) : 0
+		offer ? (offer.qualityRating ? calculateAverage(offer.qualityRating) : 0) : 0
 	)
-	console.log(offer.qualityRating)
+
 	const [userQualityRating, setUserQualityRating] = useState(0)
 	const handleUserQualityRating = async (rating) => {
         let sessionId = getItem("sessionId")
@@ -89,7 +107,7 @@ export default function Mensa(props) {
 
 			
 			<div>
-                <Link href={`/[mensa]/[day]/`} as={`/${mensa}/${router.query.day}/`}>
+                <Link href={`/mensa/${mensa}/${router.query.day}/`}>
 					<a className="p-6 pl-0 flex items-center gap-4">
 						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
@@ -133,18 +151,29 @@ export default function Mensa(props) {
     )
 }
 
-export async function getServerSideProps(context) {
+export async function getStaticPaths() {
+
+	return {
+		paths: [],
+		fallback: true
+	}
+}
+
+export async function getStaticProps(context) {
+	console.log("getting static props")
 	try {
+		console.log("trying")
 		const client = await clientPromise;
 		const db = client.db("guckstDuEssen");
 
-		const coll = db.collection(context.query.mensa);
+		const coll = db.collection(context.params.mensa);
 
-        const offerQuery = {_id: ObjectId(context.query.offer)}
+        const offerQuery = {_id: ObjectId(context.params.offer)}
         let offer = await coll.findOne(offerQuery)
 
         offer._id = offer._id.toString()
 
+		console.log(offer)
         return {
             props: {
                 offer

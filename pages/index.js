@@ -102,13 +102,13 @@ export default function Home(props) {
   return (
     <div className="mx-5 mt-12 space-y-6 lg:w-1/2">
       <Head>
-        <title>Guckst du Essen — Mensen Potsdam</title>
+        <title>Mensa Radar — Mensen Potsdam</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1 className="font-display text-4xl mt-5">
-          Guckst du Mensa
+          Mensa Radar
         </h1>
 
         <h2 className="font-display text-xl mt-16 mb-8">Mensen</h2>
