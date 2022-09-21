@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import Footer from '../../../components/footer';
-import { mensaData } from '../..';
-import { DayButton } from '../../../components/dayButton';
+import Footer from '../../../../components/footer';
+import { mensaData } from '../../..';
+import { DayButton } from '../../../../components/dayButton';
 // import "../../assets/css/mensa.module.css"
 
 import clientPromise from '/lib/mongodb'
@@ -15,8 +15,8 @@ import { getWeekNumber } from '/lib/getWeekNumber';
 import { getAllMensaDataFromSTW } from '/lib/getMensaData';
 import { formatDate } from '/lib/formatDate';
 import {calculateAverage} from "/lib/calculateAverage"
-import { allergyChecker } from '../../../lib/allergyChecker';
-import { mensaClearName } from '../../../lib/mensaClearName';
+import { allergyChecker } from '../../../../lib/allergyChecker';
+import { mensaClearName } from '../../../../lib/mensaClearName';
 
 
 export default function Mensa(props) {
@@ -112,7 +112,7 @@ export default function Mensa(props) {
 			<div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 2xl:grid-cols-3">
             {props.foodOffers.map((offer, i) => {
 				return (
-					<Link href={`/[mensa]/[day]/[food]`} as={`/${mensa}/${router.query.day}/${offer._id}`}>
+					<Link href={`/mensa/${mensa}/${router.query.day}/${offer._id}`}>
 						<a>
 							<div className="my-4 p-5 flex gap-8 rounded-xl bg-custom-bg">
 								{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}

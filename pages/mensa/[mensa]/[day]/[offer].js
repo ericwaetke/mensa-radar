@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import Footer from '../../../components/footer';
-import { mensaData } from '../..';
-import { DayButton } from '../../../components/dayButton';
+import Footer from '/components/footer';
+import { mensaData } from '../../..';
+import { DayButton } from '/components/dayButton';
 // import "../../assets/css/mensa.module.css"
 import Modal from 'react-modal';
 
@@ -16,15 +16,16 @@ import { getWeekNumber } from '/lib/getWeekNumber';
 import { getAllMensaDataFromSTW } from '/lib/getMensaData';
 import { formatDate } from '/lib/formatDate';
 import { ObjectId } from 'mongodb';
-import { QualityRatingComponent } from '../../../components/ratings/qualityRatingComponent';
-import { makeId } from '../../../lib/makeId';
-import { getItem, setItem } from '../../../lib/localStorageHelper';
-import postData, { saveQualityReviewToDB } from '../../../lib/postData';
-import { NutrientOverview } from '../../../components/nutrients/nutrientOverview';
-import { RatingOverview } from '../../../components/ratings/ratingOverview';
-import { mensaClearName } from '../../../lib/mensaClearName';
+import { QualityRatingComponent } from '/components/ratings/qualityRatingComponent';
+import { makeId } from '/lib/makeId';
+import { getItem, setItem } from '/lib/localStorageHelper';
+import postData, { saveQualityReviewToDB } from '/lib/postData';
+import { NutrientOverview } from '/components/nutrients/nutrientOverview';
+import { RatingOverview } from '/components/ratings/ratingOverview';
+import { mensaClearName } from '/lib/mensaClearName';
 import {calculateAverage} from "/lib/calculateAverage"
-import { InteractiveQualityRatingComponent } from '../../../components/ratings/interactiveRatingComponents/interactiveQualityRatingComponent';
+import { InteractiveQualityRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveQualityRatingComponent';
+import { InteractiveAmountRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveAmountRatingComponent';
 
 export default function Mensa(props) {
 	const router = useRouter()
@@ -63,29 +64,29 @@ export default function Mensa(props) {
 			<Modal
 				isOpen={showRatingModal}
 				onRequestClose={() => console.log("request close")}
-				className="modal"
-				overlayClassName="bg-custom-white"
+				className="modal  z-10"
+				overlayClassName=""
 				ariaHideApp={false}
-				// shouldCloseOnOverlayClick={true}
+				shouldCloseOnOverlayClick={true}
 				style={{
 					overlay: {
-						backgroundColor: 'rgba(0, 0, 0, 0.5)'
+						backgroundColor: 'rgba(0, 0, 0, 0.35)'
 					}
 				}}
 			>
-				<div className='w-full h-full bg-custom-white bg-opacity-50 fixed top-0 left-0 backdrop-blur-md flex items-center justify-center'>
-					<div className='bg-custom-white rounded-xl p-8 max-w-prose pointer-events-auto'>
-						<p className='font-bold text-xl'>
-							Essen bewerten
-						</p>
-						<p>
-							{offer.beschreibung}
-						</p>
+				<div className='w-full h-full fixed top-0 left-0 backdrop-blur-md flex items-center justify-center pointer-events-none'>
+					<div className='bg-modal-green rounded-xl p-8 max-w-prose pointer-events-auto'>
+						<button className='bg-custom-white text-custom-black w-8 h-8 rounded-full' onClick={closeRatingModal}>x</button>
+						<label>Wie hat es dir geschmeckt?</label>
 						<InteractiveQualityRatingComponent handleUserQualityRating={handleUserQualityRating} userQualityRating={userQualityRating} />	
-						<button className='bg-custom-green text-custom-black px-6 py-2 rounded-md' onClick={closeRatingModal}>Bewertung speichern!</button>
+						<p>Wähle einen Stern</p>
+						<hr />
+						<label>Wie war die Menge?</label>
+						<InteractiveAmountRatingComponent />
 					</div>	
 				</div>	
-				</Modal>
+			</Modal>
+
 			
 			<div>
                 <Link href={`/[mensa]/[day]/`} as={`/${mensa}/${router.query.day}/`}>

@@ -41,6 +41,7 @@ module.exports = {
         'custom-dark-green': '#43BC63',
         'custom-white': '#FFFFFF',
         'custom-divider': '#C1C5C1',
+        'modal-green': '#ECF1EC'
       },
       // screens: {
       //   'xs': '370px'

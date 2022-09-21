@@ -116,7 +116,7 @@ export default function Home(props) {
         ">
           {
             mensen.map(mensa => {
-              return <Link href={'/'+mensa.url}>
+              return <Link href={'/mensa/'+mensa.url}>
                       <a className="flex flex-initial py-4 justify-between px-4">
                         <h3 className="text-xl font-normal flex self-center">{mensa.name}</h3>
                         <div className="space-x-4">

@@ -19,7 +19,7 @@ export async function getServerSideProps(context) {
     return {
         redirect: {
             permanent: false,
-            destination: `${context.query.mensa}/${weekday[currentWeekday]}`
+            destination: `mensa/${context.query.mensa}/${weekday[currentWeekday]}`
         }
     }
 }

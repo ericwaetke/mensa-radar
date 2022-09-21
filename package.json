@@ -8,7 +8,7 @@
   "dependencies": {
     "dayjs": "^1.10.7",
     "mongodb": "^4.7.0",
-    "next": "latest",
+    "next": "^12.3.0",
     "next-connect": "^0.12.2",
     "next-pwa": "^5.5.4",
     "react": "17.0.2",
@@ -18,8 +18,10 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "@types/react": "^18.0.20",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.3.11",
-    "tailwindcss": "^2.2.19"
+    "tailwindcss": "^2.2.19",
+    "typescript": "^4.8.3"
   }
 }
