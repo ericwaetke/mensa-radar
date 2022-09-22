@@ -1,0 +1,15 @@
+http://localhost:3000/api/revalidate?secret=V0xAuLv3jZZQyrERp50nGbzXTD20qHfY
+
+name: daily-cron
+on:
+  schedule:
+    - cron: '0 7 * * *'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Revalidation API
+        run: |
+          curl --request POST \
+          --url 'https://mensa-radar.de/api/revalidate' \
+          --header 'Authorization: Bearer ${{ secrets.REVALIDATION_TOKEN }}'
