@@ -1,4 +1,4 @@
-name: daily-cron
+name: Revalidate Mensa Data Cron Job
 on:
   schedule:
     - cron: '0 7 * * *'
