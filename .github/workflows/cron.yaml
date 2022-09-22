@@ -1,5 +1,3 @@
-http://localhost:3000/api/revalidate?secret=V0xAuLv3jZZQyrERp50nGbzXTD20qHfY
-
 name: daily-cron
 on:
   schedule:
