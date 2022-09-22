@@ -29,15 +29,15 @@ export const AmountRatingComponent = ({handleUserQualityRating, amountRating}) =
 
 					<div className="w-4 h-4 bg-custom-black rounded-full absolute -top-0.5 border-2 border-custom-white"
 					style={{
-						left: `${testPosition * 90}%`,
-						transform: `scale(${0.7 + testPosition / 2})`,
+						left: `${amountRating * 9}%`,
+						transform: `scale(${0.7 + amountRating / 20})`,
 					}}>
 
 					</div>
 				</div>
 
 				<svg className="ml-2" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M1.5 1.5L6 5.5L10.5 1.5" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+					<path d="M1.5 1.5L6 5.5L10.5 1.5" stroke="black" strokeWidth="1.5" stroke-linecap="round"/>
 				</svg>
 
 			</div>

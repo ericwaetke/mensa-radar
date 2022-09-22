@@ -142,7 +142,7 @@ export default function Mensa(props) {
 									</div>
 									<div className='border-l pl-6 border-dashed border-custom-divider flex items-center'>
 										<svg width="9" height="16" viewBox="0 0 9 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M1 1.5L7 8L1 14.5" stroke="#161616" stroke-width="2"/>
+											<path d="M1 1.5L7 8L1 14.5" stroke="#161616" strokeWidth="2"/>
 										</svg>
 									</div>
 								</div>
@@ -321,17 +321,10 @@ export async function getStaticProps(context) {
 		foodOffer._id = foodOffer._id.toString()
 	})
 
+	const props = await fetch(`https://mensa-radar.de/api/getMensaData`)
+
 	return {
-		props: {
-			foodOffers,
-			selectedWeekday,
-			days,
-			openingTimes: {
-				openFrom,
-				openUntil,
-				open: open || false
-			}
-		},
+		props: await props.json(),
 		revalidate: 60
 	}
 }

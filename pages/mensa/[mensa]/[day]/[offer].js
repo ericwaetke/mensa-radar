@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 var parseString = require("xml2js").parseString;
@@ -17,7 +17,6 @@ import { getAllMensaDataFromSTW } from '/lib/getMensaData';
 import { formatDate } from '/lib/formatDate';
 import { ObjectId } from 'mongodb';
 import { QualityRatingComponent } from '/components/ratings/qualityRatingComponent';
-import { makeId } from '/lib/makeId';
 import { getItem, setItem } from '/lib/localStorageHelper';
 import postData, { saveQualityReviewToDB } from '/lib/postData';
 import { NutrientOverview } from '/components/nutrients/nutrientOverview';
@@ -26,6 +25,10 @@ import { mensaClearName } from '/lib/mensaClearName';
 import {calculateAverage} from "/lib/calculateAverage"
 import { InteractiveQualityRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveQualityRatingComponent';
 import { InteractiveAmountRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveAmountRatingComponent';
+import { InteractiveRating } from '../../../../components/ratings/interactiveRating';
+import useSWR from 'swr';
+
+const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringify(args)}).then((res) => res.json()).catch((err) => console.log(err))
 
 export default function Mensa(props) {
 	const router = useRouter()
@@ -51,21 +54,17 @@ export default function Mensa(props) {
 		]
 	};
 
+	const [ratings, setRatings] = useState()
+
 	const [qualityRating, setQualityRating] = useState(
-		offer ? (offer.qualityRating ? calculateAverage(offer.qualityRating) : 0) : 0
+		0
+	)
+	const [amountRating, setAmountRating] = useState(
+		0
 	)
 
 	const [userQualityRating, setUserQualityRating] = useState(0)
-	const handleUserQualityRating = async (rating) => {
-        let sessionId = getItem("sessionId")
-        if (!sessionId) {
-            sessionId = makeId()
-            setItem("sessionId", sessionId)
-        }
-
-        setUserQualityRating(rating)
-		saveQualityReviewToDB(offer, rating, router.query.mensa, sessionId)
-    }
+	const [userAmountRating, setUserAmountRating] = useState(0)
 
 	// Modal Stuff
 	const [showRatingModal, setShowRatingModal] = useState(false)
@@ -76,12 +75,25 @@ export default function Mensa(props) {
 		setShowRatingModal(false)
 	}
 
+	
+	// const {data, error} = useSWR(`/api/getRatings?mensa=${mensa}&offerId=$`, fetcher)
+	const {data, error} = useSWR({url: "/api/getRatings", args: {mensa, offerId: offer._id}}, fetcher)
+
+	useEffect(() => {
+		console.log("ratings", ratings)
+		setRatings(data)
+	}, [data])
+
+	useEffect(() => {
+		setQualityRating(ratings ? (ratings.qualityRatings ? calculateAverage(ratings.qualityRatings) : 0) : 0)
+		setAmountRating(ratings ? (ratings.amountRatings ? calculateAverage(ratings.amountRatings) : 0) : 0)
+	}, [ratings])
 
 	return (
         <div className="space-y-6 break-words mx-5 mt-12">
 			<Modal
 				isOpen={showRatingModal}
-				onRequestClose={() => console.log("request close")}
+				onRequestClose={() => setShowRatingModal(false)}
 				className="modal  z-10"
 				overlayClassName=""
 				ariaHideApp={false}
@@ -92,20 +104,9 @@ export default function Mensa(props) {
 					}
 				}}
 			>
-				<div className='w-full h-full fixed top-0 left-0 backdrop-blur-md flex items-center justify-center pointer-events-none'>
-					<div className='bg-modal-green rounded-xl p-8 max-w-prose pointer-events-auto'>
-						<button className='bg-custom-white text-custom-black w-8 h-8 rounded-full' onClick={closeRatingModal}>x</button>
-						<label>Wie hat es dir geschmeckt?</label>
-						<InteractiveQualityRatingComponent handleUserQualityRating={handleUserQualityRating} userQualityRating={userQualityRating} />	
-						<p>Wähle einen Stern</p>
-						<hr />
-						<label>Wie war die Menge?</label>
-						<InteractiveAmountRatingComponent />
-					</div>	
-				</div>	
+				<InteractiveRating qualityRatings={ratings ? ratings.qualityRatings : []} userQualityRatingInitial={qualityRating} amountRatings={ratings ? ratings.amountRatings : []} offerId={offer._id} mensa={mensa} closeRatingModal={() => setShowRatingModal(false)}/>
 			</Modal>
 
-			
 			<div>
                 <Link href={`/mensa/${mensa}/${router.query.day}/`}>
 					<a className="p-6 pl-0 flex items-center gap-4">
@@ -129,7 +130,7 @@ export default function Mensa(props) {
 						</div>
 					</div>
 
-					<RatingOverview ratingCount={offer.qualityRating ? offer.qualityRating.length : 0} handleUserQualityRating={handleUserQualityRating} qualityRating={qualityRating} userQualityRating={userQualityRating} openRatingModal={openRatingModal}/>
+					<RatingOverview ratingCount={ratings && ratings.qualityRatings ? ratings.qualityRatings.length : 0} qualityRating={qualityRating} amountRating={amountRating} openRatingModal={openRatingModal}/>
 					<NutrientOverview nutrients={offer.nutrients} />
 
 					<div className="py-4">
@@ -160,9 +161,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-	console.log("getting static props")
 	try {
-		console.log("trying")
 		const client = await clientPromise;
 		const db = client.db("guckstDuEssen");
 
@@ -173,7 +172,6 @@ export async function getStaticProps(context) {
 
         offer._id = offer._id.toString()
 
-		console.log(offer)
         return {
             props: {
                 offer
@@ -188,5 +186,4 @@ export async function getStaticProps(context) {
             }
         }
 	}
-
 }

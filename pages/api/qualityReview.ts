@@ -1,37 +1,39 @@
 import { ObjectId } from 'mongodb';
-import clientPromise from '/lib/mongodb'
+import clientPromise from '../../lib/mongodb'
 
 export default async function handler(req, res) {
     try {
-            
+        const request = JSON.parse(req.body);
+        console.log(request);
+
         const client = await clientPromise
         const db = client.db("guckstDuEssen")
-        const coll = db.collection(req.body.mensa);
+        const coll = db.collection(request.mensa);
         
-        const filter = {_id: ObjectId(req.body.offer._id)}
+        const filter = {_id: new ObjectId(request.offer)}
 
 
-        let tempQualityRatings = req.body.offer.qualityRating
+        let tempQualityRatings = request.qualityRatings
         // Filter Out new Rating if same sessionId has rated before
-        tempQualityRatings = tempQualityRatings.filter(rating => rating.sessionId !== req.body.sessionId)
+        tempQualityRatings = tempQualityRatings && tempQualityRatings?.length > 0 ? tempQualityRatings.filter(rating => rating.sessionId !== request.sessionId) : []
 
         let update;
         // Temporary Workaround for Food Offers which dont have rating fields yet
-        if (req.body.offer.qualityRating) {
+        if (request.offer.qualityRating) {
             update = {
                 $set: {
                     "qualityRating": [...tempQualityRatings, {
-                        "sessionId": req.body.sessionId,
-                        "rating": req.body.rating
+                        "sessionId": request.sessionId,
+                        "rating": request.rating
                     }],
                 }
             }
         } else {
             update = {
                 $set: {
-                    "qualityRating": [{
-                        "sessionId": req.body.sessionId,
-                        "rating": req.body.rating
+                    "qualityRating": [...tempQualityRatings, {
+                        "sessionId": request.sessionId,
+                        "rating": request.rating
                     }],
                 }
             }
