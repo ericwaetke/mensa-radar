@@ -137,7 +137,15 @@ export const fetchDbData = async (reqDay, mensa) => {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const data = await fetchDbData(req.body.selectedWeekday ? req.body.selectedWeekday : "mittwoch", req.body.mensa ? req.body.mensa : "fhp")
+
+	console.log("API Request")
+	console.log(req.body)
+
+	const {selectedWeekday, mensa}: {selectedWeekday: string, mensa: string} = JSON.parse(req.body)
+
+	console.log(selectedWeekday, mensa)
+
+    const data = await fetchDbData(selectedWeekday ? selectedWeekday : "mittwoch", mensa ? mensa : "fhp")
 
     res.status(200).json(data)
   }

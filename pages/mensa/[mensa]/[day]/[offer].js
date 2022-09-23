@@ -165,10 +165,13 @@ export async function getStaticProps(context) {
 		const client = await clientPromise;
 		const db = client.db("guckstDuEssen");
 
-		const coll = db.collection(context.params.mensa);
+		console.log(context.params.mensa)
+		const coll = await db.collection(context.params.mensa);
+		console.log(coll)
 
         const offerQuery = {_id: ObjectId(context.params.offer)}
-        let offer = await coll.findOne(offerQuery)
+		console.log(offerQuery)
+        let offer = await coll.findOne(offerQuery).catch(err => console.log(err));
 
         offer._id = offer._id.toString()
 
@@ -178,6 +181,7 @@ export async function getStaticProps(context) {
             }
         }
 	} catch (e) {
+		console.log("Error fetching Data")
 		console.error(e)
 
         return {
