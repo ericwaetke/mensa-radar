@@ -4,13 +4,18 @@ import { InteractiveQualityRatingComponent } from "./interactiveRatingComponents
 import { getItem, setItem } from '../../lib/localStorageHelper';
 import { makeId } from '../../lib/makeId';
 import styles from "./InteractiveRating.module.css"
+import { amountDescription } from "./ratingOverview";
 
 export const InteractiveRating = (
 	{
 		qualityRatings,
 		userQualityRatingInitial, 
+		setParentUserQualityRating,
+
 		amountRatings,
 		userAmountRatingInitial,
+		setParentUserAmountRating,
+
 		offerId,
 		mensa,
 		closeRatingModal
@@ -18,8 +23,12 @@ export const InteractiveRating = (
 	{
 		qualityRatings: {sessionId: string, rating: number}[],
 		userQualityRatingInitial: number, 
+		setParentUserQualityRating: (rating: number) => void,
+
 		amountRatings: {sessionId: string, rating: number}[],
 		userAmountRatingInitial: number,
+		setParentUserAmountRating: (rating: number) => void,
+
 		offerId: string,
 		mensa: string,
 		closeRatingModal: () => void
@@ -27,14 +36,6 @@ export const InteractiveRating = (
 
 	const [userQualityRating, setUserQualityRating] = useState(userQualityRatingInitial)
 	const [userAmountRating, setUserAmountRating] = useState(5)
-
-	const amountDescription = {
-		0: "Viel zu wenig",
-		2: "Zu wenig",
-		4: "Wie erwartet",
-		6: "Viel",
-		8: "Viel zu viel"
-	}
 
 	const sessionId = useRef(getItem("sessionId"))
 

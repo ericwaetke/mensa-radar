@@ -1,30 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-var parseString = require("xml2js").parseString;
 import 'tailwindcss/tailwind.css'
-import Footer from '/components/footer';
-import { mensaData } from '../../..';
-import { DayButton } from '/components/dayButton';
+import Footer from '../../../../components/footer';
 // import "../../assets/css/mensa.module.css"
 import Modal from 'react-modal';
 
-import clientPromise from '/lib/mongodb'
-import foodTypeChecker from '/lib/foodTypeChecker';
-import { getWeekdayByName } from '/lib/getWeekdayByName';
-import { getWeekNumber } from '/lib/getWeekNumber';
-import { getAllMensaDataFromSTW } from '/lib/getMensaData';
-import { formatDate } from '/lib/formatDate';
+import clientPromise from '../../../../lib/mongodb'
 import { ObjectId } from 'mongodb';
-import { QualityRatingComponent } from '/components/ratings/qualityRatingComponent';
-import { getItem, setItem } from '/lib/localStorageHelper';
-import postData, { saveQualityReviewToDB } from '/lib/postData';
-import { NutrientOverview } from '/components/nutrients/nutrientOverview';
-import { RatingOverview } from '/components/ratings/ratingOverview';
-import { mensaClearName } from '/lib/mensaClearName';
-import {calculateAverage} from "/lib/calculateAverage"
-import { InteractiveQualityRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveQualityRatingComponent';
-import { InteractiveAmountRatingComponent } from '/components/ratings/interactiveRatingComponents/interactiveAmountRatingComponent';
+import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
+import { RatingOverview } from '../../../../components/ratings/ratingOverview';
+import { mensaClearName } from '../../../../lib/mensaClearName';
+import {calculateAverage} from "../../../../lib/calculateAverage"
 import { InteractiveRating } from '../../../../components/ratings/interactiveRating';
 import useSWR from 'swr';
 
@@ -32,7 +19,7 @@ const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringif
 
 export default function Mensa(props) {
 	const router = useRouter()
-  	const { mensa } = router.query
+  	const mensa = router.query.mensa as string
 
 	const offer = props.offer ? props.offer : {
 		title: "loading",
@@ -54,14 +41,11 @@ export default function Mensa(props) {
 		]
 	};
 
-	const [ratings, setRatings] = useState()
+	const [ratings, setRatings] = useState<{qualityRatings: {sessionId: string,rating: number}[], amountRatings: {sessionId: string,rating: number}[]}>()
 
-	const [qualityRating, setQualityRating] = useState(
-		0
-	)
-	const [amountRating, setAmountRating] = useState(
-		0
-	)
+	const [hasUserRating, setHasUserRating] = useState(false)
+	const [qualityRating, setQualityRating] = useState(0)
+	const [amountRating, setAmountRating] = useState(0)
 
 	const [userQualityRating, setUserQualityRating] = useState(0)
 	const [userAmountRating, setUserAmountRating] = useState(0)
@@ -104,7 +88,18 @@ export default function Mensa(props) {
 					}
 				}}
 			>
-				<InteractiveRating qualityRatings={ratings ? ratings.qualityRatings : []} userQualityRatingInitial={qualityRating} amountRatings={ratings ? ratings.amountRatings : []} offerId={offer._id} mensa={mensa} closeRatingModal={() => setShowRatingModal(false)}/>
+				<InteractiveRating 
+					qualityRatings={ratings ? ratings.qualityRatings : []} 
+					userQualityRatingInitial={userQualityRating} 
+					setParentUserQualityRating={setUserQualityRating} 
+
+					amountRatings={ratings ? ratings.amountRatings : []} 
+					userAmountRatingInitial={userAmountRating}
+					setParentUserAmountRating={setUserAmountRating}
+
+					offerId={offer._id} 
+					mensa={mensa} 
+					closeRatingModal={() => setShowRatingModal(false)}/>
 			</Modal>
 
 			<div>
@@ -130,7 +125,11 @@ export default function Mensa(props) {
 						</div>
 					</div>
 
-					<RatingOverview ratingCount={ratings && ratings.qualityRatings ? ratings.qualityRatings.length : 0} qualityRating={qualityRating} amountRating={amountRating} openRatingModal={openRatingModal}/>
+					<RatingOverview 
+						ratingCount={ratings && ratings.qualityRatings ? ratings.qualityRatings.length : 0} 
+						qualityRating={qualityRating} 
+						amountRating={amountRating} 
+						openRatingModal={openRatingModal}/>
 					<NutrientOverview nutrients={offer.nutrients} />
 
 					<div className="py-4">
@@ -169,7 +168,7 @@ export async function getStaticProps(context) {
 		const coll = await db.collection(context.params.mensa);
 		console.log(coll)
 
-        const offerQuery = {_id: ObjectId(context.params.offer)}
+        const offerQuery = {_id: new ObjectId(context.params.offer)}
 		console.log(offerQuery)
         let offer = await coll.findOne(offerQuery).catch(err => console.log(err));
 

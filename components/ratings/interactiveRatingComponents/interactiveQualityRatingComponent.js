@@ -7,17 +7,6 @@ export const InteractiveQualityRatingComponent = ({handleUserQualityRating, user
 	const ratingColor = "#000"
 	const inactiveColor = "#DBDBDB"
 
-	const reviewDescriptions = {
-		0: "Keine Bewertungen",
-		1: "Schlecht",
-		2: "Nicht soo super",
-		3: "Durchschnittlich",
-		4: "Gut",
-		5: "Echt gut"
-	}
-
-	console.log(userQualityRating)
-
 	return (
 		<div className="quality-rating-component">
 			<div className="quality-rating-component__body inline-flex my-2 py-2 px-4 bg-custom-white rounded-full border border-custom-divider items-center">

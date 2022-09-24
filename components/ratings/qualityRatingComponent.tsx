@@ -1,20 +1,21 @@
 import { useState } from "react"
+import { qualityDescriptions } from "./ratingOverview"
 
-export const QualityRatingComponent = ({handleUserQualityRating, qualityRating, isClickable}) => {
+export const QualityRatingComponent = (
+	{
+		handleUserQualityRating, 
+		qualityRating, 
+		isClickable
+	}: {
+		handleUserQualityRating?: (rating: number) => void,
+		qualityRating: number,
+		isClickable: boolean
+	}) => {
 	const amountOfStars = 5
 
 	const userRatingColor = "#88E2A1"
 	const ratingColor = "#000"
 	const inactiveColor = "#DBDBDB"
-
-	const reviewDescriptions = {
-		0: "Keine Bewertungen",
-		1: "Schlecht",
-		2: "Nicht soo super",
-		3: "Durchschnittlich",
-		4: "Gut",
-		5: "Echt gut"
-	}
 
 	return (
 		<div className="quality-rating-component">
@@ -36,7 +37,7 @@ export const QualityRatingComponent = ({handleUserQualityRating, qualityRating, 
 
 			</div>
 			<p className="text-sm font-serif">
-				{reviewDescriptions[qualityRating]}
+				{qualityDescriptions[qualityRating]}
 			</p>
 		</div>
 	)

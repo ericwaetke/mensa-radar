@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export const AmountRatingComponent = ({handleUserQualityRating, amountRating}) => {
+export const AmountRatingComponent = ({amountRating}) => {
 	const amountOfStars = 5
 
 	const userRatingColor = "#88E2A1"
