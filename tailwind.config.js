@@ -28,20 +28,16 @@ module.exports = {
     },
     extend: {
       colors: {
-        green: {
-          DEFAULT: '#BDF8CE',
-          border: '#D8E7D9'
-        },
-        'custom-bg': "#E5E7E5",
-        'custom-black': '#161616',
-        'custom-green': '#88E2A1',
-        'custom-half-green': '#DBDBDB',
-        'custom-dark': '#969996',
-        'custom-light-gray': '#F2F2F2',
-        'custom-dark-green': '#43BC63',
-        'custom-white': '#FFFFFF',
-        'custom-divider': '#C1C5C1',
-        'modal-green': '#ECF1EC'
+        'main-white': '#FFFFFF',
+        'main-black': '#161616',
+        'main-green': '#88E2A1',
+
+        'sec-green-dark': '#43BC63',
+        'sec-stroke': '#16161633',
+        'sec-text-light': '#00000080',
+
+        'background-container': '#ECF1EC',
+        'background-progress-bar': '#DBDBDB'
       },
       // screens: {
       //   'xs': '370px'

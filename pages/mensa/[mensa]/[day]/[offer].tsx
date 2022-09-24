@@ -12,7 +12,7 @@ import { NutrientOverview } from '../../../../components/nutrients/nutrientOverv
 import { RatingOverview } from '../../../../components/ratings/ratingOverview';
 import { mensaClearName } from '../../../../lib/mensaClearName';
 import {calculateAverage} from "../../../../lib/calculateAverage"
-import { InteractiveRating } from '../../../../components/ratings/interactiveRating';
+import { InteractiveRating } from '../../../../components/ratings/interactiveRating/interactiveRating';
 import useSWR from 'swr';
 
 const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringify(args)}).then((res) => res.json()).catch((err) => console.log(err))
@@ -74,7 +74,7 @@ export default function Mensa(props) {
 	}, [ratings])
 
 	return (
-        <div className="space-y-6 break-words mx-5 mt-12">
+        <div className="space-y-6 break-words mx-5 mt-12 mb-28 xl:w-1/2 xl:mx-auto">
 			<Modal
 				isOpen={showRatingModal}
 				onRequestClose={() => setShowRatingModal(false)}
@@ -114,14 +114,14 @@ export default function Mensa(props) {
 
 			</div>
 
-			<div className="space-y-6 lg:space-y-0">
-				<div className="flex-initial rounded-xl bg-custom-bg divide-y divide-solid divide-custom-divider">
+			<div className="space-y-6 lg:space-y-4">
+				<div className="flex-initial rounded-xl bg-background-container divide-y divide-solid divide-main-black/20">
 					<div className="p-8">
 						<p className="font-medium text-sm text-gray-400">{offer.titel}</p>
 						<p className="text-2xl font-medium">{offer.beschreibung}</p>
 						<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">
-							<p className="font-medium text-gray-400 text-sm"><span className="bg-custom-light-gray rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> <span className='text-green-w7'>{offer.preise.preis_g} €</span></p>
-							{offer.labels.filter !== "all" && <p className="capitalize font-medium text-sm bg-custom-light-gray rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
+							<p className="font-medium text-gray-400 text-sm"><span className="bg-main-white rounded-full py-1 px-4 text-black inline-block">{offer.preise.preis_s} €</span> <span className='text-green-w7'>{offer.preise.preis_g} €</span></p>
+							{offer.labels.filter !== "all" && <p className="capitalize font-medium text-sm bg-main-white rounded-full py-1 px-4 inline-block">{offer.labels.filter}</p>}
 						</div>
 					</div>
 
@@ -130,6 +130,8 @@ export default function Mensa(props) {
 						qualityRating={qualityRating} 
 						amountRating={amountRating} 
 						openRatingModal={openRatingModal}/>
+				</div>
+				<div className='border border-sec-stroke rounded-xl divide-y divide-solid divide-background-container'>
 					<NutrientOverview nutrients={offer.nutrients} />
 
 					<div className="py-4">
@@ -139,14 +141,16 @@ export default function Mensa(props) {
 							</div>
 					</div>
 				</div>
-				<div className='flex items-center gap-2'>
-					<p>Bitte stimmt nach dem Essen ab.</p>
-					<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M6.99365 12.5552C7.07829 12.5552 7.1735 12.5298 7.2793 12.479C7.38932 12.4282 7.493 12.3711 7.59033 12.3076C8.77523 11.5459 9.80143 10.7461 10.6689 9.9082C11.5407 9.07031 12.2157 8.20703 12.6938 7.31836C13.172 6.42969 13.4111 5.53467 13.4111 4.6333C13.4111 4.04932 13.3159 3.51611 13.1255 3.03369C12.9393 2.54704 12.6812 2.12809 12.3511 1.77686C12.021 1.42562 11.6359 1.15479 11.1958 0.964355C10.7557 0.769694 10.2817 0.672363 9.77393 0.672363C9.14339 0.672363 8.59326 0.833171 8.12354 1.15479C7.65804 1.47217 7.28141 1.89111 6.99365 2.41162C6.71436 1.89535 6.33984 1.4764 5.87012 1.15479C5.40039 0.833171 4.85026 0.672363 4.21973 0.672363C3.71191 0.672363 3.23796 0.769694 2.79785 0.964355C2.36198 1.15479 1.97689 1.42562 1.64258 1.77686C1.3125 2.12809 1.05225 2.54704 0.861816 3.03369C0.675618 3.51611 0.58252 4.04932 0.58252 4.6333C0.58252 5.53467 0.819499 6.42969 1.29346 7.31836C1.77165 8.20703 2.44661 9.07031 3.31836 9.9082C4.19434 10.7461 5.22477 11.5459 6.40967 12.3076C6.50277 12.3711 6.60433 12.4282 6.71436 12.479C6.82438 12.5298 6.91748 12.5552 6.99365 12.5552Z" fill="black"/>
+				<button className='flex fixed bottom-5 w-80 left-0 mx-8 bg-main-green justify-center p-4 rounded-xl' onClick={() => openRatingModal()}>
+					<svg className='absolute left-5 top-0 h-full' width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.55706 0.846068C9.74421 0.488621 10.2558 0.488621 10.443 0.846068L12.8792 5.49937C12.9497 5.6339 13.0774 5.72913 13.2265 5.75821L18.2594 6.73997C18.6417 6.81455 18.7957 7.27832 18.5339 7.56676L14.9933 11.4678C14.8954 11.5757 14.8494 11.721 14.8674 11.8656L15.5279 17.1685C15.5772 17.5637 15.1672 17.855 14.8102 17.6785L10.2216 15.4096C10.082 15.3405 9.91808 15.3405 9.7784 15.4096L5.18989 17.6785C4.8329 17.855 4.42287 17.5637 4.4721 17.1685L5.13267 11.8656C5.15068 11.721 5.1047 11.5757 5.00675 11.4678L1.46612 7.56676C1.20433 7.27832 1.35831 6.81455 1.74063 6.73997L6.77357 5.75821C6.92262 5.72913 7.05037 5.6339 7.12081 5.49937L9.55706 0.846068Z" fill='currentColor'></path>
 					</svg>
-				</div>
+					<div className='flex gap-4'>
+						<p className='text-xl text-main-black opacity-20'>Wie wars?</p>
+						<p className='text-xl text-main-black font-semibold'>Bewerten</p>
+						<p>-&gt;</p>
+					</div>
+				</button>
 			</div>
-			<Footer />
         </div>
     )
 }

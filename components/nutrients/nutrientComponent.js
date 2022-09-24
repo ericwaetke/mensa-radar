@@ -1,3 +1,5 @@
+import { motion } from "framer-motion"
+
 export const NutrientComponent = ({nutrient}) => {
 
 	const nutrientType = {
@@ -37,24 +39,27 @@ export const NutrientComponent = ({nutrient}) => {
 
 	return (
 		<div className="w-f flex flex-col gap-2" key={nutrientData.name} style={{gridArea: nutrientData.name}}>
-			<p className='text-sm font-serif'>
-				{nutrientData.name}
-			</p>
+			
+			<div className="flex justify-between">
+				<p className='text-sm font-serif'>
+					{nutrientData.name}
+				</p>
+				<p className='text-sm font-bold opacity-50'>
+					{`${nutrientData.value}${nutrientData.unit}`}
+				</p>
+			</div>
 
-			<div className='h-1.5 w-full bg-custom-light-gray relative rounded-full'>
-				<div className='h-1.5 bg-custom-dark-green absolute border-r-2 border-custom-bg rounded-full' 
-				style={{
-					width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}></div>
+			<div className='h-1.5 w-full bg-background-container relative rounded-full'>
+				<motion.div className='h-1.5 bg-sec-green-dark absolute border-r-2 border-custom-bg rounded-full' 
+				initial={{width: 0}}
+				animate={{width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}
+				transition={{duration: .5}}></motion.div>
 
-				<div className='h-4 w-1 bg-custom-black absolute border-r-2 border-custom-bg rounded-full' 
+				<div className='h-4 w-1 bg-main-black absolute border-r-2 border-main-white rounded-full' 
 				style={{
 					top: "-6px", 
 					right: `${nutrientData.reference * (1 + barPosition) / nutrientData.reference * barPosition * 100 }%`}}></div>
 			</div>
-
-			<p className='text-sm font-bold opacity-50'>
-				{`${nutrientData.value}${nutrientData.unit}`}
-			</p>
 		</div>
 	)
 }

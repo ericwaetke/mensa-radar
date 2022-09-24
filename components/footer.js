@@ -1,9 +1,15 @@
+import Link from 'next/link'
 import 'tailwindcss/tailwind.css'
 
 const Footer = () => {
     return (
-        <footer className="py-9 mx-9 px-8">
-			<p>Designed and Developed by <a href="https://ericwaetke.com" target="_blank" className="text-blue-400">Eric Wätke</a> + <a href="https://www.instagram.com/carl.qq/" target="_blank" className="text-blue-400">Carl Linz</a></p>
+        <footer className="py-9 flex justify-between">
+			<p>
+                <a href="https://ericwaetke.com" target="_blank" className="text-main-black">Eric Wätke</a> · <a href="https://www.instagram.com/carl.qq/" target="_blank" className="text-main-black">Carl Linz</a>
+            </p>
+            <Link href="/impressum">
+                <a className="text-main-black">Impressum</a>
+            </Link>
 		</footer>
     )
 }

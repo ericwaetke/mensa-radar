@@ -31,7 +31,7 @@ export const RatingOverview = (
 	return (
 		<div className="py-4 px-8">
 				<div className="flex justify-between" onClick={openRatingModal}>
-					<QualityRatingComponent qualityRating={qualityRating} isClickable={true}/>
+					<QualityRatingComponent qualityRating={qualityRating}/>
 					<AmountRatingComponent amountRating={amountRating}/>
 				</div>
 				<p className="text-sm font-serif italic opacity-50 my-2">
