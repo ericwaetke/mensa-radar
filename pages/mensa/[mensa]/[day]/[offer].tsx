@@ -15,6 +15,9 @@ import {calculateAverage} from "../../../../lib/calculateAverage"
 import { InteractiveRating } from '../../../../components/ratings/interactiveRating/interactiveRating';
 import useSWR from 'swr';
 
+
+import toast from "react-hot-toast"
+
 const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringify(args)}).then((res) => res.json()).catch((err) => console.log(err))
 
 export default function Mensa(props) {
@@ -58,7 +61,6 @@ export default function Mensa(props) {
 	const closeRatingModal = () => {
 		setShowRatingModal(false)
 	}
-
 	
 	// const {data, error} = useSWR(`/api/getRatings?mensa=${mensa}&offerId=$`, fetcher)
 	const {data, error} = useSWR({url: "/api/getRatings", args: {mensa, offerId: offer._id}}, fetcher)
@@ -74,7 +76,7 @@ export default function Mensa(props) {
 	}, [ratings])
 
 	return (
-        <div className="space-y-6 break-words mx-5 mt-12 mb-28 xl:w-1/2 xl:mx-auto">
+        <div className="space-y-6 break-words mx-5 mt-12 mb-28 lg:w-1/2 lg:mx-auto">
 			<Modal
 				isOpen={showRatingModal}
 				onRequestClose={() => setShowRatingModal(false)}
@@ -134,7 +136,7 @@ export default function Mensa(props) {
 				<div className='border border-sec-stroke rounded-xl divide-y divide-solid divide-background-container'>
 					<NutrientOverview nutrients={offer.nutrients} />
 
-					<div className="py-4">
+					<div className="py-4" onClick={() => toast("test")}>
 						<p className="px-8 pb-2 font-bold text-sm text-custom-black uppercase">Allergene</p>
 						<div className="px-8 pb-4 text-sm font-serif">
 								{offer.allergene.join(", ")}

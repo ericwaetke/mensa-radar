@@ -1,8 +1,14 @@
 // import App from 'next/app'
 import "../assets/css/app.css"
+import {Toaster} from "react-hot-toast"
 
 function MyApp({ Component, pageProps }) {
-    return <Component {...pageProps} />
+    return (
+      <>
+      <Toaster />
+    <Component {...pageProps} />
+      </>
+    )
   }
   
   // Only uncomment this method if you have blocking data requirements for

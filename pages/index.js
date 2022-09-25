@@ -100,7 +100,7 @@ export default function Home(props) {
 
 
   return (
-    <div className="mx-5 mt-12 space-y-6 lg:w-1/2">
+    <div className="mx-5 mt-12 space-y-6 lg:w-1/2 lg:mx-auto">
       <Head>
         <title>Mensa Radar — Mensen Potsdam</title>
         <link rel="icon" href="/favicon.ico" />

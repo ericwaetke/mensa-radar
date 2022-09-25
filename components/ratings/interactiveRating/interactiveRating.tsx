@@ -6,6 +6,8 @@ import { makeId } from '../../../lib/makeId';
 import styles from "./InteractiveRating.module.css"
 import { amountDescription, qualityDescriptions } from "../ratingOverview";
 import { motion } from "framer-motion";
+import useTimeout from "use-timeout";
+import toast from "react-hot-toast"
 
 export const InteractiveRating = (
 	{
@@ -40,8 +42,8 @@ export const InteractiveRating = (
 
 	const sessionId = useRef(getItem("sessionId"))
 
-	const saveRatings = () => {
-		fetch("/api/qualityReview", {
+	const saveRatings = new Promise((resolve, reject) => {
+		const saveQuality = fetch("/api/qualityReview", {
 			method: "POST",
 			body: JSON.stringify({
 				offer: offerId,
@@ -51,12 +53,7 @@ export const InteractiveRating = (
 				sessionId: sessionId.current
 			})
 		})
-		.then((res) => res.json())
-		.then((data) => {
-		}).catch((err) => {
-			console.log(err)
-		})
-		fetch("/api/amountReview", {
+		const saveAmount = fetch("/api/amountReview", {
 			method: "POST",
 			body: JSON.stringify({
 				offer: offerId,
@@ -66,12 +63,12 @@ export const InteractiveRating = (
 				sessionId: sessionId.current
 			})
 		})
-		.then((res) => res.json())
-		.then((data) => {
+		Promise.all([saveQuality, saveAmount]).then((res) => {
+			resolve(res)
 		}).catch((err) => {
-			console.log(err)
+			reject(err)
 		})
-	}
+	})
 
 	const container = {
 		hidden: { 
@@ -84,9 +81,69 @@ export const InteractiveRating = (
 		}
 	}
 
-	const initiateClose = () => {
-		saveRatings()
+	const initiateClose = async () => {
+		await saveRatings
 		closeRatingModal()
+	}
+
+	const didMount = useRef(false)
+	const [abortTimeout, setAbortTimeout] = useState(false)
+
+	useEffect(() => {
+		let timer;
+		timer ? clearTimeout(timer) : null
+
+		// Ignore first render
+		if(didMount.current) {
+			// User Changed Rating
+
+			// Aborting Timeout since rating changed during timeout
+			setAbortTimeout(true)
+
+			timer = setTimeout(() => {
+				console.log("saving")
+				sendToast()
+			}, 1000)
+
+		}
+
+		didMount.current = true;
+
+		return () => {
+			clearTimeout(timer)
+		}
+	}, [userAmountRating, userQualityRating])
+
+	const sendToast = () => {
+		// toast.custom((t) => (
+		// 	<motion.div layout
+		// 	  className={`${
+		// 		t.visible ? 'animate-enter' : 'animate-leave'
+		// 	  } bg-main-white rounded-full pointer-events-auto flex border border-main-black px-2`}
+		// 	>
+		// 	  <p>
+		// 		Gespeichert.
+		// 	  </p>
+		// 	</motion.div>
+		// ), {
+		// 	position: "bottom-center",
+		// })
+
+		toast.promise(
+			saveRatings,
+			{
+				loading: "Speichern...",
+				success: "Gespeichert.",
+				error: "Fehler beim Speichern."
+			},
+			{
+				position: "bottom-center",
+				style: {
+					border: '1px solid black'
+				}
+			}
+		)
+
 	}
 
 	useEffect(() => {
@@ -104,9 +161,10 @@ export const InteractiveRating = (
 		className='w-full h-full fixed top-0 left-0 backdrop-blur-md flex items-end justify-center pointer-events-none'
 		variants={container}
 		initial="hidden"
-		animate="show">
-			<div className='bg-main-white w-full flex flex-col gap-4 rounded-tl-2xl rounded-tr-2xl p-8 max-w-prose pointer-events-auto'>
-				<button className='bg-custom-white w-full text-custom-black h-8 rounded-full' onClick={closeRatingModal}>v</button>
+		animate="show"
+		exit="hidden">
+			<div className='bg-main-white w-full flex -mb-4 flex-col gap-4 rounded-tl-2xl rounded-tr-2xl p-8 max-w-prose pointer-events-auto'>
+				<button className='bg-custom-white w-full text-custom-black h-8 rounded-full' onClick={() => sendToast()}>v</button>
 				
 				<div className="flex flex-col gap-2">
 					<label className="uppercase text-sm font-bold">Bewerten</label>

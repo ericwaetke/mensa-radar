@@ -123,6 +123,17 @@ export const fetchDbData = async (reqDay, mensa) => {
 	foodOffers.forEach((foodOffer) => {
 		foodOffer._id = foodOffer._id.toString()
 	})
+	console.log("API")
+	console.log({
+		foodOffers,
+		selectedWeekday,
+		days,
+		openingTimes: {
+			openFrom,
+			openUntil,
+			open
+		}
+	})
 
 	return {
 		foodOffers,
