@@ -35,7 +35,7 @@ export async function getStaticProps(context) {
     return {
         redirect: {
             permanent: false,
-            destination: `mensa/${context.params.mensa}/${weekday[currentWeekday]}`
+            destination: `/mensa/${context.params.mensa}/${weekday[currentWeekday]}`
         }
     }
 }
