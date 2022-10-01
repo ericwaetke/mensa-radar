@@ -39,9 +39,9 @@ module.exports = {
         'background-container': '#ECF1EC',
         'background-progress-bar': '#DBDBDB'
       },
-      // screens: {
-      //   'xs': '370px'
-      // }
+      screens: {
+        'xs': '370px'
+      }
     },
   },
   variants: {

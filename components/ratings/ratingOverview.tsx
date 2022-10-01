@@ -23,16 +23,19 @@ export const RatingOverview = (
 		ratingCount, 
 		qualityRating,
 		amountRating,
-		openRatingModal
+
+		hasUserRating,
+		userQualityRating,
+		userAmountRating,
 	}) => {
 
 	const ratingCountText = ratingCount === 1 ? "Bewertung" : "Bewertungen"
 
 	return (
 		<div className="py-4 px-8">
-				<div className="flex justify-between" onClick={openRatingModal}>
-					<QualityRatingComponent qualityRating={qualityRating}/>
-					<AmountRatingComponent amountRating={amountRating}/>
+				<div className="flex justify-between">
+					<QualityRatingComponent qualityRating={qualityRating} hasUserRating={hasUserRating} userQualityRating={userQualityRating}/>
+					<AmountRatingComponent amountRating={amountRating} hasUserRating={hasUserRating} userAmountRating={userAmountRating}/>
 				</div>
 				<p className="text-sm font-serif italic opacity-50 my-2">
 					{ratingCount} {ratingCountText}

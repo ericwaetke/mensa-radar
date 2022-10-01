@@ -4,7 +4,7 @@ import clientPromise from '../../lib/mongodb'
 export default async function handler(req, res) {
     try {
         const request = JSON.parse(req.body);
-        console.log(request);
+        console.log("saving quality review", request);
 
         const client = await clientPromise
         const db = client.db("guckstDuEssen")

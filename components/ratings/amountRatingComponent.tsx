@@ -1,6 +1,19 @@
 import { useState } from "react"
+import { amountDescription } from "./ratingOverview"
 
-export const AmountRatingComponent = ({amountRating}) => {
+export const AmountRatingComponent = (
+	{
+		amountRating,
+
+		hasUserRating,
+		userAmountRating,
+	}: {
+		amountRating: number,
+
+		hasUserRating: boolean,
+		userAmountRating: number
+	}
+	) => {
 	const amountOfStars = 5
 
 	const userRatingColor = "#88E2A1"
@@ -10,10 +23,8 @@ export const AmountRatingComponent = ({amountRating}) => {
 	const testPosition = 0
 
 	return (
-		<div className="quality-rating-component">
-			<p>
-				Größe der Portion
-			</p>
+		<div className="quality-rating-component inline-flex flex-col gap-3">
+			<label className="uppercase text-sm font-bold">Größe der Portion</label>
 			<div className="quality-rating-component__body inline-flex items-center">
 				<div className="relative">
 					<svg width="123" height="13" viewBox="0 0 123 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,17 +38,32 @@ export const AmountRatingComponent = ({amountRating}) => {
 						</defs>
 					</svg>
 
-					<div className="w-4 h-4 bg-main-black rounded-full absolute -top-0.5 border-2 border-background-container"
-					style={{
-						left: `${amountRating * 9}%`,
-						transform: `scale(${0.7 + amountRating / 20})`,
-					}}>
+					{
+						hasUserRating ? (
+							<div className="w-4 h-4 bg-main-black rounded-full absolute -top-0.5 border-2 border-background-container"
+							style={{
+								left: `${userAmountRating * 9}%`,
+								transform: `scale(${0.7 + userAmountRating / 20})`,
+							}}></div>
+						) : (
+							<div className="w-2 h-6 bg-main-black rounded-full absolute -top-1 border-2 border-background-container"
+							style={{
+								left: `${amountRating * 9}%`,
+							}}></div>
+						)
+					}
 
-					</div>
+					
 				</div>
 			</div>
-			<p>
-				Durchschnittlich
+			<p className="text-sm font-serif">
+				{
+					(hasUserRating ? userAmountRating : amountRating) >= 8 ? amountDescription[8] :
+					(hasUserRating ? userAmountRating : amountRating) >= 6 ? amountDescription[6] :
+					(hasUserRating ? userAmountRating : amountRating) >= 4 ? amountDescription[4] :
+					(hasUserRating ? userAmountRating : amountRating) >= 2 ? amountDescription[2] :
+					(hasUserRating ? userAmountRating : amountRating) >= 0 ? amountDescription[0] : ""
+				}
 			</p>
 		</div>
 	)

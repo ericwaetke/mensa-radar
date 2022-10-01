@@ -41,10 +41,10 @@ export const NutrientComponent = ({nutrient}) => {
 		<div className="w-f flex flex-col gap-2" key={nutrientData.name} style={{gridArea: nutrientData.name}}>
 			
 			<div className="flex justify-between">
-				<p className='text-sm font-serif'>
+				<p className='text-sm font-medium font-serif'>
 					{nutrientData.name}
 				</p>
-				<p className='text-sm font-bold opacity-50'>
+				<p className='text-sm font-medium opacity-50'>
 					{`${nutrientData.value}${nutrientData.unit}`}
 				</p>
 			</div>

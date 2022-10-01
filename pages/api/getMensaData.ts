@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 
 export const fetchDbData = async (reqDay, mensa) => {
-	const selectedWeekday = getWeekdayByName(reqDay)
+	const selectedWeekday = reqDay
 
 	const currentDate = new Date()
 	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
@@ -61,6 +61,8 @@ export const fetchDbData = async (reqDay, mensa) => {
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
 	console.log(today.getDate(), selectedWeekday, currentWeekday)
 	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
+
+	console.log(today)
 
 	let foodOffers = []
 	try {
@@ -123,17 +125,6 @@ export const fetchDbData = async (reqDay, mensa) => {
 	foodOffers.forEach((foodOffer) => {
 		foodOffer._id = foodOffer._id.toString()
 	})
-	console.log("API")
-	console.log({
-		foodOffers,
-		selectedWeekday,
-		days,
-		openingTimes: {
-			openFrom,
-			openUntil,
-			open
-		}
-	})
 
 	return {
 		foodOffers,
@@ -153,8 +144,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	console.log(req.body)
 
 	const {selectedWeekday, mensa}: {selectedWeekday: string, mensa: string} = JSON.parse(req.body)
-
-	console.log(selectedWeekday, mensa)
 
     const data = await fetchDbData(selectedWeekday ? selectedWeekday : "mittwoch", mensa ? mensa : "fhp")
 
