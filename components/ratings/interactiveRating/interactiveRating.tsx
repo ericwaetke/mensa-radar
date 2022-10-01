@@ -7,7 +7,7 @@ import styles from "./InteractiveRating.module.css"
 import { amountDescription, qualityDescriptions } from "../ratingOverview";
 import { motion } from "framer-motion";
 import useTimeout from "use-timeout";
-import toast from "react-hot-toast"
+import toast, { useToasterStore } from "react-hot-toast"
 
 export const InteractiveRating = (
 	{
@@ -134,8 +134,17 @@ export const InteractiveRating = (
 				}
 			}
 		)
-
 	}
+
+	const {toasts} = useToasterStore()
+	const TOAST_LIMIT = 1;
+
+	useEffect(() => {
+		toasts
+		.filter((t) => t.visible) // Only consider visible toasts
+		.filter((_, i) => i >= TOAST_LIMIT) // Is toast index over limit
+		.forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) removal without animation
+	}, [toasts])
 
 	useEffect(() => {
 		if (!sessionId.current) {
@@ -144,7 +153,7 @@ export const InteractiveRating = (
 			sessionId.current = tempSessionId
 			setItem("sessionId", sessionId.current)
 		}
-		console.log("sessionId", sessionId)
+		console.log(testRef)
 
 		return () => {
 			// Unloading and saving
@@ -152,9 +161,11 @@ export const InteractiveRating = (
 		}
 	}, [])
 
+	const testRef = useRef(null)
+
 	return (
 
-			<div className='self-center relative bg-main-white w-full flex flex-col gap-4 rounded-tl-2xl rounded-tr-2xl px-8 py-10 max-w-prose pointer-events-auto'>	
+			<div className='self-center relative bg-main-white w-full flex flex-col gap-4 rounded-tl-2xl rounded-tr-2xl px-8 py-10 mb-4 max-w-prose pointer-events-auto'>	
 				<div className="flex flex-col gap-2">
 					<label className="uppercase text-sm font-bold">Bewerten</label>
 					<InteractiveQualityRatingComponent handleUserQualityRating={(e) => setUserQualityRating(e)} userQualityRating={userQualityRating} />	
@@ -170,13 +181,24 @@ export const InteractiveRating = (
 				<div className="flex flex-col gap-2">
 					<label>Wie war die Menge?</label>
 					<InteractiveAmountRatingComponent amount={userAmountRating} setAmount={(e) => setUserAmountRating(e)} className={styles.rangeInput}/>
-					<p className="font-serif italic">{
+					<p ref={testRef} className="font-serif italic text-center" style={{
+						transform: `translateX(calc(${(userAmountRating * 9)}% - ${testRef.current ? testRef.current.offsetWidth / 2 : 0}px + 18px))`
+					}}>{
 						userAmountRating >= 8 ? amountDescription[8] :
 						userAmountRating >= 6 ? amountDescription[6] :
 						userAmountRating >= 4 ? amountDescription[4] :
 						userAmountRating >= 2 ? amountDescription[2] :
 						userAmountRating >= 0 ? amountDescription[0] : ""
 					}</p>
+					{/* <p className="font-serif italic inline-flex" style={{
+						transform: `translateX(clamp(0%, calc(${(userAmountRating * 9)}% - 22px), calc(100% - 80px)))`
+					}}>{
+						userAmountRating >= 8 ? amountDescription[8] :
+						userAmountRating >= 6 ? amountDescription[6] :
+						userAmountRating >= 4 ? amountDescription[4] :
+						userAmountRating >= 2 ? amountDescription[2] :
+						userAmountRating >= 0 ? amountDescription[0] : ""
+					}</p> */}
 				</div>
 			</div>	
 

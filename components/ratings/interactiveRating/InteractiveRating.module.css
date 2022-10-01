@@ -18,14 +18,15 @@
 	border: 1px solid #00000000;
 }
 .rangeInput::-webkit-slider-thumb {
-	border: 2px solid #FFFFFF;
-	height: 19px;
-	width: 19px;
-	border-radius: 19px;
-	background: #000000;
+	border: 2px solid #000;
+	box-shadow: 0 0 0 4px #fff;
+	height: 40px;
+	width: 40px;
+	border-radius: 40px;
+	background: #fff;
 	cursor: pointer;
 	-webkit-appearance: none;
-	margin-top: -7px;
+	margin-top: -17px;
 }
 .rangeInput:focus::-webkit-slider-runnable-track {
 	background: linear-gradient(90deg, #DBDBDB 2.02%, #88E2A1 50.51%, #DBDBDB 98.99%);;
@@ -40,11 +41,12 @@
 	border: 1px solid #00000000;
 }
 .rangeInput::-moz-range-thumb {
-	border: 2px solid #FFFFFF;
-	height: 19px;
-	width: 19px;
-	border-radius: 19px;
-	background: #000000;
+	border: 2px solid #000;
+	box-shadow: 0 0 0 4px #fff;
+	height: 40px;
+	width: 40px;
+	border-radius: 40px;
+	background: #fff;
 	cursor: pointer;
 }
 .rangeInput::-ms-track {
@@ -69,9 +71,9 @@
 .rangeInput::-ms-thumb {
 	margin-top: 1px;
 	border: 2px solid #FFFFFF;
-	height: 19px;
-	width: 19px;
-	border-radius: 19px;
+	height: 40px;
+	width: 40px;
+	border-radius: 40px;
 	background: #00000000;
 	cursor: pointer;
 }
