@@ -37,7 +37,7 @@ export default function Mensa(
 ) {
 
 	const router = useRouter()
-  	const { mensa } = router.query
+  	const { mensa, day } = router.query
 
 	// Switcher for Nutiotional Intformation is not yet working
 	const [offers, setOffers] = useState([])
@@ -133,6 +133,7 @@ export default function Mensa(
 			</div>
 
 			<div className="flex justify-between">
+				
 				{
 					openingTimes.open ? 
 					<>
@@ -151,6 +152,22 @@ export default function Mensa(
 					<a href='#'>Route &rarr;</a>
 				</div> */}
 			</div>
+
+			{
+					day === "samstag" || day === "sonntag" ? (
+						<div>
+							<p>
+							Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
+							</p>
+							<Link href={`/mensa/${mensa}/freitag`}>
+								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
+									Zu vergangenem Freitag
+								</a>
+							</Link>
+						</div>
+					) : null
+			}
+
 
 			{/* Day Selection */}
 			<div className="daySelection">
