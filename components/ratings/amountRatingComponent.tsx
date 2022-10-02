@@ -62,7 +62,7 @@ export const AmountRatingComponent = (
 					(hasUserRating ? userAmountRating : amountRating) >= 6 ? amountDescription[6] :
 					(hasUserRating ? userAmountRating : amountRating) >= 4 ? amountDescription[4] :
 					(hasUserRating ? userAmountRating : amountRating) >= 2 ? amountDescription[2] :
-					(hasUserRating ? userAmountRating : amountRating) >= 0 ? amountDescription[0] : ""
+					(hasUserRating ? userAmountRating : amountRating) > 0 ? amountDescription[1] : amountDescription[0]
 				}
 			</p>
 		</div>

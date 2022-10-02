@@ -2,7 +2,8 @@ import { AmountRatingComponent } from "./amountRatingComponent"
 import { QualityRatingComponent } from "./qualityRatingComponent"
 
 export const amountDescription = {
-	0: "Viel zu wenig",
+	0: "Keine Bewertungen",
+	1: "Viel zu wenig",
 	2: "Zu wenig",
 	4: "Wie erwartet",
 	6: "Viel",

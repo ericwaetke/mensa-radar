@@ -42,7 +42,7 @@ export const InteractiveRating = (
 	}) => {
 
 	const [userQualityRating, setUserQualityRating] = useState(userQualityRatingInitial)
-	const [userAmountRating, setUserAmountRating] = useState(5)
+	const [userAmountRating, setUserAmountRating] = useState(userAmountRatingInitial)
 
 	const sessionId = useRef(getItem("sessionId"))
 
