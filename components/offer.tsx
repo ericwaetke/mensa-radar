@@ -50,7 +50,7 @@ export const Offer = (
 		<motion.div variants={anim02}>
 			<Link href={`/mensa/${mensa}/${day}/${offer._id}`}>
 				<a>
-					<div className="my-4 p-5 flex gap-8 rounded-xl bg-background-container justify-between">
+					<div className={`my-4 p-5 flex gap-8 rounded-xl bg-background-container justify-between ${offer.soldOut ? "opacity-50" : ""}`}>
 						{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
 						<motion.div className='flex-initial w-full'
 						variants={containerAnimation}

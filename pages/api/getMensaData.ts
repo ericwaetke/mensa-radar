@@ -59,10 +59,9 @@ export const fetchDbData = async (reqDay, mensa) => {
 	const today = new Date()
 	const selectedDay = new Date(today)
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
-	console.log(today.getDate(), selectedWeekday, currentWeekday)
+
 	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
 
-	console.log(today)
 
 	let foodOffers = []
 	try {
@@ -75,22 +74,65 @@ export const fetchDbData = async (reqDay, mensa) => {
 		const dayQuery = {date: selectedDayFormatted}
 		const dayCount = await coll.countDocuments(dayQuery)
 
-		if (dayCount === 0) {
+		if (true) {
+		// if (dayCount === 0) {
 			// Add the current STUDENTENWERK Data to the Database
 			console.log("No Data for this day, adding...")
-			await coll.insertMany(await getAllMensaDataFromSTW(mensa));
+			
+			const stwData = await getAllMensaDataFromSTW(mensa);
+			let sortedStwData = {};
+			stwData.map((offer) => {
+				sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
+			})
+
+
+			const getDifference = (array1, array2) => {
+				return array1.filter(object1 => {
+					return !array2.some(object2 => {
+					return object1.beschreibung === object2.beschreibung;
+					});
+				});
+			}
+
+
+			// Cycling through each day of the STW Data and see if there are any changes to the already stored data
+			Object.keys(sortedStwData).map((date) => {
+				console.log(date)
+				// Get MongoDB Data by date
+				coll.find({date}).toArray().then((dbData) => {
+					const changes = [
+						...getDifference(sortedStwData[date], dbData),
+						...getDifference(dbData, sortedStwData[date])
+					];
+					changes.map((change) => {
+						// If the change has _id, it exists in MongoDB but not in STW Data
+						// => It was there once, but is not anymore
+						// => mark as sold out
+						if(change._id){
+							coll.updateOne({_id: change._id}, {$set: {soldOut: true}})
+						} else {
+							// If the change has no _id, it exists in STW Data but not in MongoDB
+							// => It is new
+							// => add to MongoDB
+							coll.insertOne(change)
+						}
+						console.log(change._id ? "AUSVERKAUFT" : "NEU")
+					})
+				})
+				
+			})
+
+
+			// await coll.insertMany(await getAllMensaDataFromSTW(mensa));
 		}
 		
 		const cursor = coll.find(dayQuery);
 		// ID Suppresion
 		//const cursor = coll.find(dayQuery, {projection: {_id: 0}});
 		await cursor.forEach((e) => {
-			console.log(e)
 			foodOffers.push(e)
 		})
 		// await cursor.forEach(console.log);
-
-		
 
 	} catch (e) {
 		console.error(e)
