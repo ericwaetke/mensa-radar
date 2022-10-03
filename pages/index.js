@@ -35,6 +35,47 @@ export const mensaData = [
     },
     opening: 11,
     closing: 14.5
+  },
+  {
+    name: "Brandenburgan der Havel",
+    url: "brandenburg",
+    coords: {
+      latitude: 52.41159566949572,
+      longitude: 12.539779153390663
+    },
+    opening: 11,
+    closing: 14
+  },
+  {
+    name: "Filmuniversität",
+    url: "filmuniversitaet",
+    coords: {
+      latitude: 52.38889031847045, 
+      longitude: 13.116692300009127
+    },
+    opening: 11,
+    closing: 14.5
+  },
+  {
+    name: "Griebnitzsee",
+    url: "griebnitzsee",
+    coords: {
+      latitude: 52.393549668399444, 
+      longitude: 13.12775872728105
+    },
+    opening: 11,
+    // TODO: Freitag nur bis 14 Uhr
+    closing: 14.5
+  },
+  {
+    name: "Wildau",
+    url: "wildau",
+    coords: {
+      latitude: 52.31913645920946, 
+      longitude: 13.632358896246892
+    },
+    opening: 8,
+    closing: 15
   }
 ]
 
