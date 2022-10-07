@@ -37,7 +37,7 @@ export const mensaData = [
     closing: 14.5
   },
   {
-    name: "Brandenburgan der Havel",
+    name: "Brandenburg an der Havel",
     url: "brandenburg",
     coords: {
       latitude: 52.41159566949572,

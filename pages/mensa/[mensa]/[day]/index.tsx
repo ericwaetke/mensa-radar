@@ -12,6 +12,7 @@ import { calculateAverage } from '../../../../lib/calculateAverage';
 import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
+import { mensaData } from '../../..';
 
 
 export default function Mensa(
@@ -90,7 +91,7 @@ export default function Mensa(
     return (
         <div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
 			<Head>
-				<title>{mensaClearName[mensa]} - Mensa Radar</title>
+				<title>{mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name} - Mensa Radar</title>
 			</Head>
 			<style jsx>
 				{`
