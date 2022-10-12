@@ -13,33 +13,25 @@ import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
 import { mensaData } from '../../..';
+import { Pill, PillOnWhiteBG } from '../../../../components/pill';
+import { getDates, getOpeningString } from '../../../../lib/getOpeningString';
 
 
 export default function Mensa(
 	{
 		foodOffers = [],
-		selectedWeekday = 0,
-		days = [],
-		openingTimes = {
-			openFrom: "0:00",
-			openUntil: "0:00",
-			open: false
-		}
-	}: {
+		selectedWeekday = 0
+	} : {
 		foodOffers: any,
-		selectedWeekday: number,
-		days: string[],
-		openingTimes: {
-			openFrom: string,
-			openUntil: string,
-			open: boolean
-		}
+		selectedWeekday: number
 	}
 ) {
 
 	const router = useRouter()
   	const { mensa, day } = router.query
+	let url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
 
+	let name = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
 	// Switcher for Nutiotional Intformation is not yet working
 	const [offers, setOffers] = useState([])
 	
@@ -88,10 +80,11 @@ export default function Mensa(
 		}
 	}
 
+
     return (
         <div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
 			<Head>
-				<title>{mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name} - Mensa Radar</title>
+				<title>{ name } - Mensa Radar</title>
 			</Head>
 			<style jsx>
 				{`
@@ -134,24 +127,7 @@ export default function Mensa(
 			</div>
 
 			<div className="flex justify-between">
-				
-				{
-					openingTimes.open ? 
-					<>
-						<div className="font-medium bg-main-white border border-main-black py-1.5 px-4 rounded-full inline-flex items-center gap-2">
-							<span className="bg-sec-green-dark w-2 h-2 rounded-full"></span>
-							offen bis {openingTimes.openUntil}
-						</div>
-					</> : 
-					<>
-						<div className="font-medium bg-main-white border border-main-black py-1.5 px-4 rounded-full">öffnet um {openingTimes.openFrom}</div>
-					</>
-				}
-
-				{/* <div className='flex items-center gap-2'>
-					<div className="font-medium bg-green-3 py-1.5 px-4 rounded-full text-green-w7">1.5km</div>
-					<a href='#'>Route &rarr;</a>
-				</div> */}
+				<PillOnWhiteBG>{ url === undefined ? "" : getOpeningString( url ).openingString }</PillOnWhiteBG>
 			</div>
 
 			{
@@ -178,8 +154,8 @@ export default function Mensa(
 					initial="hidden"
 					animate="show">
 					{
-						days.map((day, i) => {
-							let isSelected = selectedWeekday - (5 - days.length) === i
+						getDates(new Date()).shownDays.map((day, i) => {
+							let isSelected = selectedWeekday - (5 - getDates(new Date()).shownDays.length) === i
 							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
 						})
 					}

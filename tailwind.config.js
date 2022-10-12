@@ -7,7 +7,9 @@ module.exports = {
     },
     fontFamily: {
       'sans': ['DM Sans'],
+      'bigtext': ['Noto Sans', 'sans-serif'],
       'serif': ['IBM Plex Serif', 'serif']
+
     },
     screens: {
       'xs': '400px',

@@ -1,7 +1,16 @@
 export const Pill = ({children}) => {
 
     return (
-        <div className="capitalize font-medium text-sm bg-main-white rounded-full py-1 px-4 flex items-center gap-1 min-w-max">
+        <div className="font-medium text-sm bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max">
+            {children}
+        </div>
+    )
+}
+
+export const PillOnWhiteBG = ({children}) => {
+
+    return (
+        <div className="font-medium text-sm border border-black bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max">
             {children}
         </div>
     )

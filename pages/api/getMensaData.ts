@@ -3,60 +3,16 @@ import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
 import { getWeekdayByName } from '../../lib/getWeekdayByName';
 import {mensaData} from "../"
 import { NextApiRequest, NextApiResponse } from 'next';
+import { NodeNextRequest } from 'next/dist/server/base-http/node';
+import { getDates, getOpeningString } from '../../lib/getOpeningString';
 
 
 export const fetchDbData = async (reqDay, mensa) => {
 	const selectedWeekday = reqDay
 
-	const currentDate = new Date()
-	let currentWeekday = currentDate.getDay() // if Weekday between 1 and 5 its in the weekday
-	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
-	const isWeekday = currentWeekday < 5;
 
-	let days = [
-		{
-			mainText: "Mo",
-			subText: "",
-			url: "montag",
-		},
-		{
-			mainText: "Di",
-			subText: "",
-			url: "dienstag",
-		},
-		{
-			mainText: "Mi",
-			subText: "",
-			url: "mittwoch",
-		},
-		{
-			mainText: "Do",
-			subText: "",
-			url: "donnerstag",
-		},
-		{
-			mainText: "Fr",
-			subText: "",
-			url: "freitag",
-		},
-	]
-
-	// Get Dates
-	for (let i = 0; i < 5; i++) {
-		let tempDate = new Date(currentDate)
-		if(i === currentWeekday){
-			days[i].subText = `${days[i].mainText} · ${tempDate.getDate()}.${tempDate.getMonth()}`
-			// days[i].subText = `${days[i].mainText}, ${tempDate.getDate()}. ${new Intl.DateTimeFormat('de-DE', {month: 'short'}).format(tempDate)}`
-			days[i].mainText = "Heute"
-		} else {
-			tempDate.setDate(currentDate.getDate() + (i - currentWeekday))
-			days[i].subText = `${tempDate.getDate()}.`
-		}
-	}
-
-	days = days.slice(currentWeekday)
-
-	const today = new Date()
+	const today = getOpeningString(mensa).currentDate;
+	const currentWeekday = getDates(today).currentWeekday;
 	const selectedDay = new Date(today)
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
 
@@ -138,31 +94,6 @@ export const fetchDbData = async (reqDay, mensa) => {
 		console.error(e)
 	}
 
-	const floatTimeToString = (floatTime) => {
-		let hours = Math.floor(floatTime)
-		let minutes: any = Math.round((floatTime - hours) * 60)
-		if (minutes < 10) {
-			minutes = "0" + minutes.toString()
-		}
-		return hours + ":" + minutes
-	}
-
-	const findObjectInArrayByKey = (array, key, value) => {
-		for (var i = 0; i < array.length; i++) {
-			if (array[i][key] === value) {
-				return array[i];
-			}
-		}
-		return null;
-	}
-
-	const openFrom = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', mensa).opening)
-	const openUntil = floatTimeToString(findObjectInArrayByKey(mensaData, 'url', mensa).closing)
-	const d = new Date();
-  	const currentTime = d.getHours() +":"+ d.getMinutes()/60
-
-	const open = currentTime >= openFrom && currentTime <= openUntil
-
 	// Change ID of every item in foodOffers
 	foodOffers.forEach((foodOffer) => {
 		foodOffer._id = foodOffer._id.toString()
@@ -170,13 +101,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 
 	return {
 		foodOffers,
-		selectedWeekday,
-		days,
-		openingTimes: {
-			openFrom,
-			openUntil,
-			open
-		}
+		selectedWeekday
 	}
 }
 
