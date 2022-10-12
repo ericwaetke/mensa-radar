@@ -8,6 +8,7 @@ import { amountDescription, qualityDescriptions } from "../ratingOverview";
 import { motion } from "framer-motion";
 import useTimeout from "use-timeout";
 import toast, { useToasterStore } from "react-hot-toast"
+import { InteractiveTagComponent } from "./InteractiveTagComponent";
 
 export const InteractiveRating = (
 	{
@@ -43,6 +44,17 @@ export const InteractiveRating = (
 
 	const [userQualityRating, setUserQualityRating] = useState(userQualityRatingInitial)
 	const [userAmountRating, setUserAmountRating] = useState(userAmountRatingInitial)
+
+	const [selectedTags, setSelectedTags] = useState<string[]>([])
+	const handleUserTagSelection = (tag: string) => {
+		// Todo: Update Database with new tags
+
+		if (selectedTags.includes(tag)) {
+			setSelectedTags(selectedTags.filter(t => t !== tag))
+		} else {
+			setSelectedTags([...selectedTags, tag])
+		}
+	} 
 
 	const sessionId = useRef(getItem("sessionId"))
 
@@ -179,26 +191,9 @@ export const InteractiveRating = (
 				<hr />
 				
 				<div className="flex flex-col gap-2">
-					<label>Wie war die Menge?</label>
-					<InteractiveAmountRatingComponent amount={userAmountRating} setAmount={(e) => setUserAmountRating(e)} className={styles.rangeInput}/>
-					<p ref={testRef} className="font-serif italic text-center" style={{
-						transform: `translateX(calc(${(userAmountRating * 9)}% - ${testRef.current ? testRef.current.offsetWidth / 2 : 0}px + 18px))`
-					}}>{
-						userAmountRating >= 8 ? amountDescription[8] :
-						userAmountRating >= 6 ? amountDescription[6] :
-						userAmountRating >= 4 ? amountDescription[4] :
-						userAmountRating >= 2 ? amountDescription[2] :
-						userAmountRating >= 0 ? amountDescription[0] : ""
-					}</p>
-					{/* <p className="font-serif italic inline-flex" style={{
-						transform: `translateX(clamp(0%, calc(${(userAmountRating * 9)}% - 22px), calc(100% - 80px)))`
-					}}>{
-						userAmountRating >= 8 ? amountDescription[8] :
-						userAmountRating >= 6 ? amountDescription[6] :
-						userAmountRating >= 4 ? amountDescription[4] :
-						userAmountRating >= 2 ? amountDescription[2] :
-						userAmountRating >= 0 ? amountDescription[0] : ""
-					}</p> */}
+					<label>Wie beschreibst du das Essen?</label>
+					{/* <InteractiveAmountRatingComponent amount={userAmountRating} setAmount={(e) => setUserAmountRating(e)} className={styles.rangeInput}/> */}
+					<InteractiveTagComponent selected={selectedTags} handleUserTagSelection={handleUserTagSelection}/>
 				</div>
 			</div>	
 
