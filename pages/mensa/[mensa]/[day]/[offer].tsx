@@ -93,12 +93,14 @@ export default function Mensa(props) {
 	}, [ratings])
 
 
-
+	const dev = process.env.NODE_ENV !== 'production';
+	const imageUrl = `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/og?title=${offer.beschreibung}`
 
 	return (
         <div className="space-y-6 break-words mx-5 mt-12 mb-28 lg:w-1/2 lg:mx-auto">
 			<Head>
 				<title>{offer.beschreibung} - Mensa {mensaClearName[mensa]}</title>
+				<meta property='og:image' content={imageUrl} />
 			</Head>
 			<BottomSheet open={showRatingModal} onDismiss={() => setShowRatingModal(false)}>
 				<InteractiveRating 
