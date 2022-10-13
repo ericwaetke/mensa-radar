@@ -14,7 +14,10 @@ export default function Index(props) {
         "sonntag"
     ]
 
-    Router.push(`/mensa/${props.mensa}/${weekday[currentWeekday]}`)
+    if (typeof window !== 'undefined') {
+        Router.push(`/mensa/${props.mensa}/${weekday[currentWeekday]}`)
+    }
+    
     return <></>
 }
 
