@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import { InteractiveAmountRatingComponent } from "./AmountRatingComponent"
 import { InteractiveQualityRatingComponent } from "./QualityRatingComponent"
 import { getItem, setItem } from '../../../lib/localStorageHelper';
 import { makeId } from '../../../lib/makeId';
 import styles from "./InteractiveRating.module.css"
-import { amountDescription, qualityDescriptions } from "../ratingOverview";
+import { qualityDescriptions } from "../ratingOverview";
 import { motion } from "framer-motion";
 import useTimeout from "use-timeout";
 import toast, { useToasterStore } from "react-hot-toast"
@@ -16,7 +15,7 @@ export const InteractiveRating = (
 		userQualityRatingInitial, 
 		setParentUserQualityRating,
 
-		amountRatings,
+		tagReviews,
 		userAmountRatingInitial,
 		setParentUserAmountRating,
 
@@ -28,10 +27,10 @@ export const InteractiveRating = (
 	}: 
 	{
 		qualityRatings: {sessionId: string, rating: number}[],
-		userQualityRatingInitial: number, 
-		setParentUserQualityRating: (rating: number) => void,
+		userQualityRatingInitial: 0|1|2|3, 
+		setParentUserQualityRating: (rating: 0|1|2|3) => void,
 
-		amountRatings: {sessionId: string, rating: number}[],
+		tagReviews: {"?"?: string[]},
 		userAmountRatingInitial: number,
 		setParentUserAmountRating: (rating: number) => void,
 
@@ -74,14 +73,15 @@ export const InteractiveRating = (
 					sessionId: sessionId.current
 				})
 			})
-			const saveAmount = fetch("/api/amountReview", {
+			const saveAmount = fetch("/api/tagReview", {
 				method: "POST",
 				body: JSON.stringify({
-					offer: offerId,
-					amountRatings,
-					rating: userAmountRating,
 					mensa,
-					sessionId: sessionId.current
+					offerId,
+					tagReviews,
+
+					sessionId: sessionId.current,
+					tags: selectedTags,
 				})
 			})
 			Promise.all([saveQuality, saveAmount]).then((res) => {
@@ -90,21 +90,6 @@ export const InteractiveRating = (
 				reject(err)
 			})
 		})
-	}
-
-	const container = {
-		hidden: { 
-			opacity: 0,
-			y: 100
-		},
-		show: {
-			opacity: 1,
-			y: 0,
-		}
-	}
-
-	const initiateClose = async () => {
-		closeRatingModal()
 	}
 
 	const didMount = useRef(false)
@@ -165,7 +150,6 @@ export const InteractiveRating = (
 			sessionId.current = tempSessionId
 			setItem("sessionId", sessionId.current)
 		}
-		console.log(testRef)
 
 		return () => {
 			// Unloading and saving
@@ -192,8 +176,7 @@ export const InteractiveRating = (
 				
 				<div className="flex flex-col gap-2">
 					<label>Wie beschreibst du das Essen?</label>
-					{/* <InteractiveAmountRatingComponent amount={userAmountRating} setAmount={(e) => setUserAmountRating(e)} className={styles.rangeInput}/> */}
-					<InteractiveTagComponent selected={selectedTags} handleUserTagSelection={handleUserTagSelection}/>
+					<InteractiveTagComponent qualityRating={userQualityRating} selected={selectedTags} handleUserTagSelection={handleUserTagSelection}/>
 				</div>
 			</div>	
 

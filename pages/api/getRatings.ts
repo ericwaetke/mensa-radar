@@ -13,9 +13,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const offerQuery = {_id: new ObjectId(offerId)}
         let offer = await coll.findOne(offerQuery)
 
+
 		res.status(200).json({
 			qualityRatings: offer.qualityRating,
-			amountRatings: offer.amountRating
+			tagReviews: offer.reviewTags
 		});
 	} catch (e) {
 		console.error(e)

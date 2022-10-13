@@ -49,13 +49,13 @@ export default function Mensa(props) {
 		]
 	};
 
-	const [ratings, setRatings] = useState<{qualityRatings: {sessionId: string,rating: number}[], amountRatings: {sessionId: string,rating: number}[]}>()
+	const [ratings, setRatings] = useState<{qualityRatings: {sessionId: string, rating: 0|1|2|3}[], tagReviews: {"?"?: string[]}}>()
 
 	const [hasUserRating, setHasUserRating] = useState(false)
 	const [qualityRating, setQualityRating] = useState(0)
-	const [amountRating, setAmountRating] = useState(0)
+	const [userTagReviews, setUserTagReviews] = useState<string[]>([])
 
-	const [userQualityRating, setUserQualityRating] = useState(0)
+	const [userQualityRating, setUserQualityRating] = useState<0|1|2|3>(0)
 	const [userAmountRating, setUserAmountRating] = useState(0)
 
 	const sessionId = useRef(getItem("sessionId"))
@@ -80,7 +80,7 @@ export default function Mensa(props) {
 	useEffect(() => {
 		console.log(sessionId.current)
 		setQualityRating(ratings ? (ratings.qualityRatings ? calculateAverage(ratings.qualityRatings) : 0) : 0)
-		setAmountRating(ratings ? (ratings.amountRatings ? calculateAverage(ratings.amountRatings) : 0) : 0)
+		// setAmountRating(ratings ? (ratings.amountRatings ? calculateAverage(ratings.amountRatings) : 0) : 0)
 
 		const checkRating = (rating, sessionId) => rating.sessionId == sessionId
 
@@ -88,7 +88,7 @@ export default function Mensa(props) {
 		if(ratings ? ratings?.qualityRatings?.some((rating) => checkRating(rating, sessionId.current)) : false) {
 			setHasUserRating(true)
 			setUserQualityRating(ratings.qualityRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
-			setUserAmountRating(ratings.amountRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
+			// setUserAmountRating(ratings.amountRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
 		}
 	}, [ratings])
 
@@ -106,7 +106,7 @@ export default function Mensa(props) {
 									userQualityRatingInitial={userQualityRating} 
 									setParentUserQualityRating={setUserQualityRating} 
 
-									amountRatings={ratings ? ratings.amountRatings : []} 
+									tagReviews={ratings ? ratings.tagReviews : {}} 
 									userAmountRatingInitial={userAmountRating}
 									setParentUserAmountRating={setUserAmountRating}
 
@@ -145,12 +145,12 @@ export default function Mensa(props) {
 
 					<RatingOverview 
 						ratingCount={ratings && ratings.qualityRatings ? ratings.qualityRatings.length : 0} 
-						qualityRating={qualityRating} 
-						amountRating={amountRating} 
+						qualityRatings={ratings && ratings.qualityRatings ? ratings.qualityRatings : []} 
+						tagReviews={ratings && ratings.tagReviews ? ratings.tagReviews : {}}
 						
 						hasUserRating={hasUserRating}
 						userQualityRating={userQualityRating}
-						userAmountRating={userAmountRating}/>
+						userTagReviews={userTagReviews}/>
 				</div>
 				<div className='border border-sec-stroke rounded-xl divide-y divide-solid divide-background-container'>
 					<NutrientOverview nutrients={offer.nutrients} />
