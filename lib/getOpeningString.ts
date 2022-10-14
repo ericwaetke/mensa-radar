@@ -12,7 +12,7 @@ export const getOpeningString = (mensa: string) => {
     const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
 
     let openingString;
-    if(open) openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
+    if(open) openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
     if(!open && willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
     if(!open && !willOpenLaterToday && nextOffer.nextOfferInDays != -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
     if(!open && nextOffer.nextOfferInDays === -1) openingString = `öffnet nächste Woche`;
