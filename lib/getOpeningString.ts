@@ -78,7 +78,7 @@ export const getDates = (currentDate) => {
 
 const nextOffering = (mensa:string, currentWeekday) => {
     //connect to mongo and find out whether there is food from currentWeekday
-    let days = 1;
+    let days = -1;
 
     
   
