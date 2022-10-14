@@ -4,7 +4,7 @@ export const config = {
     runtime: 'experimental-edge'
 }
 
-const font = fetch(new URL('../../assets/NotoSans-Bold.TTF', import.meta.url)).then(
+const font = fetch(new URL('../../assets/NotoSans-Bold.ttf', import.meta.url)).then(
     (res) => res.arrayBuffer(),
   );
 
