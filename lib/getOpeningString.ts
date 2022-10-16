@@ -1,20 +1,21 @@
 import { mensaData } from "../pages"
 
-export const getOpeningString = (mensa: string) => {
+export const getOpeningString = async (mensa: string) => {
 	const currentDate = new Date()
 	let currentWeekday = getDates(currentDate).currentWeekday;
+    console.log(currentWeekday)
     const days = getDates(currentDate).days;
 
     const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
     const openingTimes =  findObjectInArrayByKey(mensaData, "url", mensa).openingTimes
-    const nextOffer = nextOffering(mensa, currentWeekday)
+    const nextOffer = await nextOffering(mensa)
     const open = currentTime >= openingTimes[currentWeekday].from && currentTime <= openingTimes[currentWeekday].to;
     const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
 
     let openingString;
     if(open) openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
     if(!open && willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
-    if(!open && !willOpenLaterToday && nextOffer.nextOfferInDays != -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+    if(!open && !willOpenLaterToday && nextOffer.nextOfferInDays !== -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
     if(!open && nextOffer.nextOfferInDays === -1) openingString = `öffnet nächste Woche`;
 
     return {
@@ -76,22 +77,18 @@ export const getDates = (currentDate) => {
     } 
 }
 
-const nextOffering = (mensa:string, currentWeekday) => {
+const nextOffering = async (mensa: string) => {
     //connect to mongo and find out whether there is food from currentWeekday
-    let days = -1;
+    // let days = -1;
 
-    
-  
-    //erster Wert bestimmt, ob es heute was gibt
-    //zweiter Wert sagt, wann es NACH heute was gibt 
-    //zweiter Wert -1 bedeutet, dass es gar nichts mehr auf dem Plan gibt
-    //zweiter Wert 1 bedeutet, morgen gibts essen
-    //zweiter Wert sollte nicht 0 sein
-    //wenn currentWeekday + nextOfferInDays über 5 geht, sollte nextOf
-
-    if(days + currentWeekday > 5) days = -1; //wenn nach samstag noch essen gibt, dann ists einfach "nächste Woche"
-    if(days < -1) days = -1;
-    return {offerToday: true, nextOfferInDays: days};
+    const req: {offerToday: boolean, nextOfferInDays: -1|0|1|2|3|4|5} = await fetch(`/api/getDaysUntilNextOffer`, {
+        method: "POST",
+        body: JSON.stringify({
+            mensa
+        })
+    }).then(res => res.json()).catch(err => console.log(err))
+    console.log(req)
+    return req
 }
 
 export const floatTimeToString = (floatTime) => {
