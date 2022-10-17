@@ -30,35 +30,35 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		// Start Request with tomorrow
 		collection.find({date: currentDateFormatted(currentDay + 1, currentMonth, currentYear)}).count().then((count) => {
 			if (count > 0) {
-				res.status(200).json({offerToday, daysUntilNextOffer: 1})
+				res.status(200).json({offerToday, nextOfferInDays: 1})
 				return resolve()
 			} else {
 				// No offers, so check the next day
 				collection.find({date: currentDateFormatted(currentDay + 2, currentMonth, currentYear)}).count().then((count) => {
 					if (count > 0) {
-						res.status(200).json({offerToday, daysUntilNextOffer: 2})
+						res.status(200).json({offerToday, nextOfferInDays: 2})
 						return resolve()
 					} else {
 						// No offers, so check the next day
 						collection.find({date: currentDateFormatted(currentDay + 3, currentMonth, currentYear)}).count().then((count) => {
 							if (count > 0) {
-								res.status(200).json({offerToday, daysUntilNextOffer: 3})
+								res.status(200).json({offerToday, nextOfferInDays: 3})
 								return resolve()
 							} else {
 								// No offers, so check the next day
 								collection.find({date: currentDateFormatted(currentDay + 4, currentMonth, currentYear)}).count().then((count) => {
 									if (count > 0) {
-										res.status(200).json({offerToday, daysUntilNextOffer: 4})
+										res.status(200).json({offerToday, nextOfferInDays: 4})
 										return resolve()
 									} else {
 										// No offers, so check the next day
 										collection.find({date: currentDateFormatted(currentDay + 5, currentMonth, currentYear)}).count().then((count) => {
 											if (count > 0) {
-												res.status(200).json({offerToday, daysUntilNextOffer: 5})
+												res.status(200).json({offerToday, nextOfferInDays: 5})
 												return resolve()
 											} else {
 												// No offers, so return -1 since this week will have no more food
-												res.status(200).json({offerToday, daysUntilNextOffer: -1})
+												res.status(200).json({offerToday, nextOfferInDays: -1})
 												return resolve()
 											}
 										})

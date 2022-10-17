@@ -3,20 +3,25 @@ import { mensaData } from "../pages"
 export const getOpeningString = async (mensa: string) => {
 	const currentDate = new Date()
 	let currentWeekday = getDates(currentDate).currentWeekday;
-    console.log(currentWeekday)
     const days = getDates(currentDate).days;
 
     const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
     const openingTimes =  findObjectInArrayByKey(mensaData, "url", mensa).openingTimes
-    const nextOffer = await nextOffering(mensa)
+    let nextOffer = await nextOffering(mensa)
+    if(nextOffer.nextOfferInDays + currentWeekday > 5) nextOffer.nextOfferInDays = -1;
+
+
     const open = currentTime >= openingTimes[currentWeekday].from && currentTime <= openingTimes[currentWeekday].to;
     const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
 
     let openingString;
-    if(open) openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
-    if(!open && willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
-    if(!open && !willOpenLaterToday && nextOffer.nextOfferInDays !== -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
-    if(!open && nextOffer.nextOfferInDays === -1) openingString = `öffnet nächste Woche`;
+    if(open) {
+        openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
+    } else {
+        if(willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
+        if(!willOpenLaterToday && nextOffer.nextOfferInDays !== -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+        if(nextOffer.nextOfferInDays < 1) openingString = `öffnet nächste Woche`;
+    }
 
     return {
         openingString,
@@ -54,6 +59,11 @@ export const getDates = (currentDate) => {
 			subText: "",
 			url: "freitag",
 		},
+		{
+			mainText: "Sa",
+			subText: "",
+			url: "samstag",
+		},
 	]
 
     // Get Dates
@@ -87,7 +97,6 @@ const nextOffering = async (mensa: string) => {
             mensa
         })
     }).then(res => res.json()).catch(err => console.log(err))
-    console.log(req)
     return req
 }
 

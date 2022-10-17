@@ -23,6 +23,7 @@ export const mensaData = [
       5: { from: 11, to: 14.5 }, //sa für sonderfälle
       6: { from: 11, to: 14.5 }, //so für sonderfälle
     },
+    openingString: "",
     opening: 11,
     closing: 14.5
   },
@@ -42,6 +43,7 @@ export const mensaData = [
       5: { from: 11, to: 14.5 },
       6: { from: 11, to: 14.5 },
     },
+    openingString: "",
     opening: 11,
     closing: 14.5
   },
@@ -61,6 +63,7 @@ export const mensaData = [
       5: { from: 11, to: 14.5 },
       6: { from: 11, to: 14.5 },
     },
+    openingString: "",
     opening: 11,
     closing: 14.5
   },
@@ -80,6 +83,7 @@ export const mensaData = [
       5: { from: 11, to: 14 },
       6: { from: 11, to: 14 },
     },
+    openingString: "",
     opening: 11,
     closing: 14
   },
@@ -99,6 +103,7 @@ export const mensaData = [
       5: { from: 11, to: 14.5 },
       6: { from: 11, to: 14.5 },
     },
+    openingString: "",
     opening: 11,
     closing: 14.5
   },
@@ -118,6 +123,7 @@ export const mensaData = [
       5: { from: 11, to: 14.5 },
       6: { from: 11, to: 14.5 },
     },
+    openingString: "",
     opening: 11,
     // TODO: Freitag nur bis 14 Uhr
     closing: 14.5
@@ -138,6 +144,7 @@ export const mensaData = [
       5: { from: 8, to: 15 },
       6: { from: 8, to: 15 },
     },
+    openingString: "",
     opening: 8,
     closing: 15
   }
@@ -196,11 +203,22 @@ export default function Home(props) {
     }
   }
 
+  const [results, setResults] = useState([]);
+
   useEffect(() => {
     // TODO: Check if user wants to give location data
-
     getLocation()
     setMensen(mensaData)
+
+    const waitForOpeningString = async () => {
+      for(const mensa of mensaData) {
+        const a = await (await getOpeningString(mensa.url)).openingString;
+        mensa.openingString = a;
+        console.log(mensa.openingString)
+      }
+    }
+   //dont forget to call the dataApi() function as below
+   waitForOpeningString();
   }, [])
 
 
@@ -227,7 +245,7 @@ export default function Home(props) {
                       <a className="flex flex-initial py-5 px-6 justify-between ">
                         <h3 className="text-xl font-normal flex self-center font-bigtext">{mensa.name}</h3>
                         <div className="space-x-4">
-                          <span className="mr-4">{ getOpeningString(mensa.url).openingString }</span>
+                          <span className="mr-4"> { mensa.openingString }</span>
                           {
                             // Display Distance if Location Permissions are granted
                             // true ? <></>
