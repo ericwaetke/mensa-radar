@@ -9,14 +9,13 @@ import { getDates, getOpeningString } from '../../lib/getOpeningString';
 
 export const fetchDbData = async (reqDay, mensa) => {
 	const selectedWeekday = reqDay
-
 	const today = new Date();
 	const currentWeekday = getDates(today).currentWeekday;
 	const selectedDay = new Date(today)
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
 
-	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
 
+	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
 
 	let foodOffers = []
 	try {

@@ -6,7 +6,7 @@ module.exports = {
       padding: '2rem',
     },
     fontFamily: {
-      'sans': ['DM Sans'],
+      'sans': ['Noto Sans', 'sans-serif'],
       'bigtext': ['Noto Sans', 'sans-serif'],
       'serif': ['IBM Plex Serif', 'serif']
 
@@ -43,7 +43,7 @@ module.exports = {
       },
       screens: {
         'xs': '370px'
-      }
+      },
     },
   },
   variants: {

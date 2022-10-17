@@ -230,55 +230,50 @@ export default function Home(props) {
 		console.log(mensen)
 	}, [mensen])
 
-	
-	
+  return (
+    <div className="p-4 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
+      <Head>
+        <title>Mensa Radar — Mensen Potsdam</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-	return (
-		<div className="mx-5 mt-12 space-y-6 lg:w-1/2 lg:mx-auto">
-			<Head>
-				<title>Mensa Radar — Mensen Potsdam</title>
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-
-			<main>
-				<div className="m-1 mb-4">
-					<h1 className="text-3xl mb-2">
-						Mensa Radar
-					</h1>
-
-					<h2 className="text-xl">Mensen</h2>
-				</div>
-				<div className="flex flex-col divide-y-2 border-y-2 divide-main-black/20 bg-green-3 rounded-xl bg-background-container
-				">
-					{
-						mensen.map(mensa => {
-							return <Link href={'/mensa/'+mensa.url}>
-										<a className="flex flex-initial py-5 px-6 justify-between ">
-											<h3 className="text-xl font-normal flex self-center font-bigtext">{mensa.name}</h3>
-											<div className="space-x-4">
-												<span className="mr-4"> { mensa.openingString }</span>
-												{
-													// Display Distance if Location Permissions are granted
-													// true ? <></>
-													locationPermission ? <> 
-													<div className="w-20 inline-flex justify-end ">
-														<span className="bg-main-white py-0 rounded-full inline-flex text-green-w7 items-center px-3 gap-2">
-															<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<path d="M1.75781 6.05078L5.23926 6.06055C5.2653 6.06055 5.27995 6.06217 5.2832 6.06543C5.28971 6.06543 5.29297 6.08008 5.29297 6.10937L5.29785 9.57617C5.29785 9.77799 5.3418 9.94727 5.42969 10.084C5.52083 10.2207 5.63802 10.32 5.78125 10.3818C5.92448 10.4469 6.07585 10.4714 6.23535 10.4551C6.39811 10.4421 6.55111 10.3851 6.69434 10.2842C6.83757 10.1833 6.95313 10.0368 7.04102 9.84473L10.6201 2.04687C10.7373 1.78646 10.7812 1.55208 10.752 1.34375C10.7259 1.13216 10.6445 0.961263 10.5078 0.831055C10.3711 0.700846 10.1969 0.624349 9.98535 0.601562C9.77376 0.578776 9.53939 0.625977 9.28223 0.743164L1.45996 4.32227C1.27441 4.4069 1.13281 4.51921 1.03516 4.65918C0.940755 4.79915 0.885417 4.94889 0.869141 5.1084C0.85612 5.2679 0.882161 5.41927 0.947266 5.5625C1.01237 5.70573 1.11165 5.82292 1.24512 5.91406C1.38184 6.00521 1.55273 6.05078 1.75781 6.05078Z" fill="black"/>
-															</svg>
-															<span>{mensa.distance}km</span>
-														</span>
-													</div>
-													</> : null
-												}
-											</div>
-										</a>
-									</Link>
-						})
-					}
-				</div>
-			</main>
-					<Footer />
-		</div>
-	);
+      <main>
+        <div className="m-1 mb-3">
+          <h2 className="text-xl">Mensen</h2>
+        </div>
+        <div className="flex flex-col divide-y-2 border-y-2 divide-main-black/20 bg-green-3 rounded-xl bg-background-container py-0.5
+        ">
+          {
+            mensen.map(mensa => {
+              return <Link href={'/mensa/'+mensa.url}>
+                      <a className="flex py-3 px-6 justify-between">
+                        <div className="flex flex-col space-y-0.5 justify-start">
+                          <h3 className="text-xl font-normal font-bigtext">{mensa.name}</h3>
+                          <div className="flex">
+                            <div className="rounded-full w-2 h-2 bg-sec-green-dark mr-1 my-auto"></div>
+                            <span className="font-serif text-s opacity-60">offen bis 14:30</span>
+                          </div> 
+                        </div>
+                        <div className="flex pb-1">
+                          {
+                            // Display Distance if Location Permissions are granted
+                            // true ? <></>
+                            locationPermission ? <> 
+                              <span className="bg-main-white py-0 rounded-full inline-flex text-green-w7 px-3 gap-2 m-auto">
+                                 <img src="location.svg"></img>
+                                <span>{mensa.distance}km</span>
+                              </span>
+                            </> : null
+                          }
+                        </div>
+                      </a>
+                    </Link>
+            })
+          }
+        </div>
+      </main>
+          <Footer />
+    </div>
+  );
 }
+//{ mensa.openingString }

@@ -166,9 +166,12 @@ export default function Mensa(
 					{
 						getDates(new Date()).shownDays.map((day, i) => {
 							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
+							
 							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
-						})
-					}
+						}) 
+						
+					} 
+					
 				</motion.div>
 			</div>
 

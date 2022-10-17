@@ -1,3 +1,9 @@
 .ReactModal__Body--open {
     overflow-y: hidden;
 }
+
+@supports (-webkit-touch-callout: none) {
+    .h-screen {
+      height: -webkit-fill-available !important;
+    }
+  }
