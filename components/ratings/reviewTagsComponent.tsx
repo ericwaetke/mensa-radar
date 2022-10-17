@@ -36,15 +36,16 @@ export const ReviewTagsComponent = (
 
 	return (
 		<div className="quality-rating-component inline-flex flex-col">
-			<motion.div className="quality-rating-component__body inline-flex my-2 items-center"
+			<motion.div className="flex flex-wrap my-2 items-center gap-2 justify-end"
 			variants={container}
 			initial="hidden"
 			animate="show">
 				{
 					Object.keys(tagReviews).map((tag, index) => {
 						return (
-							<Pill>
-								{tag} <span className="bg-background-container rounded-full w-4 h-4 flex justify-center">{tagReviews[tag].length}</span>
+							<Pill key={index} className={`${userTagReviews.includes(tag) ? "bg-main-green" : ""}`}>
+								{tag} 
+								<span className="bg-background-container rounded-full w-4 h-4 flex justify-center">{tagReviews[tag].length}</span>
 							</Pill>
 						)
 					})

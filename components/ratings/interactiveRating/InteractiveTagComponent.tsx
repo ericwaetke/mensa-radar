@@ -28,7 +28,10 @@ export const InteractiveTagComponent = (
 		],
 		2: [
 			"zu viel",
-			"zu wenig"
+			"zu wenig",
+			"richtige Menge",
+			"wie erwartet",
+
 		],
 		3: [
 			"unlgaublich",

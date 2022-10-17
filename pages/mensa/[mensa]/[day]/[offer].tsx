@@ -10,8 +10,6 @@ import clientPromise from '../../../../lib/mongodb'
 import { ObjectId } from 'mongodb';
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
 import { RatingOverview } from '../../../../components/ratings/ratingOverview';
-import { mensaClearName } from '../../../../lib/mensaClearName';
-import {calculateAverage} from "../../../../lib/calculateAverage"
 import { InteractiveRating } from '../../../../components/ratings/interactiveRating/interactiveRating';
 import useSWR from 'swr';
 
@@ -22,6 +20,7 @@ import 'react-spring-bottom-sheet/dist/style.css'
 import Head from 'next/head';
 import { Pill } from '../../../../components/pill';
 import { getItem } from '../../../../lib/localStorageHelper';
+import { mensaData } from '../../..';
 
 const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringify(args)}).then((res) => res.json()).catch((err) => console.log(err))
 
@@ -52,11 +51,9 @@ export default function Mensa(props) {
 	const [ratings, setRatings] = useState<{qualityRatings: {sessionId: string, rating: 0|1|2|3}[], tagReviews: {"?"?: string[]}}>()
 
 	const [hasUserRating, setHasUserRating] = useState(false)
-	const [qualityRating, setQualityRating] = useState(0)
-	const [userTagReviews, setUserTagReviews] = useState<string[]>([])
 
 	const [userQualityRating, setUserQualityRating] = useState<0|1|2|3>(0)
-	const [userAmountRating, setUserAmountRating] = useState(0)
+	const [userTagReviews, setUserTagReviews] = useState<string[]>([])
 
 	const sessionId = useRef(getItem("sessionId"))
 
@@ -78,8 +75,6 @@ export default function Mensa(props) {
 	}, [data])
 
 	useEffect(() => {
-		console.log(sessionId.current)
-		setQualityRating(ratings ? (ratings.qualityRatings ? calculateAverage(ratings.qualityRatings) : 0) : 0)
 		// setAmountRating(ratings ? (ratings.amountRatings ? calculateAverage(ratings.amountRatings) : 0) : 0)
 
 		const checkRating = (rating, sessionId) => rating.sessionId == sessionId
@@ -96,27 +91,29 @@ export default function Mensa(props) {
 	const dev = process.env.NODE_ENV !== 'production';
 	const imageUrl = `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/og?title=${offer.beschreibung}`
 
+	const mensaName = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
+
 	return (
         <div className="space-y-6 break-words mx-5 mt-12 mb-28 lg:w-1/2 lg:mx-auto">
 			<Head>
-				<title>{offer.beschreibung} - Mensa {mensaClearName[mensa]}</title>
+				<title>{offer.beschreibung} - Mensa {mensaName}</title>
 				<meta property='og:image' content={imageUrl} />
 			</Head>
 			<BottomSheet open={showRatingModal} onDismiss={() => setShowRatingModal(false)}>
 				<InteractiveRating 
-									qualityRatings={ratings ? ratings.qualityRatings : []} 
-									userQualityRatingInitial={userQualityRating} 
-									setParentUserQualityRating={setUserQualityRating} 
+					qualityRatings={ratings ? ratings.qualityRatings : []} 
+					userQualityRatingInitial={userQualityRating} 
+					setParentUserQualityRating={setUserQualityRating} 
 
-									tagReviews={ratings ? ratings.tagReviews : {}} 
-									userAmountRatingInitial={userAmountRating}
-									setParentUserAmountRating={setUserAmountRating}
+					tagReviews={ratings ? ratings.tagReviews : {}} 
+					userTagReviewsInitial={userTagReviews}
+					setParentUserTagReviews={setUserTagReviews}
 
-									setHasUserRating={setHasUserRating}
+					setHasUserRating={setHasUserRating}
 
-									offerId={offer._id} 
-									mensa={mensa} 
-									closeRatingModal={() => setShowRatingModal(false)}/>
+					offerId={offer._id} 
+					mensa={mensa} 
+					closeRatingModal={() => setShowRatingModal(false)}/>
 									
 				</BottomSheet>
 			<div>
@@ -125,7 +122,7 @@ export default function Mensa(props) {
 						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
 						</svg>
-						<h2 className="text-sm font-medium inline text-center">Zurück zur Mensa {mensaClearName[mensa]}</h2>
+						<h2 className="text-sm font-medium inline text-center">Zurück zur Mensa {mensaName}</h2>
 					</a>
 				</Link>
 

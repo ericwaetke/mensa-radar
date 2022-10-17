@@ -8,7 +8,6 @@ import { getWeekdayByName } from '../../../../lib/getWeekdayByName';
 import { mensaClearName } from '../../../../lib/mensaClearName';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { calculateAverage } from '../../../../lib/calculateAverage';
 import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
@@ -32,7 +31,7 @@ export default function Mensa(
   	const { mensa, day } = router.query
 	const url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
 
-	let name = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
+	const mensaName = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
 	// Switcher for Nutiotional Intformation is not yet working
 	const [offers, setOffers] = useState([])
 	
@@ -94,7 +93,7 @@ export default function Mensa(
     return (
         <div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
 			<Head>
-				<title>{ name } - Mensa Radar</title>
+				<title>{ mensaName } - Mensa Radar</title>
 			</Head>
 			<style jsx>
 				{`

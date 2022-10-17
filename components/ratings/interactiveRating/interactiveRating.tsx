@@ -16,8 +16,8 @@ export const InteractiveRating = (
 		setParentUserQualityRating,
 
 		tagReviews,
-		userAmountRatingInitial,
-		setParentUserAmountRating,
+		userTagReviewsInitial,
+		setParentUserTagReviews,
 
 		setHasUserRating,
 
@@ -31,8 +31,8 @@ export const InteractiveRating = (
 		setParentUserQualityRating: (rating: 0|1|2|3) => void,
 
 		tagReviews: {"?"?: string[]},
-		userAmountRatingInitial: number,
-		setParentUserAmountRating: (rating: number) => void,
+		userTagReviewsInitial: string[],
+		setParentUserTagReviews: (reviews: string[]) => void,
 
 		setHasUserRating: (hasUserRating: boolean) => void,
 
@@ -42,9 +42,8 @@ export const InteractiveRating = (
 	}) => {
 
 	const [userQualityRating, setUserQualityRating] = useState(userQualityRatingInitial)
-	const [userAmountRating, setUserAmountRating] = useState(userAmountRatingInitial)
+	const [selectedTags, setSelectedTags] = useState<string[]>(userTagReviewsInitial || [])
 
-	const [selectedTags, setSelectedTags] = useState<string[]>([])
 	const handleUserTagSelection = (tag: string) => {
 		// Todo: Update Database with new tags
 
@@ -53,15 +52,16 @@ export const InteractiveRating = (
 		} else {
 			setSelectedTags([...selectedTags, tag])
 		}
+		console.log(selectedTags)
+		setParentUserTagReviews(selectedTags)
 	} 
 
+	// Save Logic
 	const sessionId = useRef(getItem("sessionId"))
-
 	const saveRatings = () => {
 		return new Promise((resolve, reject) => {
 			setHasUserRating(true)
 			setParentUserQualityRating(userQualityRating)
-			setParentUserAmountRating(userAmountRating)
 			
 			const saveQuality = fetch("/api/qualityReview", {
 				method: "POST",
@@ -73,7 +73,7 @@ export const InteractiveRating = (
 					sessionId: sessionId.current
 				})
 			})
-			const saveAmount = fetch("/api/tagReview", {
+			const saveTags = fetch("/api/tagReview", {
 				method: "POST",
 				body: JSON.stringify({
 					mensa,
@@ -84,7 +84,7 @@ export const InteractiveRating = (
 					tags: selectedTags,
 				})
 			})
-			Promise.all([saveQuality, saveAmount]).then((res) => {
+			Promise.all([saveQuality, saveTags]).then((res) => {
 				resolve(res)
 			}).catch((err) => {
 				reject(err)
@@ -92,8 +92,8 @@ export const InteractiveRating = (
 		})
 	}
 
+	// Save on change
 	const didMount = useRef(false)
-
 	const timer = useRef(null)
 	useEffect(() => {
 		timer ? clearTimeout(timer.current) : null
@@ -114,7 +114,7 @@ export const InteractiveRating = (
 		return () => {
 			clearTimeout(timer.current)
 		}
-	}, [userAmountRating, userQualityRating])
+	}, [selectedTags, userQualityRating])
 
 	const sendToast = () => {
 		toast.promise(
@@ -133,6 +133,7 @@ export const InteractiveRating = (
 		)
 	}
 
+	// Only show one toast at a time
 	const {toasts} = useToasterStore()
 	const TOAST_LIMIT = 1;
 
@@ -143,6 +144,7 @@ export const InteractiveRating = (
 		.forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) removal without animation
 	}, [toasts])
 
+
 	useEffect(() => {
 		if (!sessionId.current) {
 			const tempSessionId = makeId()
@@ -152,33 +154,27 @@ export const InteractiveRating = (
 		}
 
 		return () => {
-			// Unloading and saving
-			// sendToast()
 		}
 	}, [])
 
-	const testRef = useRef(null)
-
 	return (
+		<div className='self-center relative bg-main-white w-full flex flex-col gap-4 rounded-tl-2xl rounded-tr-2xl px-8 py-10 mb-4 max-w-prose pointer-events-auto'>	
+			<div className="flex flex-col gap-2">
+				<label className="uppercase text-sm font-bold">Bewerten</label>
+				<InteractiveQualityRatingComponent handleUserQualityRating={(e) => setUserQualityRating(e)} userQualityRating={userQualityRating} />	
+				<p className="font-serif italic">
+					{
+						qualityDescriptions[userQualityRating]
+					}
+				</p>
+			</div>
 
-			<div className='self-center relative bg-main-white w-full flex flex-col gap-4 rounded-tl-2xl rounded-tr-2xl px-8 py-10 mb-4 max-w-prose pointer-events-auto'>	
-				<div className="flex flex-col gap-2">
-					<label className="uppercase text-sm font-bold">Bewerten</label>
-					<InteractiveQualityRatingComponent handleUserQualityRating={(e) => setUserQualityRating(e)} userQualityRating={userQualityRating} />	
-					<p className="font-serif italic">
-						{
-							qualityDescriptions[userQualityRating]
-						}
-					</p>
-				</div>
-
-				<hr />
-				
-				<div className="flex flex-col gap-2">
-					<label>Wie beschreibst du das Essen?</label>
-					<InteractiveTagComponent qualityRating={userQualityRating} selected={selectedTags} handleUserTagSelection={handleUserTagSelection}/>
-				</div>
-			</div>	
-
+			<hr />
+			
+			<div className="flex flex-col gap-2">
+				<label>Wie beschreibst du das Essen?</label>
+				<InteractiveTagComponent qualityRating={userQualityRating} selected={selectedTags} handleUserTagSelection={handleUserTagSelection}/>
+			</div>
+		</div>	
 	)
 }
