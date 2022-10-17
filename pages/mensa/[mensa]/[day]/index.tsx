@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import 'tailwindcss/tailwind.css'
 import Footer from '../../../../components/footer';
@@ -15,6 +15,7 @@ import Head from 'next/head';
 import { mensaData } from '../../..';
 import { Pill, PillOnWhiteBG } from '../../../../components/pill';
 import { getDates, getOpeningString } from '../../../../lib/getOpeningString';
+import { useOpeningString } from '../../../../hooks/useOpeningString';
 
 
 export default function Mensa(
@@ -29,7 +30,7 @@ export default function Mensa(
 
 	const router = useRouter()
   	const { mensa, day } = router.query
-	let url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
+	const url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
 
 	let name = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
 	// Switcher for Nutiotional Intformation is not yet working
@@ -80,6 +81,15 @@ export default function Mensa(
 		}
 	}
 
+	// Get Opening String from useOpeningString
+
+	const [openingString, setOpeningString] = useState("")
+	useEffect(() => {
+		getOpeningString(url).then(data => {
+			console.log(data)
+			setOpeningString(data.openingString)
+		})
+	}, [])
 
     return (
         <div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
@@ -127,7 +137,7 @@ export default function Mensa(
 			</div>
 
 			<div className="flex justify-between">
-				<PillOnWhiteBG>{ url === undefined ? "" : getOpeningString( url ).openingString }</PillOnWhiteBG>
+				<PillOnWhiteBG>{ url === undefined ? "" : openingString }</PillOnWhiteBG>
 			</div>
 
 			{
@@ -155,7 +165,7 @@ export default function Mensa(
 					animate="show">
 					{
 						getDates(new Date()).shownDays.map((day, i) => {
-							let isSelected = selectedWeekday - (5 - getDates(new Date()).shownDays.length) === i
+							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
 							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
 						})
 					}
@@ -240,6 +250,7 @@ export async function getStaticProps(context) {
 	const { mensa, day } = params
 
 	const selectedWeekday = getWeekdayByName(day)
+	console.log(selectedWeekday)
 
 	const dev = process.env.NODE_ENV !== 'production';
 	const props = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {

@@ -10,8 +10,7 @@ import { getDates, getOpeningString } from '../../lib/getOpeningString';
 export const fetchDbData = async (reqDay, mensa) => {
 	const selectedWeekday = reqDay
 
-
-	const today = getOpeningString(mensa).currentDate;
+	const today = new Date();
 	const currentWeekday = getDates(today).currentWeekday;
 	const selectedDay = new Date(today)
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
@@ -99,6 +98,8 @@ export const fetchDbData = async (reqDay, mensa) => {
 		foodOffer._id = foodOffer._id.toString()
 	})
 
+	console.log({foodOffers, selectedWeekday})
+
 	return {
 		foodOffers,
 		selectedWeekday
@@ -110,9 +111,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	console.log("API Request")
 	console.log(req.body)
 
-	const {selectedWeekday, mensa}: {selectedWeekday: string, mensa: string} = JSON.parse(req.body)
+	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = JSON.parse(req.body)
 
-    const data = await fetchDbData(selectedWeekday ? selectedWeekday : "mittwoch", mensa ? mensa : "fhp")
+    const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 
     res.status(200).json(data)
   }
