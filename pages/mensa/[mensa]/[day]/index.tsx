@@ -127,7 +127,7 @@ export default function Mensa(
 			</div>
 
 			<div className="flex justify-between">
-				<PillOnWhiteBG>{ url === undefined ? "" : getOpeningString( url ).openingString }</PillOnWhiteBG>
+				<PillOnWhiteBG>{ url === undefined ? "" : "test" }</PillOnWhiteBG>
 			</div>
 
 			{
@@ -155,10 +155,13 @@ export default function Mensa(
 					animate="show">
 					{
 						getDates(new Date()).shownDays.map((day, i) => {
-							let isSelected = selectedWeekday - (5 - getDates(new Date()).shownDays.length) === i
+							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
+							
 							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
-						})
-					}
+						}) 
+						
+					} 
+					
 				</motion.div>
 			</div>
 
