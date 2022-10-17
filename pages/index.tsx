@@ -251,7 +251,7 @@ export default function Home(props) {
                           <h3 className="text-xl font-normal font-bigtext">{mensa.name}</h3>
                           <div className="flex">
                             <div className="rounded-full w-2 h-2 bg-sec-green-dark mr-1 my-auto"></div>
-                            <span className="font-serif text-s opacity-60">offen bis 14:30</span>
+                            <span className="font-serif text-s opacity-60">{mensa.openingString}</span>
                           </div> 
                         </div>
                         <div className="flex pb-1">
