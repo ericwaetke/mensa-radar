@@ -7,7 +7,6 @@ import Footer from "../components/footer";
 import { useOpeningString } from "../hooks/useOpeningString";
 import { getOpeningString } from "../lib/getOpeningString";
 
-let locationLoaded = false;
 
 export const mensaData = [
 	{
@@ -162,6 +161,9 @@ export default function Home(props) {
 	const [mensen, setMensen] = useState([])
 	const [locationPermission, setLocationPermission] = useState(false)
 
+	const [locationLoaded, setLocationLoaded] = useState(false);
+
+
 	const getLocation = () => {
 		const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 			const earthRadius = 6371; // Radius of the earth in km
@@ -198,8 +200,7 @@ export default function Home(props) {
 			
 			// Setting the State so the data gets updated
 			setMensen(tempMensen)
-			locationLoaded = true;
-
+			setLocationLoaded(true);
 		}
 		
 		if(!navigator.geolocation) {
@@ -207,7 +208,7 @@ export default function Home(props) {
 			
 		} else {
 			navigator.geolocation.getCurrentPosition(success, (e) => console.log(e));
-			locationLoaded = true;
+			setLocationLoaded(true);
 		}
 	}
 
