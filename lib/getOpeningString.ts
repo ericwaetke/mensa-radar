@@ -18,13 +18,22 @@ export const getOpeningString = async (mensa: string) => {
 	if(open) {
 		openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
 	} else {
+		//wird heute noch öffnen
 		if(willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
-		if(!willOpenLaterToday && nextOffer.nextOfferInDays !== -1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+
+		//wird morgen öffnen
+		if(!willOpenLaterToday && nextOffer.nextOfferInDays === 1) openingString = `öffnet morgen ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+
+		//wird an einem anderen Tag öffnen
+		if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+
+		//keine weiteren Daten
 		if(nextOffer.nextOfferInDays < 1) openingString = `öffnet nächste Woche`;
 	}
 
 	return {
 		openingString,
+		open,
 		currentDate
 	}
 }

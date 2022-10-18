@@ -1,6 +1,5 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { calculateAverage } from "../lib/calculateAverage"
 import { Pill } from "./pill"
 
 export const Offer = (

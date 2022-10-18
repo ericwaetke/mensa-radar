@@ -7,6 +7,8 @@ import Footer from "../components/footer";
 import { useOpeningString } from "../hooks/useOpeningString";
 import { getOpeningString } from "../lib/getOpeningString";
 
+let locationLoaded = false;
+
 export const mensaData = [
 	{
 		name: "Golm",
@@ -151,6 +153,7 @@ export const mensaData = [
 	}
 ]
 
+
 export default function Home(props) {
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes()/60
@@ -185,22 +188,26 @@ export default function Home(props) {
 			mensaData.map((mensa) => {
 				const distance = getDistanceFromLatLonInKm(latitude, longitude, mensa.coords.latitude, mensa.coords.longitude)
 				tempMensen.push({
-					...mensa,
-					distance: Math.round(distance * 10) / 10
+						...mensa,
+						distance: Math.round(distance * 10) / 10
+					})
 				})
-			})
 
 			// Sorting Mensas from closest to furthest
 			tempMensen.sort((firstItem, secondItem) => firstItem.distance - secondItem.distance)
 			
 			// Setting the State so the data gets updated
 			setMensen(tempMensen)
-		}
+			locationLoaded = true;
 
+		}
+		
 		if(!navigator.geolocation) {
 			console.error('Geolocation is not supported by your browser');
+			
 		} else {
 			navigator.geolocation.getCurrentPosition(success, (e) => console.log(e));
+			locationLoaded = true;
 		}
 	}
 
@@ -209,13 +216,13 @@ export default function Home(props) {
 		// TODO: Check if user wants to give location data
 		getLocation()
 		setMensen(mensaData)
-
-
+		
 		mensaData.map(mensa => {
 			getOpeningString(mensa.url).then((data) => {
 				const mensaId = mensaData.findIndex((item) => item.url === mensa.url)
 				setMensen(mensen => {
 					mensen[mensaId].openingString = data.openingString
+					mensen[mensaId].open = data.open;
 					return mensen
 				})
 			})
@@ -248,22 +255,45 @@ export default function Home(props) {
               return <Link href={'/mensa/'+mensa.url}>
                       <a className="flex py-3 px-6 justify-between">
                         <div className="flex flex-col space-y-0.5 justify-start">
-                          <h3 className="text-xl font-normal font-bigtext">{mensa.name}</h3>
-                          <div className="flex">
-                            <div className="rounded-full w-2 h-2 bg-sec-green-dark mr-1 my-auto"></div>
-                            <span className="font-serif text-s opacity-60">{mensa.openingString}</span>
+                          
+							{
+						 	 !locationLoaded ? <>
+							  <div role="status" className="animate-pulse m-auto">
+								  <div className="h-6 bg-white rounded-md dark:bg-gray-700 w-60"></div>
+								  <span className="sr-only">lädt</span>
+							  </div>
+							  </> : <h3 className="text-xl font-normal font-bigtext"> {mensa.name}</h3>
+							} 
+                          <div className="flex h-6 font-serif text-s">
+							{ 
+								mensa.open? <>  
+                            	<div className="rounded-full w-2 h-2 bg-sec-green-dark mr-2 my-auto"></div>
+								</> : null
+							}
+							{
+								mensa.openingString === "Loading Opening Times"? <>
+								<div role="status" className="animate-pulse h-4 my-1">
+									<div className="h-4 bg-white rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+									<span className="sr-only">lädt</span>
+								</div>
+								</> : <span className="opacity-60"> { mensa.openingString } </span>
+							}
                           </div> 
                         </div>
                         <div className="flex pb-1">
                           {
                             // Display Distance if Location Permissions are granted
                             // true ? <></>
-                            locationPermission ? <> 
-                              <span className="bg-main-white py-0 rounded-full inline-flex text-green-w7 px-3 gap-2 m-auto">
-                                 <img src="location.svg"></img>
-                                <span>{mensa.distance}km</span>
-                              </span>
-                            </> : null
+							!locationLoaded ? <>
+									<div role="status" className="animate-pulse m-auto">
+										<div className="h-6 bg-white rounded-full dark:bg-gray-700 w-24"></div>
+										<span className="sr-only">lädt</span>
+									</div>
+									</> : locationPermission ? <> 
+										<span className="bg-main-white py-0 rounded-full inline-flex text-green-w7 px-3 gap-2 m-auto">
+											<img src="location.svg"></img><span> { mensa.distance }km</span>		
+										</span>		 
+                           				</> : null
                           }
                         </div>
                       </a>
