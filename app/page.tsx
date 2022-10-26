@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import Head from "next/head";
 import Link from 'next/link';
 
 import Footer from "../components/footer";
-import { useOpeningString } from "../hooks/useOpeningString";
-import { getOpeningString } from "../lib/getOpeningString";
-
 
 export const mensaData = [
 	{
@@ -16,6 +13,7 @@ export const mensaData = [
 			latitude: 52.40795670687466, 
 			longitude: 12.978685326538164
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14.5 }, //mon
 			1: { from: 11, to: 14.5 }, //di
@@ -27,7 +25,8 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 11,
-		closing: 14.5
+		closing: 14.5,
+		open: false
 	},
 	{
 		name: "Neues Palais",
@@ -36,6 +35,7 @@ export const mensaData = [
 			latitude: 52.402868541881624, 
 			longitude: 13.011995232289776
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14.5 },
 			1: { from: 11, to: 14.5 },
@@ -47,7 +47,8 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 11,
-		closing: 14.5
+		closing: 14.5,
+		open: false
 	},
 	{
 		name: "FHP",
@@ -56,6 +57,7 @@ export const mensaData = [
 			latitude: 52.41324028310374, 
 			longitude: 13.051182387706824 
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14.5 },
 			1: { from: 11, to: 14.5 },
@@ -67,7 +69,8 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 11,
-		closing: 14.5
+		closing: 14.5,
+		open: false
 	},
 	{
 		name: "Brandenburg an der Havel",
@@ -76,6 +79,7 @@ export const mensaData = [
 			latitude: 52.41159566949572,
 			longitude: 12.539779153390663
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14 },
 			1: { from: 11, to: 14 },
@@ -87,7 +91,8 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 11,
-		closing: 14
+		closing: 14,
+		open: false
 	},
 	{
 		name: "Filmuniversität",
@@ -96,6 +101,7 @@ export const mensaData = [
 			latitude: 52.38889031847045, 
 			longitude: 13.116692300009127
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14.5 },
 			1: { from: 11, to: 14.5 },
@@ -107,7 +113,8 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 11,
-		closing: 14.5
+		closing: 14.5,
+		open: false
 	},
 	{
 		name: "Griebnitzsee",
@@ -116,6 +123,7 @@ export const mensaData = [
 			latitude: 52.393549668399444, 
 			longitude: 13.12775872728105
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 11, to: 14.5 },
 			1: { from: 11, to: 14.5 },
@@ -128,7 +136,8 @@ export const mensaData = [
 		openingString: "Loading Opening Times",
 		opening: 11,
 		// TODO: Freitag nur bis 14 Uhr
-		closing: 14.5
+		closing: 14.5,
+		open: false
 	},
 	{
 		name: "Wildau",
@@ -137,6 +146,7 @@ export const mensaData = [
 			latitude: 52.31913645920946, 
 			longitude: 13.632358896246892
 		},
+		distance: 0,
 		openingTimes: {
 			0: { from: 8, to: 15 },
 			1: { from: 8, to: 15 },
@@ -148,17 +158,17 @@ export const mensaData = [
 		},
 		openingString: "Loading Opening Times",
 		opening: 8,
-		closing: 15
+		closing: 15,
+		open: false
 	}
 ]
 
-
-export default function Home(props) {
+export default function Page() {
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes()/60
 	const currentDay = d.getDay()
 
-	const [mensen, setMensen] = useState([])
+	const [mensen, setMensen] = useState(mensaData)
 	const [locationPermission, setLocationPermission] = useState(false)
 
 	const [locationLoaded, setLocationLoaded] = useState(false);
@@ -210,33 +220,32 @@ export default function Home(props) {
 			navigator.geolocation.getCurrentPosition(success, (e) => console.log(e));
 			setLocationLoaded(true);
 		}
+
+		navigator.permissions.query({name:'geolocation'}).then(function(result) {
+			if (result.state == 'granted') {
+				setLocationPermission(true)
+			} else if (result.state == 'prompt') {
+				setLocationPermission(false)
+			} else if (result.state == 'denied') {
+				setLocationPermission(false)
+			}
+			result.onchange = function() {
+				if (result.state == 'granted') {
+					setLocationPermission(true)
+				} else if (result.state == 'prompt') {
+					setLocationPermission(false)
+				} else if (result.state == 'denied') {
+					setLocationPermission(false)
+				}
+			}
+		})
 	}
 
 
 	useEffect(() => {
 		// TODO: Check if user wants to give location data
 		getLocation()
-		setMensen(mensaData)
-		
-		mensaData.map(mensa => {
-			getOpeningString(mensa.url).then((data) => {
-				const mensaId = mensaData.findIndex((item) => item.url === mensa.url)
-				setMensen(mensen => {
-					mensen[mensaId].openingString = data.openingString
-					mensen[mensaId].open = data.open;
-					return mensen
-				})
-			})
-
-			// Get ID of the current Mensa
-			
-		})
 	}, [])
-
-
-	useEffect(() => {
-		console.log(mensen)
-	}, [mensen])
 
   return (
     <div className="p-4 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
@@ -253,8 +262,7 @@ export default function Home(props) {
         ">
           {
             mensen.map(mensa => {
-              return <Link href={'/mensa/'+mensa.url}>
-                      <a className="flex py-3 px-6 justify-between">
+              return <Link href={'/mensa/'+mensa.url} className="flex py-3 px-6 justify-between">
                         <div className="flex flex-col space-y-0.5 justify-start">
                           
 							{
@@ -297,7 +305,6 @@ export default function Home(props) {
                            				</> : null
                           }
                         </div>
-                      </a>
                     </Link>
             })
           }
@@ -307,4 +314,3 @@ export default function Home(props) {
     </div>
   );
 }
-//{ mensa.openingString }

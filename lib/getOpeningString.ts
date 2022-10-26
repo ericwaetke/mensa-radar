@@ -1,4 +1,4 @@
-import { mensaData } from "../pages"
+import { mensaData } from "../app/page"
 
 export const getOpeningString = async (mensa: string) => {
 	const currentDate = new Date()
