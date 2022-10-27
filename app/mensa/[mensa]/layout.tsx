@@ -1,11 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { use } from "react";
-import { Offer } from "../../../../components/offer";
-import { PillOnWhiteBG } from "../../../../components/pill";
-import { getOpeningString, getDates } from "../../../../lib/getOpeningString";
-import { getWeekdayByName } from "../../../../lib/getWeekdayByName";
-import OffersLayout from "./offers/layout";
+import { Offer } from "../../../components/offer";
+import { PillOnWhiteBG } from "../../../components/pill";
+import { getOpeningString, getDates } from "../../../lib/getOpeningString";
+import { getWeekdayByName } from "../../../lib/getWeekdayByName";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
