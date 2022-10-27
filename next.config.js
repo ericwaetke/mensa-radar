@@ -8,6 +8,8 @@ const withPWA = require("next-pwa")({
 });
 
 const nextConfig = withPWA({
-    // next config
+    experimental: {
+        appDir: true,
+      },
 });
 module.exports = nextConfig;

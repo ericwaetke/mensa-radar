@@ -1,47 +1,57 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import 'tailwindcss/tailwind.css'
 import Footer from '../../../../components/footer';
 
 import { getWeekdayByName } from '../../../../lib/getWeekdayByName';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
-import { mensaData } from '../../..';
 import { Pill, PillOnWhiteBG } from '../../../../components/pill';
-import { getDates, getOpeningString } from '../../../../lib/getOpeningString';
-import { useOpeningString } from '../../../../hooks/useOpeningString';
+import { getDates } from '../../../../lib/getOpeningString';
+import { createClient } from '@supabase/supabase-js';
+import { use } from 'react';
 
+import {headers} from "next/headers"
 
-export default function Mensa(
-	{
-		foodOffers = [],
-		selectedWeekday = 0
-	} : {
-		foodOffers: any,
-		selectedWeekday: number
-	}
-) {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-	const router = useRouter()
-  	const { mensa, day } = router.query
+const getFoodOffers = async (mensa: string | string[], day: string | string[]) => {
+	const selectedWeekday = getWeekdayByName(day)
+
+	const dev = process.env.NODE_ENV !== 'production';
+	const props = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {
+		method: 'POST',
+		body: JSON.stringify({
+			selectedWeekday,
+			mensa
+		}),
+		next: {
+			revalidate: 60*5
+		}
+	})
+	return props.json()
+}
+
+const fetchData = async () => {
+	const mensaDataReq = await supabase.from('mensen').select()
+	return mensaDataReq.data
+}
+
+export default function Mensa({params}) {
+	const {mensa, day} = params
+	
+	const { foodOffers, selectedWeekday }: { foodOffers: any[], selectedWeekday: number } = use(getFoodOffers(mensa, day))
+
+	const mensaData = use(fetchData())
+
 	const url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
 
 	const mensaName = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
 	// Switcher for Nutiotional Intformation is not yet working
-	const [offers, setOffers] = useState([])
-	
-	const collapseNutrionionInfo = (index) => {
-		let tempOffers = [...offers]
-		let tempOffer = tempOffers[index]
-		tempOffer = !tempOffer
-		tempOffers[index] = tempOffer
-		
-		setOffers(tempOffers)
-	}
 
 	const containerAnimation = {
 		hidden: {
@@ -80,14 +90,6 @@ export default function Mensa(
 	}
 
 	// Get Opening String from useOpeningString
-
-	const [openingString, setOpeningString] = useState("")
-	useEffect(() => {
-		getOpeningString(url).then(data => {
-			console.log(data)
-			setOpeningString(data.openingString)
-		})
-	}, [])
 
     return (
         <div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
@@ -133,19 +135,18 @@ export default function Mensa(
 			</div>
 
 			<div className="flex justify-between">
-				<PillOnWhiteBG>{ url === undefined ? "" : openingString }</PillOnWhiteBG>
+				<PillOnWhiteBG>{ url === undefined ? "" : "openingString" }</PillOnWhiteBG>
 			</div>
 
 			{
+					// @ts-ignore
 					day === "samstag" || day === "sonntag" ? (
 						<div>
 							<p>
 							Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
 							</p>
-							<Link href={`/mensa/${mensa}/freitag`} legacyBehavior>
-								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
+							<Link href={`/mensa/${mensa}/freitag`} className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
 									Zu vergangenem Freitag
-								</a>
 							</Link>
 						</div>
 					) : null
@@ -154,24 +155,42 @@ export default function Mensa(
 
 			{/* Day Selection */}
 			<div className="daySelection">
-				<motion.div 
+				<div 
 					className="space-x-4 flex overflow-x-scroll overflow-y-hidden"
-					variants={containerAnimation}
-					initial="hidden"
-					animate="show">
+					// variants={containerAnimation}
+					// initial="hidden"
+					// animate="show"
+					>
 					{
 						getDates(new Date()).shownDays.map((day, i) => {
 							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
 							
-							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
+							return <div 
+							// variants={dayVariantAnimation}
+							>
+								<Link href={`/mensa/${mensa}/${day.url}`} className={`${isSelected ? "bg-main-green" : "bg-background-container"} h-max px-8 py-4 inline-flex min-w-max flex-col items-start justify-center rounded-xl text-green-w7 uppercase`}>
+									<p className={`font-bold ${isSelected ? 'text-black' : null}`}>{day.mainText}</p>
+									{
+										isSelected ? 
+										<>
+											<p className="text-sm">
+												{day.subText}
+											</p>
+										</> : null
+									}
+								</Link>
+							</div>
 						}) 
-						
 					} 
 					
-				</motion.div>
+				</div>
 			</div>
 
-			<motion.div variants={anim01} initial="hidden" animate="show">
+			<div 
+				// variants={anim01} 
+				// initial="hidden" 
+				// animate="show"
+				>
 			{
 				// Not sold out
 			}
@@ -180,7 +199,7 @@ export default function Mensa(
 				foodOffers.map((offer, i) => {
 					if(offer.labels.foodType === "vegan" && !offer.soldOut){
 						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+							<Offer key={i} offer={offer} mensa={mensa} day={day}/>
 						)
 					}
 				})
@@ -190,7 +209,7 @@ export default function Mensa(
 				foodOffers.map((offer, i) => {
 					if(offer.labels.foodType === "vegetarisch" && !offer.soldOut){
 						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+							<Offer key={i} offer={offer} mensa={mensa} day={day}/>
 						)
 					}
 				})
@@ -200,7 +219,7 @@ export default function Mensa(
 				foodOffers.map((offer, i) => {
 					if(offer.labels.foodType !== "vegan" && offer.labels.foodType !== "vegetarisch" && !offer.soldOut){
 						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+							<Offer key={i} offer={offer} mensa={mensa} day={day}/>
 						)
 					}
 				})
@@ -213,55 +232,12 @@ export default function Mensa(
 				foodOffers.map((offer, i) => {
 					if(offer.soldOut){
 						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+							<Offer key={i} offer={offer} mensa={mensa} day={day}/>
 						)
 					}
 				})
 			}
-			</motion.div>
+			</div>
         </div>
     );
-}
-
-export function getStaticPaths() {
-	
-
-	let paths = [];
-	// mensaData.map(mensa => {
-	// 	days.map(day => {
-	// 		paths.push({
-	// 			params: {
-	// 				mensa: mensa.url,
-	// 				day: day.url
-	// 			},
-	// 		})
-	// 	})
-	// })
-
-	return {
-		paths,
-		fallback: true
-	}
-}
-
-export async function getStaticProps(context) {
-	const { params } = context
-	const { mensa, day } = params
-
-	const selectedWeekday = getWeekdayByName(day)
-	console.log(selectedWeekday)
-
-	const dev = process.env.NODE_ENV !== 'production';
-	const props = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {
-		method: 'POST',
-		body: JSON.stringify({
-			selectedWeekday,
-			mensa
-		}),
-	})
-
-	return {
-		props: await props.json(),
-		revalidate: 60
-	}
 }

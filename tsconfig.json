@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2015",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,13 +17,21 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "pages/mensa/[mensa]/[day]/[offer].ts", "components/ratings/qualityRatingComponent.tsx+"  ],
+    "**/*.tsx",
+    "app/mensa/[mensa]/[day]/[offer].ts",
+    "components/ratings/qualityRatingComponent.tsx+",
+    ".next/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -59,7 +59,7 @@ export const QualityRatingComponent = (
 
 	return (
 		<div className="quality-rating-component inline-flex flex-col">
-			<motion.div className="quality-rating-component__body inline-flex my-2 items-center"
+			<div className="quality-rating-component__body inline-flex my-2 items-center"
 			variants={container}
 			initial="hidden"
 			animate="show">
@@ -90,7 +90,7 @@ export const QualityRatingComponent = (
 						<span className="bg-background-container rounded-full w-4 h-4 flex justify-center">{negativeRating}</span>
 					</Pill> : null
 				}
-			</motion.div>
+			</div>
 		</div>
 	)
 }

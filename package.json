@@ -1,16 +1,18 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev --turbo\" \"tailwindcss --input input.css --output output.css --watch\"",
+    "dev": "next dev",
     "build": "tailwindcss input.css --output output.css && next build",
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.0.4",
     "@vercel/og": "^0.0.18",
     "dayjs": "^1.11.5",
+    "encoding": "^0.1.13",
     "eslint-config-next": "^13.0.0",
     "framer-motion": "^7.3.6",
-    "mongodb": "^4.10.0",
+    "mongodb": "^4.11.0",
     "next": "^13.0.0",
     "next-connect": "^0.12.2",
     "next-pwa": "^5.5.4",
