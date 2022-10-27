@@ -1,16 +1,12 @@
-import { useRef, useState, useEffect } from 'react';
-import { useRouter } from 'next/router'
+'use client';
+import { useRef, useState, useEffect, use } from 'react';
 import Link from 'next/link'
 import 'tailwindcss/tailwind.css'
-import Footer from '../../../../components/footer';
 // import "../../assets/css/mensa.module.css"
 import Modal from 'react-modal';
 
-import clientPromise from '../../../../lib/mongodb'
 import { ObjectId } from 'mongodb';
-import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-import { RatingOverview } from '../../../../components/ratings/ratingOverview';
-import { InteractiveRating } from '../../../../components/ratings/interactiveRating/interactiveRating';
+
 import useSWR from 'swr';
 
 
@@ -18,38 +14,55 @@ import toast from "react-hot-toast"
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
 import Head from 'next/head';
-import { Pill } from '../../../../components/pill';
-import { getItem } from '../../../../lib/localStorageHelper';
-import { mensaData } from '../../..';
+import { NutrientOverview } from '../../../../../components/nutrients/nutrientOverview';
+import { Pill } from '../../../../../components/pill';
+import { InteractiveRating } from '../../../../../components/ratings/interactiveRating/interactiveRating';
+import { RatingOverview } from '../../../../../components/ratings/ratingOverview';
+import { getItem } from '../../../../../lib/localStorageHelper';
+import clientPromise from '../../../../../lib/mongodb';
 
-const fetcher = ({url, args}) => fetch(url, {method: "post", body: JSON.stringify(args)}).then((res) => res.json()).catch((err) => console.log(err))
-
-export default function Mensa(props) {
-	const router = useRouter()
-  	const mensa = router.query.mensa as string
-
-	const offer = props.offer ? props.offer : {
-		title: "loading",
-		beschreibung: "loading",
-		preise: {
-			preis_g: "loading",
-			preis_s: "loading",
+const getMensaData = async (mensaUrl: string) => {
+	const mensenReq = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/mensen?url=eq.${mensaUrl}&select=*`, {
+		headers: {
+			'apikey': process.env.SUPABASE_KEY,
+			'Authorization': `Bearer ${process.env.SUPABASE_KEY}`,
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
 		},
-		labels: {
-			filter: "loading",
-		},
-		allergene: ["loading"],
-		nutrients: [
-			{
-				name: "Fett",
-			reference: 66,
-			unit: "g"
-			}
-		]
-	};
+		next: {
+			revalidate: 60*5
+		}
+	})
+	let mensen = await mensenReq.json()
+	return mensen
+}
 
-	const [ratings, setRatings] = useState<{qualityRatings: {sessionId: string, rating: 0|1|2|3}[], tagReviews: {"?"?: string[]}}>()
+const getOffer = async (mensaUrl: string, offerId: number) => {
+	const dev = process.env.NODE_ENV !== 'production';
+	const mensenReq = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getTempOffer`, {
+		method: 'POST',
+		body: JSON.stringify({
+			mensaUrl,
+			offerId
+		}),
+		next: {
+			revalidate: 60*5
+		}
+	})
+	let mensen = await mensenReq.json()
 
+	return mensen
+}
+
+const getRatings: () => {qualityRatings: {sessionId: string, rating: 1|2|3}[], tagReviews: {tag?: string[]}} = async () => {
+	return {}
+}
+
+export default function Mensa({params}) {
+	const {mensa, offer} = params
+
+	const offerData = use(getOffer(mensa, offer))
+	console.log(offerData)
 	const [hasUserRating, setHasUserRating] = useState(false)
 
 	const [userQualityRating, setUserQualityRating] = useState<0|1|2|3>(0)
@@ -66,37 +79,30 @@ export default function Mensa(props) {
 		setShowRatingModal(false)
 	}
 	
-	// const {data, error} = useSWR(`/api/getRatings?mensa=${mensa}&offerId=$`, fetcher)
-	const {data, error} = useSWR({url: "/api/getRatings", args: {mensa, offerId: offer._id}}, fetcher)
+	const ratings = use(getRatings())
 
-	useEffect(() => {
-		console.log("ratings", ratings)
-		setRatings(data)
-	}, [data])
 
-	useEffect(() => {
-		// setAmountRating(ratings ? (ratings.amountRatings ? calculateAverage(ratings.amountRatings) : 0) : 0)
 
-		const checkRating = (rating, sessionId) => rating.sessionId == sessionId
+	const checkRating = (rating, sessionId) => rating.sessionId == sessionId
 
-		// Check if User has rated already
-		if(ratings ? ratings?.qualityRatings?.some((rating) => checkRating(rating, sessionId.current)) : false) {
-			setHasUserRating(true)
-			setUserQualityRating(ratings.qualityRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
-			// setUserAmountRating(ratings.amountRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
-		}
-	}, [ratings])
+	// Check if User has rated already
+	if(ratings ? ratings?.qualityRatings?.some((rating) => checkRating(rating, sessionId.current)) : false) {
+		setHasUserRating(true)
+		setUserQualityRating(ratings.qualityRatings.find((rating) => checkRating(rating, sessionId.current)).rating)
+	}
+
 
 
 	const dev = process.env.NODE_ENV !== 'production';
-	const imageUrl = `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/og?title=${offer.beschreibung}`
+	const imageUrl = `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/og?title=${offerData.beschreibung}`
 
+	const mensaData = use(getMensaData(mensa))
 	const mensaName = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
 
 	return (
-        <div className="space-y-6 break-words mx-5 mt-12 mb-28 lg:w-1/2 lg:mx-auto">
+		<div className="space-y-6 break-words mx-5 mt-12 mb-28 lg:w-1/2 lg:mx-auto">
 			<Head>
-				<title>{offer.beschreibung} - Mensa {mensaName}</title>
+				<title>{offerData.beschreibung} - Mensa {mensaName}</title>
 				<meta property='og:image' content={imageUrl} />
 			</Head>
 			<BottomSheet open={showRatingModal} onDismiss={() => setShowRatingModal(false)}>
@@ -111,36 +117,36 @@ export default function Mensa(props) {
 
 					setHasUserRating={setHasUserRating}
 
-					offerId={offer._id} 
+					offerId={offerData._id} 
 					mensa={mensa} 
 					closeRatingModal={() => setShowRatingModal(false)}/>
 									
 				</BottomSheet>
 			<div>
-                <Link
-                    href={`/mensa/${mensa}/${router.query.day}/`}
-                    className="p-2 pl-0 flex items-center gap-4">
+				<Link
+					href={`/mensa/${mensa}/${params.day}/`}
+					className="p-2 pl-0 flex items-center gap-4">
 
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
-                    </svg>
-                    <h2 className="text-sm font-medium inline text-center">Zurück zur Mensa {mensaName}</h2>
+					<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
+					</svg>
+					<h2 className="text-sm font-medium inline text-center">Zurück zur Mensa {mensaName}</h2>
 
-                </Link>
+				</Link>
 
 			</div>
 
 			<div className="space-y-6 lg:space-y-4">
 				<div className="flex-initial rounded-xl bg-background-container divide-y divide-solid divide-main-black/20">
 					<div className="px-6 pt-7 pb-5">
-						<p className="text-2xl font-bold">{offer.beschreibung}</p>
+						<p className="text-2xl font-bold">{offerData.beschreibung}</p>
 						<div className="mt-9 flex justify-between flex-col xs:flex-row items-start gap-y-2">							
 							<div className="font-medium text-black text-sm flex gap-2 items-center">
-								<Pill>{offer.preise.preis_s} €</Pill>
-								<span className='text-gray-400'>{offer.preise.preis_g} €</span>
+								<Pill>{offerData.preise.preis_s} €</Pill>
+								<span className='text-gray-400'>{offerData.preise.preis_g} €</span>
 							</div>
 
-							{offer.labels.filter !== "all" && <Pill>{offer.labels.filter}</Pill>}
+							{offerData.labels.filter !== "all" && <Pill>{offerData.labels.filter}</Pill>}
 						</div>
 					</div>
 
@@ -154,12 +160,12 @@ export default function Mensa(props) {
 						userTagReviews={userTagReviews}/>
 				</div>
 				<div className='border border-sec-stroke rounded-xl divide-y divide-solid divide-background-container'>
-					<NutrientOverview nutrients={offer.nutrients} />
+					<NutrientOverview nutrients={offerData.nutrients} />
 
 					<div className="py-4">
 						<p className="px-8 pb-2 font-bold text-sm text-custom-black uppercase">Allergene</p>
 						<div className="px-8 pb-4 text-sm font-serif">
-								{offer.allergene.join(", ")}
+								{offerData.allergene.join(", ")}
 							</div>
 					</div>
 				</div>
@@ -177,46 +183,6 @@ export default function Mensa(props) {
 					</div>
 				</button>
 			</div>
-        </div>
-    );
-}
-
-export async function getStaticPaths() {
-
-	return {
-		paths: [],
-		fallback: true
-	}
-}
-
-export async function getStaticProps(context) {
-	try {
-		const client = await clientPromise;
-		const db = client.db("guckstDuEssen");
-
-		console.log(context.params.mensa)
-		const coll = await db.collection(context.params.mensa);
-		console.log(coll)
-
-        const offerQuery = {_id: new ObjectId(context.params.offer)}
-		console.log(offerQuery)
-        let offer = await coll.findOne(offerQuery).catch(err => console.log(err));
-
-        offer._id = offer._id.toString()
-
-        return {
-            props: {
-                offer
-            }
-        }
-	} catch (e) {
-		console.log("Error fetching Data")
-		console.error(e)
-
-        return {
-            props: {
-                offer: null
-            }
-        }
-	}
+		</div>
+	);
 }

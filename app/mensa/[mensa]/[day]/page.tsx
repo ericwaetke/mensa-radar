@@ -9,19 +9,19 @@ import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
 import { Pill, PillOnWhiteBG } from '../../../../components/pill';
-import { getDates } from '../../../../lib/getOpeningString';
+import { getDates, getOpeningString } from '../../../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
 import { use } from 'react';
 
 import {headers} from "next/headers"
+import { motion } from 'framer-motion';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const getFoodOffers = async (mensa: string | string[], day: string | string[]) => {
 	const selectedWeekday = getWeekdayByName(day)
-
 	const dev = process.env.NODE_ENV !== 'production';
 	const props = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {
 		method: 'POST',
@@ -36,21 +36,38 @@ const getFoodOffers = async (mensa: string | string[], day: string | string[]) =
 	return props.json()
 }
 
-const fetchData = async () => {
+const fetchData = async (url: string) => {
 	const mensaDataReq = await supabase.from('mensen').select()
-	return mensaDataReq.data
+	const mensaData = mensaDataReq.data.filter(mensaFilter => mensaFilter.url === url)[0]
+
+	const currentMensaDataReq = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/current_mensa_data?id=eq.${mensaData.id}&select=*`, {
+		headers: {
+			'apikey': supabaseKey,
+			'Authorization': `Bearer ${supabaseKey}`,
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+		},
+		next: {
+			revalidate: 60*5
+		}
+	})
+	const currentMensaData = await currentMensaDataReq.json()
+
+	return {
+		...mensaData,
+		...currentMensaData[0],
+	}
 }
 
 export default function Mensa({params}) {
 	const {mensa, day} = params
 	
 	const { foodOffers, selectedWeekday }: { foodOffers: any[], selectedWeekday: number } = use(getFoodOffers(mensa, day))
+	const mensaData = use(fetchData(mensa))
 
-	const mensaData = use(fetchData())
-
-	const url = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.url;
-
-	const mensaName = mensaData.filter(mensaFilter => mensaFilter.url === mensa)[0]?.name;
+	const url = mensaData.url;
+	const mensaName = mensaData.name;
+	console.log(mensaData)
 	// Switcher for Nutiotional Intformation is not yet working
 
 	const containerAnimation = {
@@ -135,7 +152,7 @@ export default function Mensa({params}) {
 			</div>
 
 			<div className="flex justify-between">
-				<PillOnWhiteBG>{ url === undefined ? "" : "openingString" }</PillOnWhiteBG>
+				<PillOnWhiteBG>{ url === undefined ? "" : getOpeningString(mensaData) }</PillOnWhiteBG>
 			</div>
 
 			{
@@ -162,8 +179,10 @@ export default function Mensa({params}) {
 					// animate="show"
 					>
 					{
+						
 						getDates(new Date()).shownDays.map((day, i) => {
 							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
+							console.log({isSelected, selectedWeekday, i, getDates: getDates(new Date()).shownDays.length})
 							
 							return <div 
 							// variants={dayVariantAnimation}
