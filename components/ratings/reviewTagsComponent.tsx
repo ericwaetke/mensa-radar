@@ -37,9 +37,10 @@ export const ReviewTagsComponent = (
 	return (
 		<div className="quality-rating-component inline-flex flex-col">
 			<div className="flex flex-wrap my-2 items-center gap-2 justify-end"
-			variants={container}
-			initial="hidden"
-			animate="show">
+			// variants={container}
+			// initial="hidden"
+			// animate="show"
+			>
 				{
 					Object.keys(tagReviews).map((tag, index) => {
 						return (
