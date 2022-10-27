@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/mensa/[mensa]/[day]/[offer].ts",
+    "app/(mensaDetail)/[mensa]/[day]/[offer].ts",
     "components/ratings/qualityRatingComponent.tsx+",
     ".next/types/**/*.ts"
   ],

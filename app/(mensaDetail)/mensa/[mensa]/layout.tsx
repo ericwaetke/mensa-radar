@@ -1,16 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { use } from "react";
-import { Offer } from "../../../components/offer";
-import { PillOnWhiteBG } from "../../../components/pill";
-import { getOpeningString, getDates } from "../../../lib/getOpeningString";
-import { getWeekdayByName } from "../../../lib/getWeekdayByName";
+import { Offer } from "../../../../components/offer";
+import { PillOnWhiteBG } from "../../../../components/pill";
+import { getOpeningString, getDates } from "../../../../lib/getOpeningString";
+import { getWeekdayByName } from "../../../../lib/getWeekdayByName";
+import DaySwitcher from "./daySwitcher";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
-
-
 
 const fetchData = async (url: string) => {
 	const mensaDataReq = await supabase.from('mensen').select()
@@ -43,7 +42,6 @@ export default function DayLayout({ children, params}) {
 
 	const url = mensaData.url;
 	const mensaName = mensaData.name;
-	console.log(mensaData)
 	// Switcher for Nutiotional Intformation is not yet working
 
 	const containerAnimation = {
@@ -143,41 +141,8 @@ export default function DayLayout({ children, params}) {
 					) : null
 			}
 
-
-			{/* Day Selection */}
-			<div className="daySelection">
-				<div 
-					className="space-x-4 flex overflow-x-scroll overflow-y-hidden"
-					// variants={containerAnimation}
-					// initial="hidden"
-					// animate="show"
-					>
-					{
-						
-						getDates(new Date()).shownDays.map((day, i) => {
-							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
-							console.log({isSelected, selectedWeekday, i, getDates: getDates(new Date()).shownDays.length})
-							
-							return <div 
-							// variants={dayVariantAnimation}
-							>
-								<Link href={`/mensa/${mensa}/${day.url}`} className={`${isSelected ? "bg-main-green" : "bg-background-container"} h-max px-8 py-4 inline-flex min-w-max flex-col items-start justify-center rounded-xl text-green-w7 uppercase`}>
-									<p className={`font-bold ${isSelected ? 'text-black' : null}`}>{day.mainText}</p>
-									{
-										isSelected ? 
-										<>
-											<p className="text-sm">
-												{day.subText}
-											</p>
-										</> : null
-									}
-								</Link>
-							</div>
-						}) 
-					} 
-					
-				</div>
-			</div>
+			<DaySwitcher />
+			
 			{children}
         </div>
 	</>

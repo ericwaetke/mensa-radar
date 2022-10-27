@@ -1,6 +1,6 @@
 import { use } from "react";
-import { Offer } from "../../../../components/offer";
-import { getWeekdayByName } from "../../../../lib/getWeekdayByName";
+import { Offer } from "../../../../../components/offer";
+import { getWeekdayByName } from "../../../../../lib/getWeekdayByName";
 
 const getFoodOffers = async (mensa: string | string[], day: string | string[]) => {
 	const selectedWeekday = getWeekdayByName(day)
@@ -18,11 +18,9 @@ const getFoodOffers = async (mensa: string | string[], day: string | string[]) =
 	return props.json()
 }
 
-export default function OffersPage({props}) {
-    console.log(props)
-    const {mensa, day} = props
-    const foodOffers = use(getFoodOffers(mensa, day))
-    
+export default function OffersPage({params}) {
+    const {mensa, day} = params
+    const {foodOffers} = use(getFoodOffers(mensa, day))
     return <div 
                 // variants={anim01} 
                 // initial="hidden" 
