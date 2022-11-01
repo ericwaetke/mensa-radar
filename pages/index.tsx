@@ -183,6 +183,9 @@ export async function getStaticProps(context) {
 	const mensaDataResolved = await Promise.all(mensaData)
 
 	return {
-		props: { mensaData: mensaDataResolved }, // will be passed to the page component as props
+		props: { 
+			mensaData: mensaDataResolved 
+		},
+		revalidate: 60
 	}
 }
