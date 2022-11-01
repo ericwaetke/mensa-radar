@@ -51,10 +51,9 @@ export const NutrientComponent = ({nutrient}) => {
 
 			<div className='h-1.5 w-full bg-background-container relative rounded-full'>
 				<div className='h-1.5 bg-sec-green-dark absolute border-r-2 border-custom-bg rounded-full' 
-				// initial={{width: 0}}
-				// animate={{width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}
-				// transition={{duration: .5}}
-				></div>
+				initial={{width: 0}}
+				animate={{width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}
+				transition={{duration: .5}}></div>
 
 				<div className='h-4 w-1 bg-main-black absolute border-r-2 border-main-white rounded-full' 
 				style={{

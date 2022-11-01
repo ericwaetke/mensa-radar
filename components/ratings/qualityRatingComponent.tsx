@@ -60,10 +60,9 @@ export const QualityRatingComponent = (
 	return (
 		<div className="quality-rating-component inline-flex flex-col">
 			<div className="quality-rating-component__body inline-flex my-2 items-center"
-			// variants={container}
-			// initial="hidden"
-			// animate="show"
-			>
+			variants={container}
+			initial="hidden"
+			animate="show">
 				{
 					positiveRating > 0 ? <Pill>
 						<svg className="h-3 w-3" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 30">
