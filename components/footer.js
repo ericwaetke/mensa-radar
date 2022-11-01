@@ -7,8 +7,8 @@ const Footer = () => {
 			<p className="">
                 <a href="https://ericwaetke.com" target="_blank" className="text-main-black">Eric Wätke</a> · <a href="https://www.instagram.com/carl.qq/" target="_blank" className="text-main-black">Carl Linz</a>
             </p>
-            <Link href="/impressum" className="text-main-black">
-                Impressum
+            <Link href="/impressum">
+                <a className="text-main-black">Impressum</a>
             </Link>
 		</footer>
     )

@@ -2,24 +2,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "tailwindcss input.css --output output.css && next build",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.4",
     "@vercel/og": "^0.0.18",
     "dayjs": "^1.11.5",
-<<<<<<< HEAD
-    "encoding": "^0.1.13",
-    "eslint-config-next": "^13.0.0",
-    "framer-motion": "^7.3.6",
-    "mongodb": "^4.11.0",
-    "next": "^13.0.0",
-=======
     "framer-motion": "^7.3.6",
     "mongodb": "^4.10.0",
     "next": "^12.3.1",
->>>>>>> parent of 47d3c88 (⬆️ Next.js -> 13)
     "next-connect": "^0.12.2",
     "next-pwa": "^5.5.4",
     "react": "^18.2.0",
@@ -33,9 +25,8 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "@types/react": "^18.0.23",
-    "autoprefixer": "^10.4.12",
-    "concurrently": "^7.5.0",
+    "@types/react": "^18.0.20",
+    "autoprefixer": "^10.4.0",
     "postcss": "^8.3.11",
     "tailwindcss": "^2.2.19",
     "typescript": "^4.8.3"

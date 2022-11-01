@@ -1,23 +1,11 @@
 import clientPromise from '../../lib/mongodb'
 import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
+import { getWeekdayByName } from '../../lib/getWeekdayByName';
+import {mensaData} from "../"
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getDates } from '../../lib/getOpeningString';
-import { createClient } from '@supabase/supabase-js';
+import { NodeNextRequest } from 'next/dist/server/base-http/node';
+import { getDates, getOpeningString } from '../../lib/getOpeningString';
 
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-const getMensaId = {
-	'golm': 1,
-	'neues-palais': 2,
-	'fhp': 3,
-	'brandenburg': 4,
-	'filmuniversitaet': 5,
-	'griebnitzsee': 6,
-	'wildau': 7,
-}
 
 export const fetchDbData = async (reqDay, mensa) => {
 	const selectedWeekday = reqDay
@@ -40,13 +28,12 @@ export const fetchDbData = async (reqDay, mensa) => {
 		const dayQuery = {date: selectedDayFormatted}
 		const dayCount = await coll.countDocuments(dayQuery)
 
-		if (false) {
+		if (true) {
 		// if (dayCount === 0) {
 			// Add the current STUDENTENWERK Data to the Database
 			console.log("No Data for this day, adding...")
 			
 			const stwData = await getAllMensaDataFromSTW(mensa);
-			console.log("getting stw data", stwData)
 			let sortedStwData = {};
 			stwData.map((offer) => {
 				sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
@@ -71,25 +58,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 						...getDifference(sortedStwData[date], dbData),
 						...getDifference(dbData, sortedStwData[date])
 					];
-					changes.map(async (change) => {
-						// await supabase
-						// 	.from('food_offerings')
-						// 	.insert({
-						// 		// Mensa ID
-						// 		mensa: getMensaId[mensa],
-						// 		// Title or Name of the food
-						// 		food_title: change.beschreibung,
-						// 		// Description of the food
-						// 		food_desc: "",
-						// 		// Is the food vegan?
-						// 		vegan: change.labels.foodType === "vegan",
-						// 		// Is the food vegetarian?
-						// 		vegetarian: change.labels.foodType === "vegan" || change.labels.foodType === "vegetarisch",
-						// 		// JSON Object of the nutrients
-						// 		nutrients: change.nutrients,
-						// 		// JSON Object of the allergens
-						// 		allergens: change.allergene,
-						// 	})
+					changes.map((change) => {
 						// If the change has _id, it exists in MongoDB but not in STW Data
 						// => It was there once, but is not anymore
 						// => mark as sold out
@@ -100,24 +69,6 @@ export const fetchDbData = async (reqDay, mensa) => {
 							// => It is new
 							// => add to MongoDB
 							coll.insertOne(change)
-							// await supabase
-							// .from('food_offerings')
-							// .insert({
-							// 	// Mensa ID
-							// 	mensa: getMensaId[mensa],
-							// 	// Title or Name of the food
-							// 	food_title: change.beschreibung,
-							// 	// Description of the food
-							// 	food_desc: "",
-							// 	// Is the food vegan?
-							// 	vegan: change.labels.foodType === "vegan",
-							// 	// Is the food vegetarian?
-							// 	vegetarian: change.labels.foodType === "vegan" || change.labels.foodType === "vegetarisch",
-							// 	// JSON Object of the nutrients
-							// 	nutrients: change.nutrients,
-							// 	// JSON Object of the allergens
-							// 	allergens: change.allergene,
-							// })
 						}
 						console.log(change._id ? "AUSVERKAUFT" : "NEU")
 					})
@@ -146,6 +97,8 @@ export const fetchDbData = async (reqDay, mensa) => {
 		foodOffer._id = foodOffer._id.toString()
 	})
 
+	console.log({foodOffers, selectedWeekday})
+
 	return {
 		foodOffers,
 		selectedWeekday
@@ -153,7 +106,11 @@ export const fetchDbData = async (reqDay, mensa) => {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = req.body
+
+	console.log("API Request")
+	console.log(req.body)
+
+	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = JSON.parse(req.body)
 
     const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 

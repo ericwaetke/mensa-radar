@@ -67,23 +67,23 @@ export const InteractiveTagComponent = (
 
 
 	return (
-		<div className="text-center"
+		<motion.div className="text-center"
 		variants={container}
 			initial="hidden"
 			animate="show">
 			{
 				defaultTags[qualityRating].map((tag, index) => {
 					return (
-						<div 
+						<motion.div 
 						className={`px-2 border inline-flex rounded-full m-1 ${selected.includes(tag) ? 'bg-main-green border-main-green' : 'border-main-black'}`} 
 						key={index}
 						variants={tagAnimation} 
 						onClick={() => handleUserTagSelection(tag)}>
 								{tag}
-						</div>
+						</motion.div>
 					)
 				})
 			}
-		</div>
+		</motion.div>
 	)
 }
