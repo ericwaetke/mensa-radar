@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.0.4",
     "@vercel/og": "^0.0.18",
     "dayjs": "^1.11.5",
     "framer-motion": "^7.3.6",

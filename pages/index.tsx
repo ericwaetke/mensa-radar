@@ -4,161 +4,19 @@ import Head from "next/head";
 import Link from 'next/link';
 
 import Footer from "../components/footer";
-import { useOpeningString } from "../hooks/useOpeningString";
-import { getOpeningString } from "../lib/getOpeningString";
-
-
-export const mensaData = [
-	{
-		name: "Golm",
-		url: "golm",
-		coords: {
-			latitude: 52.40795670687466, 
-			longitude: 12.978685326538164
-		},
-		openingTimes: {
-			0: { from: 11, to: 14.5 }, //mon
-			1: { from: 11, to: 14.5 }, //di
-			2: { from: 11, to: 14.5 }, //mi
-			3: { from: 11, to: 14.5 }, //do
-			4: { from: 11, to: 14.5 }, //fr
-			5: { from: 11, to: 14.5 }, //sa für sonderfälle
-			6: { from: 11, to: 14.5 }, //so für sonderfälle
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		closing: 14.5
-	},
-	{
-		name: "Neues Palais",
-		url: "neues-palais",
-		coords: {
-			latitude: 52.402868541881624, 
-			longitude: 13.011995232289776
-		},
-		openingTimes: {
-			0: { from: 11, to: 14.5 },
-			1: { from: 11, to: 14.5 },
-			2: { from: 11, to: 14.5 },
-			3: { from: 11, to: 14.5 },
-			4: { from: 11, to: 14.5 },
-			5: { from: 11, to: 14.5 },
-			6: { from: 11, to: 14.5 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		closing: 14.5
-	},
-	{
-		name: "FHP",
-		url: "fhp",
-		coords: {
-			latitude: 52.41324028310374, 
-			longitude: 13.051182387706824 
-		},
-		openingTimes: {
-			0: { from: 11, to: 14.5 },
-			1: { from: 11, to: 14.5 },
-			2: { from: 11, to: 14.5 },
-			3: { from: 11, to: 14.5 },
-			4: { from: 11, to: 14.5 },
-			5: { from: 11, to: 14.5 },
-			6: { from: 11, to: 14.5 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		closing: 14.5
-	},
-	{
-		name: "Brandenburg an der Havel",
-		url: "brandenburg",
-		coords: {
-			latitude: 52.41159566949572,
-			longitude: 12.539779153390663
-		},
-		openingTimes: {
-			0: { from: 11, to: 14 },
-			1: { from: 11, to: 14 },
-			2: { from: 11, to: 14 },
-			3: { from: 11, to: 14 },
-			4: { from: 11, to: 14 },
-			5: { from: 11, to: 14 },
-			6: { from: 11, to: 14 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		closing: 14
-	},
-	{
-		name: "Filmuniversität",
-		url: "filmuniversitaet",
-		coords: {
-			latitude: 52.38889031847045, 
-			longitude: 13.116692300009127
-		},
-		openingTimes: {
-			0: { from: 11, to: 14.5 },
-			1: { from: 11, to: 14.5 },
-			2: { from: 11, to: 14.5 },
-			3: { from: 11, to: 14.5 },
-			4: { from: 11, to: 14.5 },
-			5: { from: 11, to: 14.5 },
-			6: { from: 11, to: 14.5 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		closing: 14.5
-	},
-	{
-		name: "Griebnitzsee",
-		url: "griebnitzsee",
-		coords: {
-			latitude: 52.393549668399444, 
-			longitude: 13.12775872728105
-		},
-		openingTimes: {
-			0: { from: 11, to: 14.5 },
-			1: { from: 11, to: 14.5 },
-			2: { from: 11, to: 14.5 },
-			3: { from: 11, to: 14.5 },
-			4: { from: 11, to: 14.5 },
-			5: { from: 11, to: 14.5 },
-			6: { from: 11, to: 14.5 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 11,
-		// TODO: Freitag nur bis 14 Uhr
-		closing: 14.5
-	},
-	{
-		name: "Wildau",
-		url: "wildau",
-		coords: {
-			latitude: 52.31913645920946, 
-			longitude: 13.632358896246892
-		},
-		openingTimes: {
-			0: { from: 8, to: 15 },
-			1: { from: 8, to: 15 },
-			2: { from: 8, to: 15 },
-			3: { from: 8, to: 15 },
-			4: { from: 8, to: 15 },
-			5: { from: 8, to: 15 },
-			6: { from: 8, to: 15 },
-		},
-		openingString: "Loading Opening Times",
-		opening: 8,
-		closing: 15
-	}
-]
+import { getTempOpeningString } from "../lib/getOpeningString";
+import { loadGetInitialProps } from "next/dist/shared/lib/utils";
+import { createClient } from "@supabase/supabase-js";
 
 
 export default function Home(props) {
+	const {mensaData} = props;
+	console.log(props)
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes()/60
 	const currentDay = d.getDay()
 
-	const [mensen, setMensen] = useState([])
+	const [mensen, setMensen] = useState(mensaData);
 	const [locationPermission, setLocationPermission] = useState(false)
 
 	const [locationLoaded, setLocationLoaded] = useState(false);
@@ -188,7 +46,7 @@ export default function Home(props) {
 
 			let tempMensen = []
 			mensaData.map((mensa) => {
-				const distance = getDistanceFromLatLonInKm(latitude, longitude, mensa.coords.latitude, mensa.coords.longitude)
+				const distance = getDistanceFromLatLonInKm(latitude, longitude, mensa.loc_lat, mensa.loc_long)
 				tempMensen.push({
 						...mensa,
 						distance: Math.round(distance * 10) / 10
@@ -216,21 +74,21 @@ export default function Home(props) {
 	useEffect(() => {
 		// TODO: Check if user wants to give location data
 		getLocation()
-		setMensen(mensaData)
+		// setMensen(mensaData)
 		
-		mensaData.map(mensa => {
-			getOpeningString(mensa.url).then((data) => {
-				const mensaId = mensaData.findIndex((item) => item.url === mensa.url)
-				setMensen(mensen => {
-					mensen[mensaId].openingString = data.openingString
-					mensen[mensaId].open = data.open;
-					return mensen
-				})
-			})
+		// mensaData.map(mensa => {
+		// 	getOpeningString(mensa.url).then((data) => {
+		// 		const mensaId = mensaData.findIndex((item) => item.url === mensa.url)
+		// 		setMensen(mensen => {
+		// 			mensen[mensaId].openingString = data.openingString
+		// 			mensen[mensaId].open = data.open;
+		// 			return mensen
+		// 		})
+		// 	})
 
-			// Get ID of the current Mensa
+		// 	// Get ID of the current Mensa
 			
-		})
+		// })
 	}, [])
 
 
@@ -257,29 +115,19 @@ export default function Home(props) {
                       <a className="flex py-3 px-6 justify-between">
                         <div className="flex flex-col space-y-0.5 justify-start">
                           
-							{
-						 	 !locationLoaded ? <>
-							  <div role="status" className="animate-pulse m-auto">
-								  <div className="h-6 bg-white rounded-md dark:bg-gray-700 w-60"></div>
-								  <span className="sr-only">lädt</span>
-							  </div>
-							  </> : <h3 className="text-xl font-normal font-bigtext"> {mensa.name}</h3>
-							} 
-                          <div className="flex h-6 font-serif text-s">
-							{ 
-								mensa.open? <>  
-                            	<div className="rounded-full w-2 h-2 bg-sec-green-dark mr-2 my-auto"></div>
-								</> : null
-							}
-							{
-								mensa.openingString === "Loading Opening Times"? <>
-								<div role="status" className="animate-pulse h-4 my-1">
-									<div className="h-4 bg-white rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-									<span className="sr-only">lädt</span>
-								</div>
-								</> : <span className="opacity-60"> { mensa.openingString } </span>
-							}
-                          </div> 
+							
+							<h3 className="text-xl font-normal font-bigtext"> {mensa.name}</h3>
+							 
+							<div className="flex h-6 font-serif text-s">
+								{ 
+									mensa.open? <>  
+									<div className="rounded-full w-2 h-2 bg-sec-green-dark mr-2 my-auto"></div>
+									</> : null
+								}
+								
+								<span className="opacity-60"> { mensa.openingString } </span>
+								
+							</div> 
                         </div>
                         <div className="flex pb-1">
                           {
@@ -308,3 +156,33 @@ export default function Home(props) {
   );
 }
 //{ mensa.openingString }
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+export async function getStaticProps(context) {
+	const { data: mensen, error: mensenError } = await supabase
+		.from('mensen')
+		.select()
+
+	const { data: currentMensaData, error: currentMensaDataError } = await supabase
+		.from('current_mensa_data')
+		.select()
+
+	const mensaData = mensen.map(async mensa => {
+		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
+		return {
+			...mensa,
+			...currentMensa,
+			openingString: await getTempOpeningString(currentMensa)
+		}
+	})
+
+	console.log(await mensaData)
+	const mensaDataResolved = await Promise.all(mensaData)
+
+	return {
+		props: { mensaData: mensaDataResolved }, // will be passed to the page component as props
+	}
+}
