@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 import Footer from "../components/footer";
 import { getTempOpeningString } from "../lib/getOpeningString";
-import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 import { createClient } from "@supabase/supabase-js";
 
 

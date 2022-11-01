@@ -11,7 +11,7 @@ import { DayButton } from '../../../../components/dayButton';
 import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
 import { Pill, PillOnWhiteBG } from '../../../../components/pill';
-import { getDates, getOpeningString, getTempOpeningString } from '../../../../lib/getOpeningString';
+import { getDates, getTempOpeningString } from '../../../../lib/getOpeningString';
 import { useOpeningString } from '../../../../hooks/useOpeningString';
 import { createClient } from '@supabase/supabase-js';
 
@@ -283,8 +283,6 @@ export async function getStaticProps(context) {
 		...currentMensa,
 		openingString: await getTempOpeningString(currentMensa)
 	}
-
-	console.log(thisMensaData)
 
 	return {
 		props: {

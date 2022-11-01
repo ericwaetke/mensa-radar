@@ -1,10 +1,7 @@
 import clientPromise from '../../lib/mongodb'
 import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
-import { getWeekdayByName } from '../../lib/getWeekdayByName';
-import {mensaData} from "../"
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NodeNextRequest } from 'next/dist/server/base-http/node';
-import { getDates, getOpeningString } from '../../lib/getOpeningString';
+import { getDates } from '../../lib/getOpeningString';
 
 
 export const fetchDbData = async (reqDay, mensa) => {

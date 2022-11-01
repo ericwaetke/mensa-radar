@@ -1,4 +1,3 @@
-import { mensaData } from "../pages"
 
 export const getTempOpeningString = async (currentMensa) => {
 	const currentDate = new Date()
@@ -30,43 +29,43 @@ export const getTempOpeningString = async (currentMensa) => {
 	}
 }
 
-export const getOpeningString = async (mensa: string) => {
-	const currentDate = new Date()
-	let currentWeekday = getDates(currentDate).currentWeekday;
-	const days = getDates(currentDate).days;
+// export const getOpeningString = async (mensa: string) => {
+// 	const currentDate = new Date()
+// 	let currentWeekday = getDates(currentDate).currentWeekday;
+// 	const days = getDates(currentDate).days;
 
-	const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
-	const openingTimes =  findObjectInArrayByKey(mensaData, "url", mensa).openingTimes
-	let nextOffer = await nextOffering(mensa)
-	if(nextOffer.nextOfferInDays + currentWeekday > 5) nextOffer.nextOfferInDays = -1;
+// 	const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
+// 	const openingTimes =  findObjectInArrayByKey(mensaData, "url", mensa).openingTimes
+// 	let nextOffer = await nextOffering(mensa)
+// 	if(nextOffer.nextOfferInDays + currentWeekday > 5) nextOffer.nextOfferInDays = -1;
 
 
-	const open = currentTime >= openingTimes[currentWeekday].from && currentTime <= openingTimes[currentWeekday].to;
-	const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
+// 	const open = currentTime >= openingTimes[currentWeekday].from && currentTime <= openingTimes[currentWeekday].to;
+// 	const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
 
-	let openingString;
-	if(open) {
-		openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
-	} else {
-		//wird heute noch öffnen
-		if(willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
+// 	let openingString;
+// 	if(open) {
+// 		openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
+// 	} else {
+// 		//wird heute noch öffnen
+// 		if(willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
 
-		//wird morgen öffnen
-		if(!willOpenLaterToday && nextOffer.nextOfferInDays === 1) openingString = `öffnet morgen ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+// 		//wird morgen öffnen
+// 		if(!willOpenLaterToday && nextOffer.nextOfferInDays === 1) openingString = `öffnet morgen ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
 
-		//wird an einem anderen Tag öffnen
-		if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+// 		//wird an einem anderen Tag öffnen
+// 		if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
 
-		//keine weiteren Daten
-		if(nextOffer.nextOfferInDays < 1) openingString = `öffnet nächste Woche`;
-	}
+// 		//keine weiteren Daten
+// 		if(nextOffer.nextOfferInDays < 1) openingString = `öffnet nächste Woche`;
+// 	}
 
-	return {
-		openingString,
-		open,
-		currentDate
-	}
-}
+// 	return {
+// 		openingString,
+// 		open,
+// 		currentDate
+// 	}
+// }
 
 export const getDates = (currentDate) => {
 	try {
