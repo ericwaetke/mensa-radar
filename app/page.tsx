@@ -3,21 +3,51 @@ import { createClient } from "@supabase/supabase-js";
 
 import Link from 'next/link';
 
-import { floatTimeToString, getDates, getOpeningString } from "../lib/getOpeningString";
+import { floatTimeToString, getDates } from "../lib/getOpeningString";
 
 import { DistanceToMensa } from "../components/distanceToMensa";
 import Footer from "../components/footer";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
+
+const getOpeningString = (currentMensa) => {
+	const currentDate = new Date()
+	let currentWeekday = getDates(currentDate).currentWeekday;
+	const days = getDates(currentDate).days;
+	const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
+
+	const openInDays = (days: number) => currentMensa.daysWithFood.includes(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()+days}`)
+
+	const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+	const willOpenLaterToday = 
+		(currentTime <= currentMensa.openingTimes[currentWeekday].from) && 
+		openInDays(0);
+
+	if(open) {
+		return `offen bis ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].to) }`;
+	} else {
+		//wird heute noch öffnen
+		if(willOpenLaterToday) return `öffnet ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].from) }`;
+		
+		//wird morgen öffnen
+		if(openInDays(1)) return `öffnet morgen ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].from) }`
+
+		//wird an einem anderen Tag öffnen
+		// if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(currentMensa.openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
+
+		//keine weiteren Daten
+		return `öffnet nächste Woche`;
+	}
+}
 
 const fetchData = async () => {
 	// const mensenReq = await supabase.from('mensen').select()
-	const mensenReq = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/mensen?select=*`, {
+	const mensenReq = await fetch(`https://bqfzesnwsvziyglfeezk.supabase.co/rest/v1/mensen?select=*`, {
 		headers: {
 			'apikey': supabaseKey,
-			'Authorization': `Bearer ${supabaseKey}`,
+			'Authentication': `Bearer ${supabaseKey}`,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json'
 		},
@@ -27,21 +57,14 @@ const fetchData = async () => {
 	})
 	let mensen = await mensenReq.json()
 
-	const currentMensaDataReq = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/current_mensa_data?select=*`, {
-		headers: {
-			'apikey': supabaseKey,
-			'Authorization': `Bearer ${supabaseKey}`,
-			'Content-Type': 'application/json',
-			'Accept': 'application/json'
-		},
-		next: {
-			revalidate: 60*5
-		}
-	})
-	const currentMensaData = await currentMensaDataReq.json()
+	const currentMensaData = await supabase.from('current_mensa_data').select()
+	const currentMensaDataJson = await currentMensaData.data
+
 	
 	mensen = mensen.map(mensa => {
-		const currentMensa = currentMensaData.find(currentMensa => currentMensa.mensa === mensa.id)
+		const currentMensa = currentMensaDataJson.find(currentMensa => currentMensa.mensa === mensa.id)
+		
+
 		return {
 			...mensa,
 			...currentMensa,
@@ -57,6 +80,8 @@ export default function Page() {
 
 	return (
 		<div className="p-4 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
+
+
 		<main>
 			<div className="m-1 mb-3">
 			<h2 className="text-xl">Mensen</h2>

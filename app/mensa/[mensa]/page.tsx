@@ -1,7 +1,7 @@
 'use client';
 import {useRouter} from "next/navigation"
 
-export default function Index({params}) {
+export default function Index({mensa}) {
     const router = useRouter()
     const currentDate = new Date()
 	let currentWeekday = currentDate.getDay()
@@ -16,7 +16,9 @@ export default function Index({params}) {
         "sonntag"
     ]
 
-    router.push(`/mensa/${params.mensa}/${weekday[currentWeekday]}`)
+    // if (typeof window !== 'undefined') {
+    // }
+    router.push(`/mensa/${mensa}/${weekday[currentWeekday]}`)
     
     return <></>
 }

@@ -1,5 +1,4 @@
 export const getWeekdayByName = (name) => {
-	console.log("Selecting weekday "+name)
     switch (name) {
 		case "montag":
 			return 0

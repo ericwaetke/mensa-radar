@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const getMensaId = {
@@ -25,6 +25,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 	const currentWeekday = getDates(today).currentWeekday;
 	const selectedDay = new Date(today)
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
+
 
 	const selectedDayFormatted = selectedDay.toLocaleDateString("de-DE", {year: 'numeric', month: '2-digit', day: '2-digit'})
 
@@ -152,9 +153,9 @@ export const fetchDbData = async (reqDay, mensa) => {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = JSON.parse(req.body)
+	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = req.body
 
-	const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
+    const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 
     res.status(200).json(data)
   }
