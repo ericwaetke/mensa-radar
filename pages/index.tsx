@@ -11,7 +11,6 @@ import { createClient } from "@supabase/supabase-js";
 
 export default function Home(props) {
 	const {mensaData} = props;
-	console.log(props)
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes()/60
 	const currentDay = d.getDay()
@@ -69,6 +68,7 @@ export default function Home(props) {
 			setLocationLoaded(true);
 		}
 	}
+	
 
 
 	useEffect(() => {
@@ -179,7 +179,6 @@ export async function getStaticProps(context) {
 		}
 	})
 
-	console.log(await mensaData)
 	const mensaDataResolved = await Promise.all(mensaData)
 
 	return {
