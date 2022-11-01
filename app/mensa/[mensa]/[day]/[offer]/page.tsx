@@ -2,6 +2,13 @@
 import { useRef, useState, useEffect, use } from 'react';
 import Link from 'next/link'
 import 'tailwindcss/tailwind.css'
+// import "../../assets/css/mensa.module.css"
+import Modal from 'react-modal';
+
+import { ObjectId } from 'mongodb';
+
+import useSWR from 'swr';
+
 
 import toast from "react-hot-toast"
 import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet';
@@ -47,17 +54,15 @@ const getOffer = async (mensaUrl: string, offerId: number) => {
 	return mensen
 }
 
-const getRatings: () => Promise<{qualityRatings: {sessionId: string, rating: 1|2|3}[], tagReviews: {"?"?: string[]}}> = async () => {
-	return {
-		qualityRatings: [],
-		tagReviews: {},
-	}
+const getRatings: () => {qualityRatings: {sessionId: string, rating: 1|2|3}[], tagReviews: {tag?: string[]}} = async () => {
+	return {}
 }
 
 export default function Mensa({params}) {
 	const {mensa, offer} = params
 
 	const offerData = use(getOffer(mensa, offer))
+	console.log(offerData)
 	const [hasUserRating, setHasUserRating] = useState(false)
 
 	const [userQualityRating, setUserQualityRating] = useState<0|1|2|3>(0)
