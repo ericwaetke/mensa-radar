@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { PillOnWhiteBG } from '../../../../components/pill';
 import { getDates, getTempOpeningString } from '../../../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../../../../lib/getSupabaseClient';
 
 
 export default function Mensa(
@@ -246,14 +247,12 @@ export function getStaticPaths() {
 	}
 }
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey)
+
 
 export async function getStaticProps(context) {
 	const { params } = context
 	const { mensa, day } = params
-
+	
 	const selectedWeekday = getWeekdayByName(day)
 
 	const dev = process.env.NODE_ENV !== 'production';

@@ -1,22 +1,23 @@
-import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import clientPromise from '../../lib/mongodb';
+import { supabase } from '../../lib/getSupabaseClient';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const { mensa, offerId } = JSON.parse(req.body);
 	try {
-		const client = await clientPromise;
-		const db = client.db("guckstDuEssen");
+		const { data: qualityRatings, error: qualityRatingError } = await supabase
+			.from('quality_reviews')
+			.select('rating')
+			.eq('offerId', offerId)
 
-		const coll = db.collection(mensa);
-
-        const offerQuery = {_id: new ObjectId(offerId)}
-        let offer = await coll.findOne(offerQuery)
+		const { data: tagReviews, error: tagReviewError } = await supabase
+			.from('tag_reviews')
+			.select('tags')
+			.eq('offerId', offerId)
 
 
 		res.status(200).json({
-			qualityRatings: offer.qualityRating,
-			tagReviews: offer.reviewTags
+			qualityRatings,
+			tagReviews
 		});
 	} catch (e) {
 		console.error(e)

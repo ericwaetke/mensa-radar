@@ -1,6 +1,5 @@
-import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import clientPromise from '../../lib/mongodb'
+import { supabase } from '../../lib/getSupabaseClient';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	try {
@@ -8,43 +7,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const {
 			mensa,
 			offerId,
-			tagReviews = {},
 
 			sessionId,
 			tags
 		}:{
 			mensa: string,
 			offerId: string,
-			tagReviews: { "?"?: string[] },
 
 			sessionId: string,
 			tags: string[]
 		} = request
 
-		const client = await clientPromise
-		const db = client.db("guckstDuEssen")
-		const coll = db.collection(mensa);
-
-		const filter = {_id: new ObjectId(offerId)}
-
-		let tempReviews = {};
-		tags.map(tag => {
-			if (tagReviews[tag]) {
-				tempReviews[tag] = [...tagReviews[tag].filter(alreadySavedSessionIds => alreadySavedSessionIds !== sessionId), sessionId]
-			} else {
-				tempReviews[tag] = [sessionId]
-			}
-		})
-
-		const update = {
-			$set: {
-				"reviewTags": tempReviews
-			}
-		}
+		const { data: result, error } = await supabase
+			.from('tag_reviews')
+			.upsert({
+				tags,
+				userSessionId: sessionId,
+			})
+			.eq('userSessionId', sessionId)
+			.eq('offerId', offerId)
 		
-
-		const result = await coll.updateOne(filter, update)
-		res.status(200).json({result});
+		// const result = await coll.updateOne(filter, update)
+		result ? res.status(200).json({result}) : res.status(500).json({error});
 
 	} catch (error) {
 		console.error(error)
