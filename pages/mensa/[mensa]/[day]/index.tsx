@@ -26,7 +26,6 @@ export default function Mensa(
 		mensaData: any,
 	}
 ) {
-	console.log(foodOffers, selectedWeekday, mensaData)
 
 	const router = useRouter()
   	const { mensa, day } = router.query
@@ -180,7 +179,7 @@ export default function Mensa(
 			{
 				// Show Vegan first
 				foodOffers?.map((offer, i) => {
-					if(offer.labels.foodType === "vegan" && !offer.soldOut){
+					if(offer.vegan && !offer.soldOut){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
@@ -190,7 +189,7 @@ export default function Mensa(
 			{
 				// Show Vegetarian second
 				foodOffers?.map((offer, i) => {
-					if(offer.labels.foodType === "vegetarisch" && !offer.soldOut){
+					if(offer.vegetarian && !offer.vegan && !offer.soldOut){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
@@ -200,7 +199,7 @@ export default function Mensa(
 			{
 				// Show rest later
 				foodOffers?.map((offer, i) => {
-					if(offer.labels.foodType !== "vegan" && offer.labels.foodType !== "vegetarisch" && !offer.soldOut){
+					if(!offer.vegan && !offer.vegetarian && !offer.soldOut){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
