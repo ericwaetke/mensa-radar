@@ -21,21 +21,7 @@ export default function Index(props) {
     return <></>
 }
 
-export async function getStaticPaths() {
-    return {
-        // paths: mensaData.map((mensa) => {
-        //     return {
-        //         params: {
-        //             mensa: mensa.url
-        //         }
-        //     }
-        // }),
-        paths: [],
-        fallback: true
-    }
-}
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
     // Redirect to current day
     return {
         props: {

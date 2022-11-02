@@ -172,7 +172,7 @@ export default function Mensa(
 				</motion.div>
 			</div>
 
-			<motion.div variants={anim01} initial="hidden" animate="show">
+			<motion.div variants={anim01} initial="hidden" animate="show" className='snap-both'>
 			{
 				// Not sold out
 			}

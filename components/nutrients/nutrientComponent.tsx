@@ -49,7 +49,7 @@ export const NutrientComponent = ({nutrient}) => {
 				</p>
 			</div>
 
-			<div className='h-1.5 w-full bg-background-container relative rounded-full'>
+			<div className='h-1.5 w-full bg-white relative rounded-full'>
 				<motion.div className='h-1.5 bg-sec-green-dark absolute border-r-2 border-custom-bg rounded-full' 
 				initial={{width: 0}}
 				animate={{width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}
