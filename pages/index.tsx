@@ -19,7 +19,6 @@ export default function Home(props) {
 
 	const [locationLoaded, setLocationLoaded] = useState(false);
 
-
 	const getLocation = () => {
 		const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 			const earthRadius = 6371; // Radius of the earth in km
@@ -67,33 +66,10 @@ export default function Home(props) {
 			setLocationLoaded(true);
 		}
 	}
-	
-
 
 	useEffect(() => {
-		// TODO: Check if user wants to give location data
 		getLocation()
-		// setMensen(mensaData)
-		
-		// mensaData.map(mensa => {
-		// 	getOpeningString(mensa.url).then((data) => {
-		// 		const mensaId = mensaData.findIndex((item) => item.url === mensa.url)
-		// 		setMensen(mensen => {
-		// 			mensen[mensaId].openingString = data.openingString
-		// 			mensen[mensaId].open = data.open;
-		// 			return mensen
-		// 		})
-		// 	})
-
-		// 	// Get ID of the current Mensa
-			
-		// })
 	}, [])
-
-
-	useEffect(() => {
-		console.log(mensen)
-	}, [mensen])
 
   return (
     <div className="p-4 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
