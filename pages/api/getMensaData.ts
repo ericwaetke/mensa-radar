@@ -71,16 +71,8 @@ export const fetchDbData = async (reqDay, mensa) => {
 					// => It was there once, but is not anymore
 					// => mark as sold out
 					if(change.id){
-						// if this is today, mark as sold out, else delete
-						if(change.date === dateFormated){
-							// Delete the food offering
-							const { data, error } = await supabase
-								.from('food_offerings')
-								.delete()
-								.eq('id', change.id)
-							console.log(error)
-						}
-						else {
+						// If change is in the future, delete it
+						if(change.date > dateFormated){
 							const {data, error } = await supabase
 							.from('food_offerings')
 							.update({
@@ -89,7 +81,16 @@ export const fetchDbData = async (reqDay, mensa) => {
 								changed_at: new Date()
 							})
 							.eq('id', change.id)
+	
+							console.log(error)
+						}
 
+						else {
+							// Delete the food offering
+							const { data, error } = await supabase
+								.from('food_offerings')
+								.delete()
+								.eq('id', change.id)
 							console.log(error)
 						}
 					} else {
@@ -144,7 +145,6 @@ export const fetchDbData = async (reqDay, mensa) => {
 	} catch (e) {
 		console.error(e)
 	}
-	console.log("foodOffers", foodOffers)
 
 	return {
 		foodOffers,

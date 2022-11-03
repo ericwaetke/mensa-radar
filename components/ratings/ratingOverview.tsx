@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 // import { supabase } from "../../lib/getSupabaseClient"
 import { QualityRatingComponent } from "./qualityRatingComponent"
 import { ReviewTagsComponent } from "./reviewTagsComponent"
@@ -36,15 +36,7 @@ const ratingSVG = (rating: string, userRating: number) => {
 	}
 }
 
-import { createClient } from "@supabase/supabase-js";
-import { Pill } from "../pill";
 import { getItem } from "../../lib/localStorageHelper"
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-export const supabase = createClient(supabaseUrl, supabaseKey)
-
-
 
 const getQualityRatings = (offerId: number) => {
 	const apiUrl = `${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/getRatings`
@@ -58,12 +50,13 @@ const getQualityRatings = (offerId: number) => {
 	.then(data => {
 		console.log(data)
 		let polishedQualityReviews = {
-			1: 0,
-			2: 0,
-			3: 0,
+			1: [],
+			2: [],
+			3: [],
 		}
 		data.qualityRatings.forEach((review) => {
-			polishedQualityReviews[review.rating] += 1
+			console.log(review)
+			polishedQualityReviews[review.rating].push(review)
 		})
 		return polishedQualityReviews
 	}).catch((err) => {
@@ -79,7 +72,7 @@ export const RatingOverview = (
 		}
 	) => {
 
-	const [qualityRatingsState, setQualityRatingsState] = useState<{1: number, 2: number, 3: number}>({1: 0, 2: 0, 3: 0}) 
+	const [qualityRatingsState, setQualityRatingsState] = useState<{1: any[], 2: any[], 3: any[]}>({1: [], 2: [], 3: []}) 
 	const [userQualityRatingState, setUserQualityRatingState] = useState<number>(0)
 
 	const sessionId = useRef(getItem("sessionId"))
@@ -100,9 +93,28 @@ export const RatingOverview = (
 		setUserQualityRatingState(rating)
 	}
 
-	useEffect(() => {
-		getQualityRatings(offerId).then(data => data ? setQualityRatingsState(data) : null)
+	useLayoutEffect(() => {
+		getQualityRatings(offerId).then(data => data ? setQualityRatingsState(data) : setQualityRatingsState({1: [], 2: [], 3: []}))
 	}, [])
+
+	useLayoutEffect(() => {
+		// Check if sessionId is in the state
+		if (sessionId.current) {
+			const userQualityRating = 	qualityRatingsState[1].find((review) => review.userSessionId === sessionId.current) ||
+										qualityRatingsState[2].find((review) => review.userSessionId === sessionId.current) ||
+										qualityRatingsState[3].find((review) => review.userSessionId === sessionId.current)
+
+			if (userQualityRating) {
+				// Setting the local state to the user rating
+				setUserQualityRatingState(userQualityRating.rating)
+
+				// Delete the user rating from the qualityRatingsState
+				const newQualityRatingsState = {...qualityRatingsState}
+				newQualityRatingsState[userQualityRating.rating] = newQualityRatingsState[userQualityRating.rating].filter((review) => review.userSessionId !== sessionId.current)
+				setQualityRatingsState(newQualityRatingsState)
+			}
+		}
+	}, [qualityRatingsState])
 
 	return (
 		<div className="py-4 px-8">
@@ -111,10 +123,9 @@ export const RatingOverview = (
 					<ReviewTagsComponent tagReviews={tagReviews} hasUserRating={hasUserRating} userTagReviews={userTagReviews}/> */}
 					{
 						Object.keys(qualityRatingsState).map((key) => {
-							console.log(key)
 							return (
 								<div className="flex" onClick={() => handleQualityRatingClick(parseInt(key))}>
-									{ratingSVG(key, -1)} {userQualityRatingState === parseInt(key) ? qualityRatingsState[key] + 1 : qualityRatingsState[key]}
+									{ratingSVG(key, -1)} {userQualityRatingState === parseInt(key) ? qualityRatingsState[key].length + 1 : qualityRatingsState[key].length}
 								</div>
 							)
 						})

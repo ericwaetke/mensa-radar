@@ -8,6 +8,9 @@ const withPWA = require("next-pwa")({
 });
 
 const nextConfig = withPWA({
-    // next config
+    pwa: {
+        dest: 'public',
+        disable: process.env.NODE_ENV === 'production' ? false : true
+    }
 });
 module.exports = nextConfig;
