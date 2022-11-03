@@ -57,6 +57,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 					.from('food_offerings')
 					.select('*')
 					.eq('date', `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`)
+					.eq('mensa', getMensaId[mensa])
 
 				console.error(error)
 
@@ -150,6 +151,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 				.from('food_offerings')
 				.select()
 				.eq('date', dateFormated)
+				.eq('mensa', getMensaId[mensa])
 		
 			console.error(error)
 			await foodOfferingsOfSelectedDay.forEach((e) => {
