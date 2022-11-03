@@ -83,26 +83,9 @@ export const fetchDbData = async (reqDay, mensa) => {
 							const {data, error } = await supabase
 							.from('food_offerings')
 							.update({
-								// Mensa ID
-								mensa: getMensaId[mensa],
-								// Title or Name of the food
-								food_title: change.beschreibung,
-								// Description of the food
-								food_desc: "",
-								// Is the food vegan?
-								vegan: change.labels?.foodType === "vegan",
-								// Is the food vegetarian?
-								vegetarian: change.labels?.foodType === "vegan" || change.labels?.foodType === "vegetarisch",
-								// JSON Object of the nutrients
-								nutrients: change.nutrients,
-								// JSON Object of the allergens
-								allergens: change.allergene,
-
-								date: `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`,
-
-								price_students: change.preise.preis_s[0],
-								price_other: change.preise.preis_g[0],
-
+								...change,
+								sold_out: true,
+								changed_at: new Date()
 							})
 							.eq('id', change.id)
 

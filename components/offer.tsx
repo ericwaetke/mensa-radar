@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
+import { RatingOverview } from "./ratings/ratingOverview"
 
 export const Offer = (
 	{
@@ -81,6 +82,7 @@ export const Offer = (
 					}
 				</div>
 			</motion.div>
+			<RatingOverview offerId={offer.id}/>
 			<NutrientOverview nutrients={offer.nutrients} />
 			<div className="pb-4 text-sm font-serif">
 				{offer.allergens.join(", ")}

@@ -179,7 +179,7 @@ export default function Mensa(
 			{
 				// Show Vegan first
 				foodOffers?.map((offer, i) => {
-					if(offer.vegan && !offer.soldOut){
+					if(offer.vegan && !offer.sold_out){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
@@ -189,7 +189,7 @@ export default function Mensa(
 			{
 				// Show Vegetarian second
 				foodOffers?.map((offer, i) => {
-					if(offer.vegetarian && !offer.vegan && !offer.soldOut){
+					if(offer.vegetarian && !offer.vegan && !offer.sold_out){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
@@ -199,7 +199,7 @@ export default function Mensa(
 			{
 				// Show rest later
 				foodOffers?.map((offer, i) => {
-					if(!offer.vegan && !offer.vegetarian && !offer.soldOut){
+					if(!offer.vegan && !offer.vegetarian && !offer.sold_out){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
@@ -212,7 +212,7 @@ export default function Mensa(
 			}
 			{
 				foodOffers?.map((offer, i) => {
-					if(offer.soldOut){
+					if(offer.sold_out){
 						return (
 							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
 						)
