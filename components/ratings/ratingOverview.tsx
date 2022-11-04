@@ -1,7 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 // import { supabase } from "../../lib/getSupabaseClient"
-import { QualityRatingComponent } from "./qualityRatingComponent"
-import { ReviewTagsComponent } from "./reviewTagsComponent"
 
 const ratingSVG = (rating: string, userRating: number) => {
 	if(rating === userRating.toString()) {
