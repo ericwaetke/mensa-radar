@@ -22,7 +22,7 @@ export const fetchDbData = async (reqDay, mensa) => {
 	const selectedWeekday = reqDay
 	const today = new Date();
 	const currentWeekday = getDates(today).currentWeekday;
-	const selectedDay = new Date(today)
+	const selectedDay = today
 	selectedDay.setDate(today.getDate() + (selectedWeekday - currentWeekday))
 
 
