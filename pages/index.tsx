@@ -67,7 +67,7 @@ export default function Home(props) {
 		}
 	}
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		getLocation()
 	}, [])
 

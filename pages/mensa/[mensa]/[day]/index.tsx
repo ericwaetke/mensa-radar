@@ -13,6 +13,7 @@ import { PillOnWhiteBG } from '../../../../components/pill';
 import { getDates, getTempOpeningString } from '../../../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../../../../lib/getSupabaseClient';
+import { GetStaticPaths } from 'next';
 
 
 export default function Mensa(
@@ -225,24 +226,28 @@ export default function Mensa(
     )
 }
 
-export function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
+	const {data: mensaData} = await supabase
+		.from("mensen")
+		.select('url')
 	
+	const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"]
 
 	let paths = [];
-	// mensaData.map(mensa => {
-	// 	days.map(day => {
-	// 		paths.push({
-	// 			params: {
-	// 				mensa: mensa.url,
-	// 				day: day.url
-	// 			},
-	// 		})
-	// 	})
-	// })
+	mensaData.map(mensa => {
+		days.map(day => {
+			paths.push({
+				params: {
+					mensa: mensa.url,
+					day: day
+				},
+			})
+		})
+	})
 
 	return {
 		paths,
-		fallback: true
+		fallback: false
 	}
 }
 
