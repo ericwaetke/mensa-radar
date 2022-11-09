@@ -7,6 +7,8 @@ export const getTempOpeningString = async (currentMensa) => {
 
 	const openInDays = (days: number) => currentMensa.daysWithFood.includes(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()+days}`)
 
+	console.log(currentMensa)
+
 	const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
 	const willOpenLaterToday = 
 		(currentTime <= currentMensa.openingTimes[currentWeekday].from) && 
@@ -130,19 +132,6 @@ export const getDates = (currentDate) => {
 	}
 }
 
-const nextOffering = async (mensa: string) => {
-	//connect to mongo and find out whether there is food from currentWeekday
-	// let days = -1;
-
-	const req: {offerToday: boolean, nextOfferInDays: -1|0|1|2|3|4|5} = await fetch(`/api/getDaysUntilNextOffer`, {
-		method: "POST",
-		body: JSON.stringify({
-			mensa
-		})
-	}).then(res => res.json()).catch(err => console.log(err))
-	return req
-}
-
 export const floatTimeToString = (floatTime) => {
 	let hours = Math.floor(floatTime)
 	let minutes: any = Math.round((floatTime - hours) * 60)
@@ -159,8 +148,6 @@ export const findObjectInArrayByKey = (array, key, value) => {
 			return array[i];
 		}
 	}
-
-	
 
 	return null;
 }
