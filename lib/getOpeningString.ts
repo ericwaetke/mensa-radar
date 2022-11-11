@@ -7,8 +7,6 @@ export const getTempOpeningString = async (currentMensa) => {
 
 	const openInDays = (days: number) => currentMensa.daysWithFood.includes(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()+days}`)
 
-	console.log(currentMensa)
-
 	const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
 	const willOpenLaterToday = 
 		(currentTime <= currentMensa.openingTimes[currentWeekday].from) && 
@@ -128,7 +126,7 @@ export const getDates = (currentDate) => {
 		} 
 	}
 	catch (err) {
-		console.log(err)
+		console.error(err)
 	}
 }
 

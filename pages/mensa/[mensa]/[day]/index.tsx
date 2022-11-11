@@ -280,7 +280,6 @@ export async function getStaticProps(context) {
 			.from("food_images")
 			.select('image_name')
 			.eq('food_id', offer.id)
-		console.log(images)
 
 		images.map(async image => {
 			const { data, error } = await supabase
@@ -291,10 +290,7 @@ export async function getStaticProps(context) {
 					offset: 0,
 					sortBy: { column: 'name', order: 'asc' },
 					search: image.image_name
-				})
-				console.log("list")
-				console.log(data, error)
-					
+				})	
 		})
 
 		const generateUrls = (imageName: string) => {

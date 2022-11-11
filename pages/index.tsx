@@ -151,14 +151,11 @@ export async function getStaticProps(context) {
 		.select('mensa, date')
 		.gte('date', dateFormated)
 
-	console.log(daysWithFoodUnfiltered)
-
 	const mensaData = mensen.map(async mensa => {
 		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
 
 		// Filter days with food to mensaId and make date unique
 		const daysWithFood = [...new Set(daysWithFoodUnfiltered.filter((day) => day.mensa === mensa.id).map((day) => day.date))]
-		console.log(daysWithFood)
 		return {
 			...mensa,
 			...currentMensa,

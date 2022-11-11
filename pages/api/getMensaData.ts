@@ -162,5 +162,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 
-    res.status(200).json(data)
+	data ? res.status(200).json(data) : res.status(404).json({error: "No data found"})
   }
