@@ -260,7 +260,7 @@ export async function getStaticProps(context) {
 	const selectedWeekday = getWeekdayByName(day)
 
 	const dev = process.env.NODE_ENV !== 'production';
-	const getMensaDataReq = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {
+	const getMensaDataReq = await fetch(`${dev ? 'http://localhost:3000' : 'https://next.mensa-radar.de'}/api/getMensaData`, {
 		method: 'POST',
 		body: JSON.stringify({
 			selectedWeekday,
@@ -302,7 +302,7 @@ export async function getStaticProps(context) {
 				q: "80",
 				token: process.env.NEXT_PUBLIC_SUPABASE_KEY
 			})
-			return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
+			return `${dev ? 'http://localhost:3000' : 'https://next.mensa-radar.de'}/api/image/?${params.toString()}`
 		}
 
 		const imageUrls = images.map(image => generateUrls(image.image_name))
