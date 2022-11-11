@@ -157,7 +157,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	console.log("API Request")
 	console.log(req.body)
 
-	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = JSON.parse(req.body) || req.body
+	const {selectedWeekday, mensa}: {selectedWeekday: 0|1|2|3|4|5, mensa: string} = JSON.parse(req.body) || req.body || {selectedWeekday: 0, mensa: "fhp"}
 
     const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 
