@@ -1,5 +1,8 @@
+import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { ChangeEvent } from "react"
+import { supabase } from "../lib/getSupabaseClient"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
 import { RatingOverview } from "./ratings/ratingOverview"
@@ -47,6 +50,46 @@ export const Offer = (
 		}
 	}
 
+	const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+		let file;
+	
+		if (e.target.files) {
+		  file = e.target.files[0];
+		}
+
+		// Generate a random name for the file with 12 characters
+		const fileName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+		const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+		const supabase = createClient(supabaseUrl, supabaseKey)
+
+		const { data, error } = await supabase.storage
+		  .from("food-images")
+		  .upload(fileName, file as File);
+	
+		if (data) {
+		  console.log(data);
+
+		  // Add the image name to the database
+		  const { data: imageData, error: imageError } = await supabase
+			.from('food_images')
+			.insert({
+				food_id: offer.id,
+				image_name: fileName
+			})
+
+			if (imageData) {
+				console.log(imageData)
+			} else if (imageError) {
+				console.log(imageError)
+			}
+
+		} else if (error) {
+		  console.log(error);
+		}
+	  };
+
 	return (
 		<div className={`my-4 p-5 flex flex-col gap-8 rounded-xl bg-background-container justify-between snap-start ${offer.soldOut ? "opacity-50" : ""}`}>
 			{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
@@ -54,6 +97,16 @@ export const Offer = (
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show">
+				{
+					// Map over the images
+					offer.imageUrls.map((image, index) => {
+						return (
+							<motion.div key={index} variants={dayVariantAnimation}>
+								<img src={image} alt="food" className="w-full rounded-xl" />
+							</motion.div>
+						)
+					})
+				}
 				<motion.p variants={dayVariantAnimation} className="text-2xl font-bold">{offer.food_title}</motion.p>
 				<div className="mt-5 flex justify-between flex-wrap flex-row items-start gap-y-2">
 					{
@@ -87,6 +140,15 @@ export const Offer = (
 			<div className="pb-4 text-sm font-serif">
 				{offer.allergens.join(", ")}
 			</div>
+			<input
+				type="file"
+				accept="image/*"
+				className="block w-auto text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+				id="file_input"
+				onChange={(e) => {
+					handleUpload(e); // 👈 this will trigger when user selects the file.
+				}}
+			/>
 		</div>
 	)
 }

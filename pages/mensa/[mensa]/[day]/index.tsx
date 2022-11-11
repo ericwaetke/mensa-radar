@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router'
 import 'tailwindcss/tailwind.css'
 
@@ -267,7 +267,55 @@ export async function getStaticProps(context) {
 			mensa
 		}),
 	})
-	const getMensaData = await getMensaDataReq.json()
+	const {
+		foodOffers,
+	} = await getMensaDataReq.json()
+
+	const windowWidth = 1200	
+		// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
+
+	// Get Images to the food offers
+	const foodOffersWithImages = await Promise.all(foodOffers.map(async (offer) => {
+		const {data: images} = await supabase
+			.from("food_images")
+			.select('image_name')
+			.eq('food_id', offer.id)
+		console.log(images)
+
+		images.map(async image => {
+			const { data, error } = await supabase
+				.storage
+				.from('food-images')
+				.list('', {
+					limit: 100,
+					offset: 0,
+					sortBy: { column: 'name', order: 'asc' },
+					search: image.image_name
+				})
+				console.log("list")
+				console.log(data, error)
+					
+		})
+
+		const generateUrls = (imageName: string) => {
+			const params = new URLSearchParams({
+				f: imageName,
+				b: "food-images",
+				w: windowWidth.toString(),
+				h: null,    // set to null to keep image's aspect ratio
+				q: "80",
+				token: process.env.NEXT_PUBLIC_SUPABASE_KEY
+			})
+			return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
+		}
+
+		const imageUrls = images.map(image => generateUrls(image.image_name))
+
+		return {
+			...offer,
+			imageUrls
+		}
+	}))
 
 	const { data: mensen, error: mensenError } = await supabase
 		.from('mensen')
@@ -287,7 +335,7 @@ export async function getStaticProps(context) {
 
 	return {
 		props: {
-			...getMensaData,
+			foodOffers: foodOffersWithImages,
 			mensaData: thisMensaData,
 		},
 		revalidate: 60

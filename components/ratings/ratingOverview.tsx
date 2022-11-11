@@ -91,11 +91,11 @@ export const RatingOverview = (
 		setUserQualityRatingState(rating)
 	}
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		getQualityRatings(offerId).then(data => data ? setQualityRatingsState(data) : setQualityRatingsState({1: [], 2: [], 3: []}))
 	}, [])
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		// Check if sessionId is in the state
 		if (sessionId.current) {
 			const userQualityRating = 	qualityRatingsState[1].find((review) => review.userSessionId === sessionId.current) ||
