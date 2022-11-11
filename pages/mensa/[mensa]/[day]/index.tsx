@@ -333,6 +333,7 @@ export async function getStaticProps(context) {
 		props: {
 			foodOffers: foodOffersWithImages,
 			mensaData: thisMensaData,
+			selectedWeekday
 		},
 		revalidate: 60
 	}

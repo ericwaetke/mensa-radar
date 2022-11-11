@@ -1,7 +1,7 @@
 export const Pill = ({children, className = ""}) => {
 
     return (
-        <div className={`${className} font-medium text-sm bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max`}>
+        <div className={`font-medium text-sm bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max ${className}`}>
             {children}
         </div>
     )

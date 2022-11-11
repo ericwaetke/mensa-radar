@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { ChangeEvent } from "react"
+import { ChangeEvent, useState } from "react"
 import { supabase } from "../lib/getSupabaseClient"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
@@ -49,6 +49,8 @@ export const Offer = (
 			y: 0,
 		}
 	}
+	const [tempImage, setTempImage] = useState("")
+	const [uploading, setUploading] = useState(false)
 
 	const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
 		let file;
@@ -56,6 +58,9 @@ export const Offer = (
 		if (e.target.files) {
 		  file = e.target.files[0];
 		}
+
+		setTempImage(URL.createObjectURL(file))
+		setUploading(true)
 
 		// Generate a random name for the file with 12 characters
 		const fileName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -69,8 +74,6 @@ export const Offer = (
 		  .upload(fileName, file as File);
 	
 		if (data) {
-		  console.log(data);
-
 		  // Add the image name to the database
 		  const { data: imageData, error: imageError } = await supabase
 			.from('food_images')
@@ -79,76 +82,109 @@ export const Offer = (
 				image_name: fileName
 			})
 
+			setUploading(false)
 			if (imageData) {
 				console.log(imageData)
 			} else if (imageError) {
 				console.log(imageError)
+				setUploading(false)
 			}
-
 		} else if (error) {
 		  console.log(error);
 		}
-	  };
+	};
+
+	const formatter = new Intl.NumberFormat('de-DE', {
+		style: 'currency',
+		currency: 'EUR',
+		minimumFractionDigits: 2
+	})
+
 
 	return (
-		<div className={`my-4 p-5 flex flex-col gap-8 rounded-xl bg-background-container justify-between snap-start ${offer.soldOut ? "opacity-50" : ""}`}>
-			{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
-			<motion.div className='flex-initial w-full'
+		<motion.div 
+			className={`my-4 p-5 flex flex-col gap-8 rounded-xl bg-background-container justify-between snap-start ${offer.soldOut ? "opacity-50" : ""}`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show">
+			{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
+			<div className='flex-initial w-full'>
 				{
-					// Map over the images
-					offer.imageUrls.map((image, index) => {
-						return (
-							<motion.div key={index} variants={dayVariantAnimation}>
-								<img src={image} alt="food" className="w-full rounded-xl" />
-							</motion.div>
-						)
-					})
+					// Show first image
+					offer.imageUrls.length > 0 ? (
+						<img src={offer.imageUrls[0]} className="w-full rounded-xl" />
+					) : <motion.div layout transition={{duration: 2}} className="relative rounded-xl overflow-hidden">
+						{uploading ? (
+							<div className="absolute flex justify-center items-center w-full h-full bg-sky-500/[.9]">
+								<svg aria-hidden="true" className="inline mr-2 w-8 h-8 text-gray-200 animate-spin fill-green-500" viewBox="0 0 100 101" fill="#88E2A1" xmlns="http://www.w3.org/2000/svg">
+									<path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+									<path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+								</svg>
+								<span className="sr-only">Loading...</span>
+							</div>
+						) : null}
+						{tempImage !== "" ? <motion.img layout src={tempImage} className="w-full" initial={{scale: 0}} animate={{scale: 1}} /> : null}
+					</motion.div>
+
 				}
-				<motion.p variants={dayVariantAnimation} className="text-2xl font-bold">{offer.food_title}</motion.p>
-				<div className="mt-5 flex justify-between flex-wrap flex-row items-start gap-y-2">
-					{
-						offer.soldOut ? (
-							<Pill>
-								😔 Ausverkauft
-							</Pill>
-						) : (
-							<>
-								<motion.div variants={dayVariantAnimation} className="font-medium text-black text-sm flex gap-2 items-center">
-									<Pill>{offer.price_students} €</Pill>
-									<span className='text-gray-400 min-w-max'>{offer.price_other} €</span>
-								</motion.div>
-								<motion.div variants={dayVariantAnimation} className='flex gap-2 justify-end'>
-									{offer.qualityRating && <Pill>
-										<svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M9.55706 0.846068C9.74421 0.488621 10.2558 0.488621 10.443 0.846068L12.8792 5.49937C12.9497 5.6339 13.0774 5.72913 13.2265 5.75821L18.2594 6.73997C18.6417 6.81455 18.7957 7.27832 18.5339 7.56676L14.9933 11.4678C14.8954 11.5757 14.8494 11.721 14.8674 11.8656L15.5279 17.1685C15.5772 17.5637 15.1672 17.855 14.8102 17.6785L10.2216 15.4096C10.082 15.3405 9.91808 15.3405 9.7784 15.4096L5.18989 17.6785C4.8329 17.855 4.42287 17.5637 4.4721 17.1685L5.13267 11.8656C5.15068 11.721 5.1047 11.5757 5.00675 11.4678L1.46612 7.56676C1.20433 7.27832 1.35831 6.81455 1.74063 6.73997L6.77357 5.75821C6.92262 5.72913 7.05037 5.6339 7.12081 5.49937L9.55706 0.846068Z" fill="#161616"/>
-										</svg>
-										</Pill>}
-										{
-											offer.vegan ? <Pill>Vegan</Pill> : offer.vegetarian ? <Pill>Vegetarisch</Pill> : null
-										}
-								</motion.div>
-							</>
-						)
-					}
-				</div>
-			</motion.div>
-			<RatingOverview offerId={offer.id}/>
-			<NutrientOverview nutrients={offer.nutrients} />
+				<motion.p layout variants={dayVariantAnimation} className="text-2xl font-bold">{offer.food_title}</motion.p>
+				
+			</div>
+
+			{/* <RatingOverview offerId={offer.id}/>
+			<NutrientOverview nutrients={offer.nutrients} /> */}
+
 			<div className="pb-4 text-sm font-serif">
 				{offer.allergens.join(", ")}
 			</div>
-			<input
-				type="file"
-				accept="image/*"
-				className="block w-auto text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-				id="file_input"
-				onChange={(e) => {
-					handleUpload(e); // 👈 this will trigger when user selects the file.
-				}}
-			/>
-		</div>
+
+			<div className="mt-5 flex flex-wrap flex-row items-start gap-y-2">
+				{
+					//Pills
+					
+					offer.soldOut ? (
+						<Pill>
+							😔 Ausverkauft
+						</Pill>
+					) : (
+						<>
+							<motion.div variants={dayVariantAnimation} className="font-medium text-black text-sm flex gap-2 items-center">
+								<Pill>
+									{formatter.format(offer.price_students)} 
+									<span className='text-gray-400 min-w-max'> · {formatter.format(offer.price_other)}</span>
+								</Pill>
+								{
+									offer.vegan ? <Pill className="bg-main-green">vegan</Pill> : offer.vegetarian ? <Pill>vegetarisch</Pill> : null
+								}
+							</motion.div>
+						</>
+					)
+				}
+			</div>
+
+			<div className="flex gap-2 justify-between">
+				<label htmlFor="file_input" className="h-14 w-full min-w-max grow border-2 rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+					<p>
+						Foto aufnehmen
+					</p>
+				</label>
+				<input
+					type="file"
+					accept="image/*"
+					className="hidden"
+					id="file_input"
+					onChange={(e) => {
+						handleUpload(e); // 👈 this will trigger when user selects the file.
+					}}
+				/>
+
+				<button className="h-14 w-full border-2 rounded-lg flex justify-center items-center cursor-pointer px-4">
+					<p>
+						Bewerten
+					</p>
+				</button>
+			</div>
+		</motion.div>
 	)
 }
