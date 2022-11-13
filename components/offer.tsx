@@ -74,21 +74,35 @@ export const Offer = (
 		  .upload(fileName, file as File);
 	
 		if (data) {
-		  // Add the image name to the database
-		  const { data: imageData, error: imageError } = await supabase
-			.from('food_images')
-			.insert({
-				food_id: offer.id,
-				image_name: fileName
+			console.log(data)
+			const params = new URLSearchParams({
+				f: data.path,
+				b: "food-images",
 			})
+			// check if image contains food
+			const isFood = await fetch(`/api/labelImage?${params.toString()}`)
+				.then(res => res.json())
+				.then(data => data.isFood)
+				.catch(err => console.log(err))
 
-			setUploading(false)
-			if (imageData) {
-				console.log(imageData)
-			} else if (imageError) {
-				console.log(imageError)
-				setUploading(false)
+			if (isFood) {
+				// Add the image name to the database
+				const { data: imageData, error: imageError } = await supabase
+					.from('food_images')
+					.insert({
+						food_id: offer.id,
+						image_name: fileName
+					})
+		
+					setUploading(false)
+					if (imageData) {
+						console.log(imageData)
+					} else if (imageError) {
+						console.log(imageError)
+						setUploading(false)
+					}
 			}
+
 		} else if (error) {
 		  console.log(error);
 		}
