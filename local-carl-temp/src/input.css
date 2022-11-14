@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.hide-scroll-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
+@font-face {
+  font-family: "IBM-Bold";
+  src: url(".././src/fonts/ibm-plex-serif-700.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Semi";
+  src: url(".././src/fonts/ibm-plex-serif-600.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Medium";
+  src: url(".././src/fonts/ibm-plex-serif-500.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Reg";
+  src: url(".././src/fonts/ibm-plex-serif-300.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Reg";
+  src: url(".././src/fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Medium";
+  src: url(".././src/fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Semi";
+  src: url(".././src/fonts/NotoSans-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Bold";
+  src: url(".././src/fonts/NotoSans-Bold.ttf");
+}
+
+.text-h1 {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+}
+
+.text-h2 {
+  font-size: 1.5rem;
+  line-height: 1.8rem;
+}
+
+.w-92 {
+  width: 22.5rem;
+}
+
+.padding-ign {
+  padding-right: -50px;
+}
