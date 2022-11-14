@@ -9,7 +9,7 @@ const getJSONCredentials = () => {
 		type: "service_account",
 		project_id: "mensa-radar",
 		private_key_id: process.env.CLOUD_VISION_KEY_ID,
-		private_key: process.env.CLOUD_VISION_KEY,
+		private_key: process.env.CLOUD_VISION_KEY.replace(/\\n/g, '\n'),
 		client_email: "mensavision@mensa-radar.iam.gserviceaccount.com",
 		client_id: "108153560610031743269",
 		auth_uri: "https://accounts.google.com/o/oauth2/auth",
@@ -25,6 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	} = req
 
 	if(true) {
+		console.log(process.env.CLOUD_VISION_KEY.replace(/\\n/g, '\n'))
 		//Get the image from the request body
 		const url = `${ process.env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/${ b }/${ f }`
 		console.log(url)

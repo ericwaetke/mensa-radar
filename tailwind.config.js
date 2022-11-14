@@ -6,10 +6,16 @@ module.exports = {
       padding: '2rem',
     },
     fontFamily: {
-      'sans': ['Noto Sans', 'sans-serif'],
-      'bigtext': ['Noto Sans', 'sans-serif'],
-      'serif': ['IBM Plex Serif', 'serif']
+      'sans': ['ui-sans-serif', 'system-ui'],
 
+      'serif-reg': ["IBM-Reg", "serif-reg"],
+      'serif-med': ["IBM-Medium", "serif-med"],
+      'serif-semi': ["IBM-Semi", "serif-semibold"],
+      'serif-bold': ["IBM-Bold", "serif-bold"],
+      'sans-reg': ["Noto-Reg", "sans-reg"],
+      'sans-med': ["Noto-Medium", "sans-med"],
+      'sans-semi': ["Noto-Semi", "sans-semibold"],
+      'sans-bold': ["Noto-Bold", "sans-bold"],
     },
     screens: {
       'xs': '400px',
@@ -30,16 +36,11 @@ module.exports = {
     },
     extend: {
       colors: {
-        'main-white': '#FFFFFF',
-        'main-black': '#161616',
+        'light-green': '#E2EEE3',
         'main-green': '#88E2A1',
-
-        'sec-green-dark': '#43BC63',
-        'sec-stroke': '#16161633',
-        'sec-text-light': '#00000080',
-
-        'background-container': '#ECF1EC',
-        'background-progress-bar': '#DBDBDB'
+        'dark-green': '#43BC63',
+        'gray': '#1F2132',
+        'white': '#fff',
       },
       screens: {
         'xs': '370px'

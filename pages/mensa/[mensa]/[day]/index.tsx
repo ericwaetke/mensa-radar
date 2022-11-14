@@ -22,7 +22,26 @@ export default function Mensa(
 		selectedWeekday,
 		mensaData = {},
 	} : {
-		foodOffers: any,
+		foodOffers: {
+			id: number,
+			mensa: number,
+			food_title: string,
+			food_desc: string,
+			vegan: boolean,
+			vegetarian: boolean,
+			nutrients: {
+				name: string,
+				value: string,
+				unit: string,
+			}[],
+			allergens: string[]
+			date: string,
+			price_students: number,
+			price_other: number,
+			sold_out: boolean,
+
+			imageUrls: string[],
+		}[],
 		selectedWeekday: number,
 		mensaData: any,
 	}
@@ -90,53 +109,40 @@ export default function Mensa(
 	}, [])
 
     return (
-		<div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
+		<div className="m-auto sm:max-w-3xl py-2 h-screen flex flex-col space-y-8">
 			<Head>
 				<title>{ mensaData.name } - Mensa Radar</title>
 			</Head>
-			<style jsx>
-				{`
-					.daySelection{
-						position: relative;
-					}
-					.daySelection::before{
-						content: "";
-						position: absolute;
-						right: 0;
-						width: 20%;
-						height: 100%;
-						background: linear-gradient(270deg, #fff, transparent);
-						pointer-events: none;
-					}
-					.open {
-						transition: .3s;
-						transform: rotate(180deg)
-					}
-					.closed {
-						transition: .3s;
-						transform: rotate(0);
-					}
-					.ReactCollapse--collapse {
-						transition: height 500ms;
-						}
-				`}
-			</style>
+			<div className="px-4">
+				<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3">
+					<div className="flex justify-center space-x-2 items-center flex-row w-full">
+						<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
+						<img className="w-4 mt-0.5"
+						src="/icons/chev-down.png"></img>
+					</div>
+					<div className="border-b border-gray/20"></div>
 
-			<div>
-				<Link href="/">
-					<a className="p-2 pl-0 flex items-center gap-4">
-						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
-						</svg>
-						<h2 className="text-lg font-bold text-center w-full">{ mensaData.name }</h2>
-					</a>
-				</Link>
+					<div className="flex justify-between items-center flex-row w-full px-4">
+						<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4">Heute</p>
+						<Link href={'/mensa/'}>
+							<div className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70">
+							<p>Morgen</p>
 
+							<img src="/icons/right-arrw.png" className="w-4 opacity-50"></img>
+							</div>
+						</Link>	
+					</div>
+
+					<div className="border-b border-gray/20"></div>
+					<div className="flex justify-between items-center flex-row w-full px-4">
+					<div className="flex space-x-2 items-center">
+						<div className="w-2 h-2 bg-dark-green rounded-full"></div>
+						<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingString }</p>
+					</div>
+					</div>
+				</div>
 			</div>
 
-			<div className="flex justify-between">
-				<PillOnWhiteBG>{ mensaData.url === undefined ? "" : mensaData.openingString }</PillOnWhiteBG>
-			</div>
 
 			{
 					day === "samstag" || day === "sonntag" ? (
@@ -153,74 +159,58 @@ export default function Mensa(
 					) : null
 			}
 
+			<div className="flex flex-col w-full sm:px-4">
+				<div className="w-full flex overflow-x-scroll overflow-auto  hide-scroll-bar ">
+					<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-x snap-mandatory sm:space-x-0 sm:justify-between">
+						{
+							// Not sold out
+						}
+						{
+							// Show Vegan first
+							foodOffers?.map((offer, i) => {
+								if(offer.vegan && !offer.sold_out){
+									return (
+										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+									)
+								}
+							})
+						}
+						{
+							// Show Vegetarian second
+							foodOffers?.map((offer, i) => {
+								if(offer.vegetarian && !offer.vegan && !offer.sold_out){
+									return (
+										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+									)
+								}
+							})
+						}
+						{
+							// Show rest later
+							foodOffers?.map((offer, i) => {
+								if(!offer.vegan && !offer.vegetarian && !offer.sold_out){
+									return (
+										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+									)
+								}
+							})
+						}
 
-			{/* Day Selection */}
-			<div className="daySelection">
-				<motion.div 
-					className="space-x-4 flex overflow-x-scroll overflow-y-hidden"
-					variants={containerAnimation}
-					initial="hidden"
-					animate="show">
-					{
-						getDates(new Date()).shownDays.map((day, i) => {
-							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
-							
-							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
-						}) 
-						
-					} 
-					
-				</motion.div>
+						{
+							// Sold out
+						}
+						{
+							foodOffers?.map((offer, i) => {
+								if(offer.sold_out){
+									return (
+										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+									)
+								}
+							})
+						}
+					</div>
+				</div>
 			</div>
-
-			<motion.div variants={anim01} initial="hidden" animate="show" className='snap-both'>
-			{
-				// Not sold out
-			}
-			{
-				// Show Vegan first
-				foodOffers?.map((offer, i) => {
-					if(offer.vegan && !offer.sold_out){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			{
-				// Show Vegetarian second
-				foodOffers?.map((offer, i) => {
-					if(offer.vegetarian && !offer.vegan && !offer.sold_out){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			{
-				// Show rest later
-				foodOffers?.map((offer, i) => {
-					if(!offer.vegan && !offer.vegetarian && !offer.sold_out){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-
-			{
-				// Sold out
-			}
-			{
-				foodOffers?.map((offer, i) => {
-					if(offer.sold_out){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			</motion.div>
 		</div>
 
     )

@@ -15,7 +15,7 @@ class MyDocument extends Document {
             <meta name="theme-color" content="#88E2A1" />
         </Head>
         {/* <body style={{background: '#E5E7E5'}}> */}
-        <body>
+        <body className='bg-light-green'>
           <Main />
           <NextScript />
         </body>

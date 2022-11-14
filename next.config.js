@@ -11,6 +11,11 @@ const nextConfig = withPWA({
     pwa: {
         dest: 'public',
         disable: process.env.NODE_ENV === 'production' ? false : true
+    },
+    api: {
+        bodyParser: {
+            sizeLimit: '20mb' // Set desired value here
+        }
     }
 });
 module.exports = nextConfig;
