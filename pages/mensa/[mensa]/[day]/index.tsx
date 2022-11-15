@@ -50,20 +50,6 @@ export default function Mensa(
 	const router = useRouter()
   	const { mensa, day } = router.query
 
-	// const url = mensaData.url;
-	// const mensaName = mensaData.name;
-
-	// Switcher for Nutiotional Intformation is not yet working
-	const [offers, setOffers] = useState([])
-	
-	const collapseNutrionionInfo = (index) => {
-		let tempOffers = [...offers]
-		let tempOffer = tempOffers[index]
-		tempOffer = !tempOffer
-		tempOffers[index] = tempOffer
-		
-		setOffers(tempOffers)
-	}
 
 	const containerAnimation = {
 		hidden: {
@@ -101,14 +87,11 @@ export default function Mensa(
 		}
 	}
 
-	// Get Opening String from useOpeningString
+	// get current weekday
+	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay()-1);
+	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
-	const [openingString, setOpeningString] = useState("")
-	useEffect(() => {
-
-	}, [])
-
-    return (
+	return (
 		<div className="m-auto sm:max-w-3xl py-2 h-screen flex flex-col space-y-8">
 			<Head>
 				<title>{ mensaData.name } - Mensa Radar</title>
@@ -122,16 +105,41 @@ export default function Mensa(
 					</div>
 					<div className="border-b border-gray/20"></div>
 
-					<div className="flex justify-between items-center flex-row w-full px-4">
-						<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4">Heute</p>
-						<Link href={'/mensa/'}>
-							<div className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70">
-							<p>Morgen</p>
+					<div className="flex items-center justify-center flex-row w-full px-4">
+						{
+							selectedWeekday > 0 ? <>
+							<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
+								<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 mr-auto'>
+									<img src="/icons/left-arrw.png" className="w-4 opacity-50" />
 
-							<img src="/icons/right-arrw.png" className="w-4 opacity-50"></img>
-							</div>
-						</Link>	
+									<p className='capitalize'>
+										{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
+									</p>
+								</a>
+							</Link>
+							</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+
+						}
+						<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4 capitalize">
+							{
+								currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
+							}
+						</p>
+						{
+							selectedWeekday < 4 ? <>
+								<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
+									<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 ml-auto">
+										<p className='capitalize'>
+											{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
+										</p>
+
+										<img src="/icons/right-arrw.png" className="w-4 opacity-50" />
+									</a>
+								</Link>	
+							</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+						}
 					</div>
+					
 
 					<div className="border-b border-gray/20"></div>
 					<div className="flex justify-between items-center flex-row w-full px-4">
