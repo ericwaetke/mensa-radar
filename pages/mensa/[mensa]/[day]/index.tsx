@@ -160,8 +160,8 @@ export default function Mensa(
 			}
 
 			<div className="flex flex-col w-full sm:px-4">
-				<div className="w-full flex overflow-x-scroll overflow-auto  hide-scroll-bar ">
-					<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-x snap-mandatory sm:space-x-0 sm:justify-between">
+
+					<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar">
 						{
 							// Not sold out
 						}
@@ -209,7 +209,7 @@ export default function Mensa(
 							})
 						}
 					</div>
-				</div>
+
 			</div>
 		</div>
 
