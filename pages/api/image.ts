@@ -14,14 +14,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  
 	// here we create a new_params object to convert string to number, and also set default value
 	 const new_params  = {
-	   w: +w || 800,  // set default 800px
-	   h: +h || null,    // set to null if not provided, so that Sharp automatically keep the aspect ratio
-	   q: +q || 80      // set default 80% quality
+	   w: + w || 800,  // set default 800px
+	   h: + h || null,    // set to null if not provided, so that Sharp automatically keep the aspect ratio
+	   q: + q || 80      // set default 80% quality
 	 }
  
 	 // here's where the Transformation happens
 	 sharp(buffer)
-	   .resize(new_params.w, new_params.h)
+	   .resize(800, null)
+	//    .resize(new_params.w, new_params.h)
 	   .webp({quality: new_params.q})     // change to .webp() if you want to serve as webp
 	   .toBuffer()
 	   .then((data) => {

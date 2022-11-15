@@ -105,11 +105,11 @@ export default function Mensa(
 					</div>
 					<div className="border-b border-gray/20"></div>
 
-					<div className="flex items-center justify-center flex-row w-full px-4">
+					<div className="flex items-center justify-between flex-row w-full px-4">
 						{
 							selectedWeekday > 0 ? <>
 							<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
-								<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 mr-auto'>
+								<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
 									<img src="/icons/left-arrw.png" className="w-4 opacity-50" />
 
 									<p className='capitalize'>
@@ -128,8 +128,8 @@ export default function Mensa(
 						{
 							selectedWeekday < 4 ? <>
 								<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
-									<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 ml-auto">
-										<p className='capitalize'>
+									<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0 text-right">
+										<p className='capitalize w-full'>
 											{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
 										</p>
 

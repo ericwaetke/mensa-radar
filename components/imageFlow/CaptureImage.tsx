@@ -10,21 +10,21 @@ const CaptureImageButton = ({
 }) => {
 	return (
 		<>
-			<label htmlFor="file_input" className="h-14 w-full min-w-max grow border-2 rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-					<p>
-						{label}
-					</p>
-				</label>
-				<input
-					type="file"
-					accept="image/*"
-					className="hidden"
-					id="file_input"
-					onChange={(e) => {
-						handleUpload(e); // 👈 this will trigger when user selects the file.
-					}}
-				/>
+			<label htmlFor="file_input" className="bg-main-green font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+				<p>
+					{label}
+				</p>
+			</label>
+			<input
+				type="file"
+				accept="image/*"
+				className="hidden"
+				id="file_input"
+				onChange={(e) => {
+					handleUpload(e); // 👈 this will trigger when user selects the file.
+				}}
+			/>
 		</>
 	)
 }
@@ -47,7 +47,9 @@ export const CaptureImage = (
 	
 	const [fileName, setFileName] = useState("")
 	const [modalTempImage, setModalTempImage] = useState("")
-	const [uploading, setUploading] = useState(false)
+	const [imageValid, setImageValid] = useState(false)
+	const [processing, setProcessing] = useState(false)
+	const [queued, setQueued] = useState(false)
 
 	const [currentStep, setCurrentStep] = useState("preparation")
 	const [errorCode, setErrorCode] = useState("")
@@ -67,7 +69,7 @@ export const CaptureImage = (
 
 		setModalTempImage(URL.createObjectURL(file))
 		setTempImage(URL.createObjectURL(file))
-		setUploading(true)
+		setProcessing(true)
 
 		uploadFileToSupabase(file, fileName).then(res => {
 			const {data, error} = res
@@ -84,22 +86,29 @@ export const CaptureImage = (
 					.then(data => {
 						if(data) {
 							if (data.isFood){
-								setUploading(false)
+								setImageValid(true)
+								setProcessing(false)
 							} else if(!data.isFood) {
+								setImageValid(false)
 								console.log("not food")
-								setUploading(false)
+								setProcessing(false)
 								setErrorCode("no_food")
 								setCurrentStep("error")
+								setTempImage("")
 							}
 						}
 					})
-					.catch(err => console.log(err))
+					.catch(err => {
+						console.log(err)
+						setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+					})
 			} else if (error) {
 				setErrorCode("upload")
 				setErrorMessage(error.message)
 				setCurrentStep("error")
-				setUploading(false)
+				setProcessing(false)
 				console.log(error);
+				setTempImage("")
 
 				// Generate a new random name for the file with 12 characters
 				setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
@@ -110,8 +119,10 @@ export const CaptureImage = (
 			setErrorCode("upload")
 			setErrorMessage(err.message)
 			setCurrentStep("error")
-			setUploading(false)
+			setProcessing(false)
 			console.log(err);
+			setTempImage("")
+
 
 			// Generate a new random name for the file with 12 characters
 			setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
@@ -128,7 +139,16 @@ export const CaptureImage = (
 			.upload(fileName, file)
 	}
 
-	
+	const saveImage = () => {
+		if(!processing) {
+			if(imageValid) {
+				setModalOpen(false)
+				attachImageToFood()
+			}
+		} else {
+			setQueued(true)
+		}
+	}
 
 	const attachImageToFood = async () => {
 		const supabase = createClient(supabaseUrl, supabaseKey)
@@ -145,9 +165,15 @@ export const CaptureImage = (
 				console.log(imageData)
 			} else if (imageError) {
 				console.log(imageError)
-				setUploading(false)
+				setProcessing(false)
 			}
 	}
+
+	useEffect(() => {
+		if(queued) {
+			saveImage()
+		}
+	}, [processing])
 
 	useEffect(() => {
 		console.log("captureImage mounted")
@@ -155,36 +181,43 @@ export const CaptureImage = (
 	}, [])
 
 	return (
-		<div className="bg-background-container h-screen flex flex-col justify-between text-center">
+		<div className="bg-light-green py-12 h-screen flex flex-col justify-between text-center">
 			
 			{/* First Row in Flexbox */}
 			<div>
-				<div onClick={() => setModalOpen(false)}>
-					<p>&lt;-</p>
-					<h2>
+				<div 
+					className="flex justify-center items-center text-xl cursor-pointer px-8"
+					onClick={() => setModalOpen(false)}>
+					<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 12" className="w-3 mr-auto">
+						<path d="M13.9287 6.75a.75.75 0 0 0 0-1.5v1.5ZM.5412 5.4697a.75.75 0 0 0 0 1.0606l4.773 4.773a.75.75 0 1 0 1.0607-1.0607L2.1322 6 6.375 1.7574A.75.75 0 0 0 5.3142.6967l-4.773 4.773ZM13.9287 5.25H1.0716v1.5h12.8571v-1.5Z" fill="#161616"/>
+					</svg>
+					<h2 className="font-sans-bold">
 						Foto Aufnehmen
 					</h2>
+					<div className="ml-auto"></div>
 				</div>
-				<p>
-					{foodTitle}
-				</p>
+				<div className="px-12 my-6 py-6 border-y border-black/20">
+					<p className="font-serif-med text-xl">
+						{foodTitle}
+					</p>
+				</div>
 			</div>
 
 			{/* Second Row in Flexbox */}
-			<div>
+			<div className="px-4 font-sans-reg">
 				{
 					currentStep === "preparation" ? <>
-						<h2>
+						<h2 className="font-sans-semi text-xl">
 							Danke, dass du ein Foto schießt!
 						</h2>
-						<p>
+						<p className="text-5xl my-4">
 							🙋
 						</p>
 						<p>
 							Bitte halte dich an unsere Nettique-Regeln und fotografiere nur das Essen.
 							Dein Foto wird von Google analysiert.
 						</p>
-						<p>
+						<p className="text-5xl my-4">
 							✨
 						</p>
 						<p>
@@ -193,12 +226,38 @@ export const CaptureImage = (
 							Wir zeigen dir im Anschluss eine Vorschau.
 						</p>
 					</> : currentStep === "preview" ? <>
-						<h2>
+						<h2 className="font-semibold text-xl">
 							Bist du mit dem Foto zufrieden?
 						</h2>
-						{modalTempImage !== "" ? <img src={modalTempImage} className="w-full" /> : null}
+						{/* Image Holder */}
+						<div className="h-56 bg-black rounded-xl my-5">
+							{modalTempImage !== "" ? <img src={modalTempImage} className="h-full w-full object-cover rounded-xl" /> : null}
+
+						</div>
+
+						<label htmlFor="file_input" className="font-semibold h-14 w-full min-w-max border-2 border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+							<p>
+								{"Neues Foto aufnehmen"}
+							</p>
+						</label>
+						<input
+							type="file"
+							accept="image/*"
+							className="hidden"
+							id="file_input"
+							onChange={(e) => {
+								handleUpload(e); // 👈 this will trigger when user selects the file.
+							}}
+						/>
 					</> : currentStep === "error" ? <>
-						<h2>
+						<p className="text-5xl my-4">
+							😟
+						</p>
+						<p className="uppercase text-black/50 font-sans-bold">
+							Fehler
+						</p>
+						<h2 className="text-2xl font-sans-semi w-10/12 mx-auto">
 							{
 								errorCode === "no_food" ? "Laut unserer Bilderkennung zeigt dein Foto kein Essen." : errorMessage
 							}
@@ -209,19 +268,48 @@ export const CaptureImage = (
 
 
 			{/* Bottom Row in Flexbox */}
-			<div>
+			<div className="px-4 flex flex-col gap-2">
 				{
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
 					</> : currentStep === "preview" ? <>
-							{
-								uploading ? <></> : <>
+						<button className="font-semibold h-14 w-full min-w-max border-2 border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+							<p>
+								{"Speichern und Essen bewerten"}
+							</p>
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-6" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+								<line x1="5" y1="12" x2="19" y2="12" />
+								<line x1="15" y1="16" x2="19" y2="12" />
+								<line x1="15" y1="8" x2="19" y2="12" />
+							</svg>
+						</button>
 
+						<button 
+						onClick={() => saveImage()}
+						className={`${queued ? "bg-black/20" : "bg-main-green"} font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
+							{
+								!queued ? <>
+									<svg xmlns="http://www.w3.org/2000/svg" className="h-6" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+										<path d="M5 12l5 5l10 -10" />
+									</svg>
+								</> : <>
+								<svg className="inline mr-2 w-8 h-8 text-gray-200 animate-spin fill-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="none"/>
+									<path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#000"/>
+								</svg>
+								<span className="sr-only">Loading...</span>
 								</>
 							}
-					</> : currentStep === "error" ? <>
-						<CaptureImageButton label="Nochmal versuchen" handleUpload={handleUpload} />
-
+							<p>
+								{!queued ? "Foto speichern" : "Foto wird überprüft, einen Moment..."}
+							</p>
+						</button>
+						
+					</> : currentStep === "error"? <>
+						<p className="font-sans-med">Wir werden das überprüfen.</p>
+						<CaptureImageButton label="Neues Foto aufnehmen" handleUpload={handleUpload} />
 					</> : null
 				}
 			</div>

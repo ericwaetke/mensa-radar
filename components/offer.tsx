@@ -113,20 +113,20 @@ export const Offer = (
 				foodId={offer.id}/>
 		</Modal>
 		<motion.div 
-			className={`inline-block snap-start pl-4 sm:p-0 ${offer.sold_out ? "opacity-50" : ""}`}
+			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:p-0 ${offer.sold_out ? "opacity-50" : ""}`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show">
 
-			<div className="w-92 overflow-hidden rounded-2xl bg-white h-full ease-in-out p-3 flex flex-col space-y-2">
+			<div className="w-92 overflow-hidden rounded-2xl bg-white h-full ease-in-out p-3 flex flex-col space-y-2 justify-end">
+				<div className="p-4 flex-col space-y-3 mb-auto">
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
 						{
-							tempImage != "" ? <img src={tempImage} className="w-full h-full object-cover rounded-xl" /> : <img src={offer.imageUrls[offer.imageUrls.length]} className="w-full h-full object-cover rounded-xl" />
+							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-xl" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-xl" />
 						}
 					</div> : null
 				}
-				<div className="p-4 flex-col space-y-3">
 					<h2 className="text-h2 font-serif-semi">
 						{offer.food_title}
 					</h2>
@@ -159,9 +159,12 @@ export const Offer = (
 									<img src="/icons/vegan.svg" className="w-4"></img>
 									<p>vegan</p>
 								</div>
-							</> : <>
-							
-							</>
+							</> : offer.vegetarian ? <>
+								<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+									<img src="/icons/vegan.svg" className="w-4"></img>
+									<p>vegetarisch</p>
+								</div>
+							</> : null
 						}
 						
 						<br />
