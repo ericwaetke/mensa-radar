@@ -11,7 +11,8 @@ const CaptureImageButton = ({
 	return (
 		<>
 			<label htmlFor="file_input" className="bg-main-green font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+				<img src="/icons/camera.svg" className="w-5" />	
+				
 				<p>
 					{label}
 				</p>
@@ -183,23 +184,23 @@ export const CaptureImage = (
 	}, [])
 
 	return (
-		<div className="bg-light-green py-12 h-screen flex flex-col justify-between text-center">
+		<div className="bg-light-green h-screen flex flex-col justify-between text-center sm:max-w-md">
 			
 			{/* First Row in Flexbox */}
 			<div>
 				<div 
-					className="flex justify-center items-center text-xl cursor-pointer px-8"
+					className="flex pt-6 justify-center items-center text-xl cursor-pointer px-8"
 					onClick={() => setModalOpen(false)}>
-					<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 12" className="w-3 mr-auto">
-						<path d="M13.9287 6.75a.75.75 0 0 0 0-1.5v1.5ZM.5412 5.4697a.75.75 0 0 0 0 1.0606l4.773 4.773a.75.75 0 1 0 1.0607-1.0607L2.1322 6 6.375 1.7574A.75.75 0 0 0 5.3142.6967l-4.773 4.773ZM13.9287 5.25H1.0716v1.5h12.8571v-1.5Z" fill="#161616"/>
-					</svg>
+
+					<img src="/icons/right-arrw.svg" className="rotate-180 mr-auto w-4" />	
+
 					<h2 className="font-sans-bold">
 						Foto Aufnehmen
 					</h2>
 					<div className="ml-auto"></div>
 				</div>
 				<div className="px-12 my-6 py-6 border-y border-black/20">
-					<p className="font-serif-med text-xl">
+					<p className="font-serif-reg text-xl">
 						{foodTitle}
 					</p>
 				</div>
@@ -228,19 +229,19 @@ export const CaptureImage = (
 							Wir zeigen dir im Anschluss eine Vorschau.
 						</p>
 					</> : currentStep === "preview" ? <>
-						<h2 className="font-semibold text-xl">
+						<h2 className="font-sans-semi text-xl">
 							Bist du mit dem Foto zufrieden?
 						</h2>
 						{/* Image Holder */}
-						<div className="h-56 bg-black rounded-xl my-5">
+						<div className="h-56 bg-black rounded-xl my-3">
 							{modalTempImage !== "" ? <img src={modalTempImage} className="h-full w-full object-cover rounded-xl" /> : null}
 
 						</div>
 
-						<label htmlFor="file_input" className="font-semibold h-14 w-full min-w-max border-2 border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+						<label htmlFor="file_input" className=" font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+							<img src="/icons/camera.svg" className="w-5" />	
 							<p>
-								{"Neues Foto aufnehmen"}
+								{"Lieber neues Foto aufnehmen"}
 							</p>
 						</label>
 						<input
@@ -270,21 +271,16 @@ export const CaptureImage = (
 
 
 			{/* Bottom Row in Flexbox */}
-			<div className="px-4 flex flex-col gap-2">
+			<div className="px-4 mb-6 flex flex-col gap-2">
 				{
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
 					</> : currentStep === "preview" ? <>
-						<button className="font-semibold h-14 w-full min-w-max border-2 border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+						<button className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
 							<p>
-								{"Speichern und Essen bewerten"}
+								{"Foto speichern und Essen bewerten"}
 							</p>
-							<svg xmlns="http://www.w3.org/2000/svg" className="h-6" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-								<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-								<line x1="5" y1="12" x2="19" y2="12" />
-								<line x1="15" y1="16" x2="19" y2="12" />
-								<line x1="15" y1="8" x2="19" y2="12" />
-							</svg>
+							<img src="/icons/right-arrw.svg" className="w-5" />	
 						</button>
 
 						<button 

@@ -9,9 +9,9 @@ import { createClient } from "@supabase/supabase-js";
 
 
 export default function Home(props) {
-	const {mensaData} = props;
+	const { mensaData } = props;
 	const d = new Date();
-	const currentTime = d.getHours() + d.getMinutes()/60
+	const currentTime = d.getHours() + d.getMinutes() / 60
 	const currentDay = d.getDay()
 
 	const [mensen, setMensen] = useState(mensaData);
@@ -22,45 +22,45 @@ export default function Home(props) {
 	const getLocation = () => {
 		const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 			const earthRadius = 6371; // Radius of the earth in km
-			const dLat = deg2rad(lat2-lat1);
-			const dLon = deg2rad(lon2-lon1);
-			var a = 
-				Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-				Math.sin(dLon/2) * Math.sin(dLon/2)
-				; 
-			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	
+			const dLat = deg2rad(lat2 - lat1);
+			const dLon = deg2rad(lon2 - lon1);
+			var a =
+				Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+				Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+				Math.sin(dLon / 2) * Math.sin(dLon / 2)
+				;
+			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
 			return earthRadius * c;
 		}
-		
-		const deg2rad = (deg) => deg * (Math.PI/180)
-		
+
+		const deg2rad = (deg) => deg * (Math.PI / 180)
+
 		const success = (data) => {
 			setLocationPermission(true)
 			// User Coords
-			const {latitude, longitude} = data.coords
+			const { latitude, longitude } = data.coords
 
 			let tempMensen = []
 			mensaData.map((mensa) => {
 				const distance = getDistanceFromLatLonInKm(latitude, longitude, mensa.loc_lat, mensa.loc_long)
 				tempMensen.push({
-						...mensa,
-						distance: Math.round(distance * 10) / 10
-					})
+					...mensa,
+					distance: Math.round(distance * 10) / 10
 				})
+			})
 
 			// Sorting Mensas from closest to furthest
 			tempMensen.sort((firstItem, secondItem) => firstItem.distance - secondItem.distance)
-			
+
 			// Setting the State so the data gets updated
 			setMensen(tempMensen)
 			setLocationLoaded(true);
 		}
-		
-		if(!navigator.geolocation) {
+
+		if (!navigator.geolocation) {
 			console.error('Geolocation is not supported by your browser');
-			
+
 		} else {
 			navigator.geolocation.getCurrentPosition(success, (e) => console.log(e));
 			setLocationLoaded(true);
@@ -71,38 +71,42 @@ export default function Home(props) {
 		getLocation()
 	}, [])
 
-  return (
-    <div className="p-4 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
-      <Head>
-        <title>Mensa Radar — Mensen Potsdam</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	return (
+		<div className="p-2 pt-8 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
+			<Head>
+				<title>Mensa-Radar — Mensen Potsdam</title>
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<div className="w-full flex justify-center">
+				<h1 className="text-h1 font-serif-bold">Mensa-Radar</h1>
+			</div>
 
-      <main className="flex flex-col justify-center h-full">
-        <div className="flex flex-col divide-y-2 border-y-2 divide-black/20 rounded-xl bg-white py-0.5">
-          {
-            mensen.map(mensa => {
-              return <Link href={'/mensa/'+mensa.url}>
-                      <a className="flex p-6 justify-between">
-						<h3 className="text-xl font-normal font-serif-bold"> {mensa.name}</h3>
-						<div className="flex h-6 font-serif text-s">
-							{ 
-								mensa.open || mensa.openingString === "offen bis 14:30" ? <>  
-								<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
-								</> : null
-							}
-							
-							<span className="opacity-60"> { mensa.openingString } </span>
-						</div> 
-                      </a>
-                    </Link>
-            })
-          }
-        </div>
-      </main>
-          <Footer />
-    </div>
-  );
+
+			<main className="flex flex-col justify-center h-full">
+				<div className="flex flex-col divide-y divide-gray/20 border border-gray/20 rounded-xl bg-white py-0.5">
+					{
+						mensen.map(mensa => {
+							return <Link href={'/mensa/' + mensa.url}>
+								<a className="flex p-4 justify-between space-x-2">
+									<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
+									<div className="flex font-sans-reg text-s items-center h-full">
+										{
+											mensa.open || mensa.openingString === "offen bis 14:30" ? <>
+												<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
+											</> : null
+										}
+
+										<span className="opacity-60 whitespace-nowrap"> {mensa.openingString} </span>
+									</div>
+								</a>
+							</Link>
+						})
+					}
+				</div>
+			</main>
+			<Footer />
+		</div>
+	);
 }
 //{ mensa.openingString }
 
@@ -143,8 +147,8 @@ export async function getStaticProps(context) {
 
 
 	return {
-		props: { 
-			mensaData: mensaDataResolved 
+		props: {
+			mensaData: mensaDataResolved
 		},
 		revalidate: 60
 	}

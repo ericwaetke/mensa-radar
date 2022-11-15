@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.min-height-96 {
+  min-height: 26rem;
+}
 
 .hide-scroll-bar {
     -ms-overflow-style: none;
@@ -29,7 +32,7 @@
 
 @font-face {
   font-family: "IBM-Reg";
-  src: url("../fonts/ibm-plex-serif-300.ttf");
+  src: url("../fonts/ibm-plex-serif-400.ttf");
 }
 
 @font-face {
@@ -53,13 +56,13 @@
 }
 
 .text-h1 {
-  font-size: 1.3rem;
-  line-height: 1.6rem;
+  font-size: 1.4rem;
+  line-height: 1.8rem;
 }
 
 .text-h2 {
   font-size: 1.5rem;
-  line-height: 1.8rem;
+  line-height: 1.9rem;
 }
 
 .w-92 {
@@ -73,6 +76,7 @@
 .ReactModal__Body--open {
 	overflow-y: hidden;
 }
+
 
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
