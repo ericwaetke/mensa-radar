@@ -95,6 +95,7 @@ export const CaptureImage = (
 								setErrorCode("no_food")
 								setCurrentStep("error")
 								setTempImage("")
+								setQueued(false)
 							}
 						}
 					})
@@ -109,6 +110,7 @@ export const CaptureImage = (
 				setProcessing(false)
 				console.log(error);
 				setTempImage("")
+				setQueued(false)
 
 				// Generate a new random name for the file with 12 characters
 				setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
@@ -122,7 +124,7 @@ export const CaptureImage = (
 			setProcessing(false)
 			console.log(err);
 			setTempImage("")
-
+			setQueued(false)
 
 			// Generate a new random name for the file with 12 characters
 			setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))

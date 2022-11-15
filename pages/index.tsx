@@ -78,48 +78,22 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <div className="m-1 mb-3">
-          <h2 className="text-xl">Mensen</h2>
-        </div>
-        <div className="flex flex-col divide-y-2 border-y-2 divide-main-black/20 bg-green-3 rounded-xl bg-background-container py-0.5
-        ">
+      <main className="flex flex-col justify-center h-full">
+        <div className="flex flex-col divide-y-2 border-y-2 divide-black/20 rounded-xl bg-white py-0.5">
           {
             mensen.map(mensa => {
               return <Link href={'/mensa/'+mensa.url}>
-                      <a className="flex py-3 px-6 justify-between">
-                        <div className="flex flex-col space-y-0.5 justify-start">
-                          
+                      <a className="flex p-6 justify-between">
+						<h3 className="text-xl font-normal font-serif-bold"> {mensa.name}</h3>
+						<div className="flex h-6 font-serif text-s">
+							{ 
+								mensa.open || mensa.openingString === "offen bis 14:30" ? <>  
+								<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
+								</> : null
+							}
 							
-							<h3 className="text-xl font-normal font-bigtext"> {mensa.name}</h3>
-							 
-							<div className="flex h-6 font-serif text-s">
-								{ 
-									mensa.open? <>  
-									<div className="rounded-full w-2 h-2 bg-sec-green-dark mr-2 my-auto"></div>
-									</> : null
-								}
-								
-								<span className="opacity-60"> { mensa.openingString } </span>
-								
-							</div> 
-                        </div>
-                        <div className="flex pb-1">
-                          {
-                            // Display Distance if Location Permissions are granted
-                            // true ? <></>
-							!locationLoaded ? <>
-									<div role="status" className="animate-pulse m-auto">
-										<div className="h-6 bg-white rounded-full dark:bg-gray-700 w-24"></div>
-										<span className="sr-only">lädt</span>
-									</div>
-									</> : locationPermission ? <> 
-										<span className="bg-main-white py-0 rounded-full inline-flex text-green-w7 px-3 gap-2 m-auto">
-											<img src="location.svg"></img><span> { mensa.distance }km</span>		
-										</span>		 
-                           				</> : null
-                          }
-                        </div>
+							<span className="opacity-60"> { mensa.openingString } </span>
+						</div> 
                       </a>
                     </Link>
             })
