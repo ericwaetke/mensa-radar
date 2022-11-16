@@ -94,9 +94,9 @@ export const Offer = (
 			inset: 0,
 			padding: 0
 		},
-	  };
+	};
 	  
-	  const [tempImage, setTempImage] = useState("");
+	const [tempImage, setTempImage] = useState("");
 
 	return (
 		<>
@@ -113,12 +113,12 @@ export const Offer = (
 				foodId={offer.id}/>
 		</Modal>
 		<motion.div 
-			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0 ${offer.sold_out ? "opacity-50" : ""}`}
+			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show">
 
-			<div className="w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between">
+			<div className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
 				<div className="flex-col space-y-3 mb-auto">
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">

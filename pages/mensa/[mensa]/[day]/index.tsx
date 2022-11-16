@@ -15,7 +15,7 @@ import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../../../../lib/getSupabaseClient';
 import { GetStaticPaths } from 'next';
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-
+import Modal from "react-modal"
 
 
 export default function Mensa(
@@ -93,235 +93,155 @@ export default function Mensa(
 	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay()-1);
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
+	const [modalOpen, setModalOpen] = useState(false);
+	const customStyles = {
+		content: {
+			top: 0,
+			left: 0,
+			height: "100%",
+			width: "100%",
+			border: "none",
+			borderRadius: 0,
+			inset: 0,
+			padding: 0
+		},
+	};
+
 	return (
-		<div className="m-auto sm:max-w-3xl my-4 h-screen flex flex-col space-y-4">
-			<Head>
-				<title>{ mensaData.name } - Mensa Radar</title>
-			</Head>
-			<div className="px-4">
-				<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
-					<div className="flex justify-center space-x-1 items-center flex-row w-full">
-						<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
-						<img className="w-4 mt-0.5"
-						src="/icons/chev-down.svg"></img>
-					</div>
-					<div className="border-b border-gray/20"></div>
+		<>
+			<Modal
+				isOpen={modalOpen}
+				onRequestClose={() => setModalOpen(false)}
+				style={customStyles}
+				>
+				<NutrientOverview 
+					foodOffers={foodOffers} 
+					setModalOpen={setModalOpen}/>
+			</Modal>
+			<div className="m-auto sm:max-w-3xl my-4 h-screen flex flex-col space-y-4">
+				<Head>
+					<title>{ mensaData.name } - Mensa Radar</title>
+				</Head>
+				<div className="px-4">
+					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
+						<div className="flex justify-center space-x-1 items-center flex-row w-full">
+							<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
+							<img className="w-4 mt-0.5"
+							src="/icons/chev-down.svg"></img>
+						</div>
+						<div className="border-b border-gray/20"></div>
 
-					<div className="flex items-center justify-between flex-row w-full px-4">
-						{
-							selectedWeekday > 0 ? <>
-							<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
-								<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
-									<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
-
-									<p className='capitalize'>
-										{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
-									</p>
-								</a>
-							</Link>
-							</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
-
-						}
-						<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4 capitalize">
+						<div className="flex items-center justify-between flex-row w-full px-4">
 							{
-								currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
-							}
-						</p>
-						{
-							selectedWeekday < 4 ? <>
-								<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
-									<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0 text-right">
-										<p className='capitalize w-full'>
-											{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
+								selectedWeekday > 0 ? <>
+								<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
+									<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
+										<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
+
+										<p className='capitalize'>
+											{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
 										</p>
-
-										<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
 									</a>
-								</Link>	
-							</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
-						}
-					</div>
-					
+								</Link>
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
 
-					<div className="border-b border-gray/20"></div>
-					<div className="flex justify-between items-center flex-row w-full px-4">
-					<div className="flex space-x-2 items-center">
-						<div className="w-2 h-2 bg-dark-green rounded-full"></div>
-						<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingString }</p>
-					</div>
-					</div>
-				</div>
-			</div>
-
-
-			{
-					day === "samstag" || day === "sonntag" ? (
-						<div>
-							<p>
-							Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
+							}
+							<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4 capitalize">
+								{
+									currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
+								}
 							</p>
-							<Link href={`/mensa/${mensa}/freitag`}>
-								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
-									Zu vergangenem Freitag
-								</a>
-							</Link>
+							{
+								selectedWeekday < 4 ? <>
+									<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
+										<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0 text-right">
+											<p className='capitalize w-full'>
+												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
+											</p>
+
+											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
+										</a>
+									</Link>	
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+							}
 						</div>
-					) : null
-			}
-
-			<div className="flex flex-col w-full sm:px-4">
-
-					<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
-						{
-							// Not sold out
-						}
 						
-						{
-							// Show rest later
-							foodOffers?.map((offer, i) => {
-								if(!offer.sold_out){
-									return (
-										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-									)
-								}
-							})
-						}
 
-						{
-							// Sold out
-						}
-						{
-							foodOffers?.map((offer, i) => {
-								if(offer.sold_out){
-									return (
-										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-									)
-								}
-							})
-						}
-					</div>
-
-			</div>
-			
-			{/* NÄHRWERTE */}
-
-			<div className="space-y-4 flex flex-col">
-				
-				<div className="border-y border-gray/20">
-					<div 
-						className="flex py-6 justify-center items-center text-xl cursor-pointer px-8">
-						<img src="/icons/right-arrw.svg" className="rotate-180 mr-auto w-4" />	
-						<h2 className="font-sans-bold">
-							Nährwerte
-						</h2>
-						<div className="ml-auto"></div>
-					</div>
-				</div>
-				<div className="flex flex-col divide-y divide-gray/20 border-b border-gray/20">
-					<div className="flex space-x-4 flex-row w-full font-serif-med text-sm py-2 px-4">
-						<p className="w-2/12"></p>
-						<p className="w-5/12">Kartoffel-Gemüse-Pfanne mit Rote-Bete-Dip</p>
-						<p className="w-5/12">Kartoffel-Gemüse-Pfanne mit Räuchertofu…</p>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kalorien</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
+						<div className="border-b border-gray/20"></div>
+						<div className="flex justify-between items-center flex-row w-full px-4">
+						<div className="flex space-x-2 items-center">
+							<div className="w-2 h-2 bg-dark-green rounded-full"></div>
+							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingString }</p>
 						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kalorien</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kalorien</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kalorien</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col divide-y divide-gray/20">
-					<div className="flex space-x-4 flex-row w-full font-serif-med text-sm py-2 px-4">
-						<p className="w-2/12"></p>
-						<p className="w-5/12">Kartoffel-Gemüse-Pfanne mit Rote-Bete-Dip</p>
-						<p className="w-5/12">Kartoffel-Gemüse-Pfanne mit Räuchertofu…</p>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kalorien</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
+
+
+				{
+						day === "samstag" || day === "sonntag" ? (
+							<div>
+								<p>
+								Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
+								</p>
+								<Link href={`/mensa/${mensa}/freitag`}>
+									<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
+										Zu vergangenem Freitag
+									</a>
+								</Link>
+							</div>
+						) : null
+				}
+
+				<div className="flex flex-col w-full sm:px-4">
+
+						<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
+							{
+								// Not sold out
+							}
+							
+							{
+								// Show rest later
+								foodOffers?.map((offer, i) => {
+									if(!offer.sold_out){
+										return (
+											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+										)
+									}
+								})
+							}
+
+							{
+								// Sold out
+							}
+							{
+								foodOffers?.map((offer, i) => {
+									if(offer.sold_out){
+										return (
+											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+										)
+									}
+								})
+							}
 						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Kohlenhydr.</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Eiweiß</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-					</div>
-					<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
-						<p className="w-2/12 font-sans-bold">Fett</p>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
-						<div className="w-5/12 flex flex-col space-y-1">
-							<p className="w-5/12 font-sans-med">250,5g</p>
-							<div className="rounded-full w-full h-2 bg-main-green"></div>
-						</div>
+
+				</div>
+				<div className='grid grid-cols-3 px-4'>
+					<Link href="/impressum">
+						<p className='font-sans-semi text-sm opacity-50'>
+							Über Mensa-Radar
+						</p>
+					</Link>
+					<div></div>
+					<div className='flex gap-2 cursor-pointer' onClick={() => setModalOpen(true)}>
+						<p className='font-sans-semi text-sm text-right w-full'>
+							Nährwerte vlg.
+						</p>
+						<img src="/icons/right-arrw.svg" className="w-4" />
 					</div>
 				</div>
 			</div>
-		</div>
-		
+		</>		
     )
 }
 

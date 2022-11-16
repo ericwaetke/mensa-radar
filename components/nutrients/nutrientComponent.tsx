@@ -31,34 +31,21 @@ export const NutrientComponent = ({nutrient}) => {
 
 	const nutrientData = {
 		...nutrientType[nutrient.name],
-		value: nutrient.name == "Energie (Kilojoule)" ? kJToKcal(nutrient.value) : nutrient.value,
+		value: nutrient.name === "Energie (Kilojoule)" ? kJToKcal(nutrient.value) : parseFloat(nutrient.value),
 	}
+	console.log(nutrientData)
 
 	// In Float Percentage from 0 to 1
 	const barPosition = .1
 
 	return (
-		<div className="w-f flex flex-col gap-2" key={nutrientData.name} style={{gridArea: nutrientData.name}}>
-			
-			<div className="flex justify-between">
-				<p className='text-sm font-medium font-serif'>
-					{nutrientData.name}
-				</p>
-				<p className='text-sm font-medium opacity-50'>
-					{`${nutrientData.value}${nutrientData.unit}`}
-				</p>
-			</div>
-
-			<div className='h-1.5 w-full bg-white relative rounded-full'>
-				<motion.div className='h-1.5 bg-sec-green-dark absolute border-r-2 border-custom-bg rounded-full' 
+		<div className="w-5/12 flex flex-col space-y-1">
+			<p className="w-5/12 font-sans-med">{nutrient.value} {nutrient.unit}</p>
+			<div className='h-2 w-full bg-white relative rounded-full'>
+				<motion.div className='h-2 bg-main-green absolute rounded-full' 
 				initial={{width: 0}}
-				animate={{width: `${nutrientData.value / (nutrientData.reference * (1 + barPosition)) * 100}%`}}
+				animate={{width: `${(nutrientData.reference / nutrientData.value) * 10}%`}}
 				transition={{duration: .5}}></motion.div>
-
-				<div className='h-4 w-1 bg-main-black absolute border-r-2 border-main-white rounded-full' 
-				style={{
-					top: "-6px", 
-					right: `${nutrientData.reference * (1 + barPosition) / nutrientData.reference * barPosition * 100 }%`}}></div>
 			</div>
 		</div>
 	)
