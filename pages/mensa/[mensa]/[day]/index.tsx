@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router'
 import 'tailwindcss/tailwind.css'
 
@@ -13,6 +13,9 @@ import { PillOnWhiteBG } from '../../../../components/pill';
 import { getDates, getTempOpeningString } from '../../../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../../../../lib/getSupabaseClient';
+import { GetStaticPaths } from 'next';
+import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
+import Modal from "react-modal"
 
 
 export default function Mensa(
@@ -21,7 +24,26 @@ export default function Mensa(
 		selectedWeekday,
 		mensaData = {},
 	} : {
-		foodOffers: any,
+		foodOffers: {
+			id: number,
+			mensa: number,
+			food_title: string,
+			food_desc: string,
+			vegan: boolean,
+			vegetarian: boolean,
+			nutrients: {
+				name: string,
+				value: string,
+				unit: string,
+			}[],
+			allergens: string[]
+			date: string,
+			price_students: number,
+			price_other: number,
+			sold_out: boolean,
+
+			imageUrls: string[],
+		}[],
 		selectedWeekday: number,
 		mensaData: any,
 	}
@@ -30,20 +52,6 @@ export default function Mensa(
 	const router = useRouter()
   	const { mensa, day } = router.query
 
-	// const url = mensaData.url;
-	// const mensaName = mensaData.name;
-
-	// Switcher for Nutiotional Intformation is not yet working
-	const [offers, setOffers] = useState([])
-	
-	const collapseNutrionionInfo = (index) => {
-		let tempOffers = [...offers]
-		let tempOffer = tempOffers[index]
-		tempOffer = !tempOffer
-		tempOffers[index] = tempOffer
-		
-		setOffers(tempOffers)
-	}
 
 	const containerAnimation = {
 		hidden: {
@@ -81,168 +89,184 @@ export default function Mensa(
 		}
 	}
 
-	// Get Opening String from useOpeningString
+	// get current weekday
+	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay()-1);
+	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
-	const [openingString, setOpeningString] = useState("")
-	useEffect(() => {
+	const [modalOpen, setModalOpen] = useState(false);
+	const customStyles = {
+		content: {
+			top: 0,
+			left: 0,
+			height: "100%",
+			width: "100%",
+			border: "none",
+			borderRadius: 0,
+			inset: 0,
+			padding: 0
+		},
+	};
 
-	}, [])
-
-    return (
-		<div className="space-y-6 break-words mx-5 mt-12 lg:w-1/2 lg:mx-auto">
-			<Head>
-				<title>{ mensaData.name } - Mensa Radar</title>
-			</Head>
-			<style jsx>
-				{`
-					.daySelection{
-						position: relative;
-					}
-					.daySelection::before{
-						content: "";
-						position: absolute;
-						right: 0;
-						width: 20%;
-						height: 100%;
-						background: linear-gradient(270deg, #fff, transparent);
-						pointer-events: none;
-					}
-					.open {
-						transition: .3s;
-						transform: rotate(180deg)
-					}
-					.closed {
-						transition: .3s;
-						transform: rotate(0);
-					}
-					.ReactCollapse--collapse {
-						transition: height 500ms;
-						}
-				`}
-			</style>
-
-			<div>
-				<Link href="/">
-					<a className="p-2 pl-0 flex items-center gap-4">
-						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M11.1426 6.75C11.5568 6.75 11.8926 6.41421 11.8926 6C11.8926 5.58579 11.5568 5.25 11.1426 5.25V6.75ZM0.326533 5.46967C0.0336397 5.76256 0.0336397 6.23744 0.326533 6.53033L5.0995 11.3033C5.3924 11.5962 5.86727 11.5962 6.16016 11.3033C6.45306 11.0104 6.45306 10.5355 6.16016 10.2426L1.91752 6L6.16016 1.75736C6.45306 1.46447 6.45306 0.989592 6.16016 0.696699C5.86727 0.403806 5.3924 0.403806 5.0995 0.696699L0.326533 5.46967ZM11.1426 5.25L0.856863 5.25V6.75L11.1426 6.75V5.25Z" fill="black"/>
-						</svg>
-						<h2 className="text-lg font-bold text-center w-full">{ mensaData.name }</h2>
-					</a>
-				</Link>
-
-			</div>
-
-			<div className="flex justify-between">
-				<PillOnWhiteBG>{ mensaData.url === undefined ? "" : mensaData.openingString }</PillOnWhiteBG>
-			</div>
-
-			{
-					day === "samstag" || day === "sonntag" ? (
-						<div>
-							<p>
-							Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
-							</p>
-							<Link href={`/mensa/${mensa}/freitag`}>
-								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
-									Zu vergangenem Freitag
-								</a>
-							</Link>
+	return (
+		<>
+			<Modal
+				isOpen={modalOpen}
+				onRequestClose={() => setModalOpen(false)}
+				style={customStyles}
+				>
+				<NutrientOverview 
+					foodOffers={foodOffers} 
+					setModalOpen={setModalOpen}/>
+			</Modal>
+			<div className="m-auto sm:max-w-3xl my-4 h-screen flex flex-col space-y-4">
+				<Head>
+					<title>{ mensaData.name } - Mensa Radar</title>
+				</Head>
+				<div className="px-4">
+					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
+						<div className="flex justify-center space-x-1 items-center flex-row w-full">
+							<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
+							<img className="w-4 mt-0.5"
+							src="/icons/chev-down.svg"></img>
 						</div>
-					) : null
-			}
+						<div className="border-b border-gray/20"></div>
 
+						<div className="flex items-center justify-between flex-row w-full px-4">
+							{
+								selectedWeekday > 0 ? <>
+								<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
+									<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
+										<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
 
-			{/* Day Selection */}
-			<div className="daySelection">
-				<motion.div 
-					className="space-x-4 flex overflow-x-scroll overflow-y-hidden"
-					variants={containerAnimation}
-					initial="hidden"
-					animate="show">
-					{
-						getDates(new Date()).shownDays.map((day, i) => {
-							let isSelected = selectedWeekday - (6 - getDates(new Date()).shownDays.length) === i
-							
-							return <motion.div variants={dayVariantAnimation}><DayButton mensa={mensa} day={day} isSelected={isSelected} router={router}/></motion.div>
-						}) 
+										<p className='capitalize'>
+											{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
+										</p>
+									</a>
+								</Link>
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+
+							}
+							<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4 capitalize">
+								{
+									currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
+								}
+							</p>
+							{
+								selectedWeekday < 4 ? <>
+									<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
+										<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0 text-right">
+											<p className='capitalize w-full'>
+												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
+											</p>
+
+											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
+										</a>
+									</Link>	
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+							}
+						</div>
 						
-					} 
-					
-				</motion.div>
+
+						<div className="border-b border-gray/20"></div>
+						<div className="flex justify-between items-center flex-row w-full px-4">
+						<div className="flex space-x-2 items-center">
+							<div className="w-2 h-2 bg-dark-green rounded-full"></div>
+							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingString }</p>
+						</div>
+						</div>
+					</div>
+				</div>
+
+
+				{
+						day === "samstag" || day === "sonntag" ? (
+							<div>
+								<p>
+								Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
+								</p>
+								<Link href={`/mensa/${mensa}/freitag`}>
+									<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
+										Zu vergangenem Freitag
+									</a>
+								</Link>
+							</div>
+						) : null
+				}
+
+				<div className="flex flex-col w-full sm:px-4">
+
+						<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
+							{
+								// Not sold out
+							}
+							
+							{
+								// Show rest later
+								foodOffers?.map((offer, i) => {
+									if(!offer.sold_out){
+										return (
+											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+										)
+									}
+								})
+							}
+
+							{
+								// Sold out
+							}
+							{
+								foodOffers?.map((offer, i) => {
+									if(offer.sold_out){
+										return (
+											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+										)
+									}
+								})
+							}
+						</div>
+
+				</div>
+				<div className='grid grid-cols-3 px-4'>
+					<Link href="/impressum">
+						<p className='font-sans-semi text-sm opacity-50'>
+							Über Mensa-Radar
+						</p>
+					</Link>
+					<div></div>
+					<div className='flex gap-2 cursor-pointer' onClick={() => setModalOpen(true)}>
+						<p className='font-sans-semi text-sm text-right w-full'>
+							Nährwerte vlg.
+						</p>
+						<img src="/icons/right-arrw.svg" className="w-4" />
+					</div>
+				</div>
 			</div>
-
-			<motion.div variants={anim01} initial="hidden" animate="show" className='snap-both'>
-			{
-				// Not sold out
-			}
-			{
-				// Show Vegan first
-				foodOffers?.map((offer, i) => {
-					if(offer.vegan && !offer.soldOut){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			{
-				// Show Vegetarian second
-				foodOffers?.map((offer, i) => {
-					if(offer.vegetarian && !offer.vegan && !offer.soldOut){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			{
-				// Show rest later
-				foodOffers?.map((offer, i) => {
-					if(!offer.vegan && !offer.vegetarian && !offer.soldOut){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-
-			{
-				// Sold out
-			}
-			{
-				foodOffers?.map((offer, i) => {
-					if(offer.soldOut){
-						return (
-							<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-						)
-					}
-				})
-			}
-			</motion.div>
-		</div>
-
+		</>		
     )
 }
 
-export function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
+	const {data: mensaData} = await supabase
+		.from("mensen")
+		.select('url')
 	
+	const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"]
 
 	let paths = [];
-	// mensaData.map(mensa => {
-	// 	days.map(day => {
-	// 		paths.push({
-	// 			params: {
-	// 				mensa: mensa.url,
-	// 				day: day.url
-	// 			},
-	// 		})
-	// 	})
-	// })
+	mensaData.map(mensa => {
+		days.map(day => {
+			paths.push({
+				params: {
+					mensa: mensa.url,
+					day: day
+				},
+			})
+		})
+	})
 
 	return {
 		paths,
-		fallback: true
+		fallback: false
 	}
 }
 
@@ -262,7 +286,51 @@ export async function getStaticProps(context) {
 			mensa
 		}),
 	})
-	const getMensaData = await getMensaDataReq.json()
+	const {
+		foodOffers,
+	} = await getMensaDataReq.json()
+
+	const windowWidth = 1200	
+		// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
+
+	// Get Images to the food offers
+	const foodOffersWithImages = await Promise.all(foodOffers.map(async (offer) => {
+		const {data: images} = await supabase
+			.from("food_images")
+			.select('image_name')
+			.eq('food_id', offer.id)
+
+		images.map(async image => {
+			const { data, error } = await supabase
+				.storage
+				.from('food-images')
+				.list('', {
+					limit: 100,
+					offset: 0,
+					sortBy: { column: 'name', order: 'asc' },
+					search: image.image_name
+				})	
+		})
+
+		const generateUrls = (imageName: string) => {
+			const params = new URLSearchParams({
+				f: imageName,
+				b: "food-images",
+				w: windowWidth.toString(),
+				h: null,    // set to null to keep image's aspect ratio
+				q: "80",
+				token: process.env.NEXT_PUBLIC_SUPABASE_KEY
+			})
+			return `${dev ? 'http://localhost:3000' : 'https://next.mensa-radar.de'}/api/image/?${params.toString()}`
+		}
+
+		const imageUrls = images.map(image => generateUrls(image.image_name))
+
+		return {
+			...offer,
+			imageUrls
+		}
+	}))
 
 	const { data: mensen, error: mensenError } = await supabase
 		.from('mensen')
@@ -282,8 +350,9 @@ export async function getStaticProps(context) {
 
 	return {
 		props: {
-			...getMensaData,
+			foodOffers: foodOffersWithImages,
 			mensaData: thisMensaData,
+			selectedWeekday
 		},
 		revalidate: 60
 	}

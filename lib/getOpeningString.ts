@@ -126,21 +126,8 @@ export const getDates = (currentDate) => {
 		} 
 	}
 	catch (err) {
-		console.log(err)
+		console.error(err)
 	}
-}
-
-const nextOffering = async (mensa: string) => {
-	//connect to mongo and find out whether there is food from currentWeekday
-	// let days = -1;
-
-	const req: {offerToday: boolean, nextOfferInDays: -1|0|1|2|3|4|5} = await fetch(`/api/getDaysUntilNextOffer`, {
-		method: "POST",
-		body: JSON.stringify({
-			mensa
-		})
-	}).then(res => res.json()).catch(err => console.log(err))
-	return req
 }
 
 export const floatTimeToString = (floatTime) => {
@@ -159,8 +146,6 @@ export const findObjectInArrayByKey = (array, key, value) => {
 			return array[i];
 		}
 	}
-
-	
 
 	return null;
 }
