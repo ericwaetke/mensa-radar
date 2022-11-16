@@ -255,7 +255,7 @@ export async function getStaticProps(context) {
 	const selectedWeekday = getWeekdayByName(day)
 
 	const dev = process.env.NODE_ENV !== 'production';
-	const getMensaDataReq = await fetch(`${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/getMensaData`, {
+	const getMensaDataReq = await fetch(`${dev ? 'http://localhost:3000' : 'https://next.mensa-radar.de'}/api/getMensaData`, {
 		method: 'POST',
 		body: JSON.stringify({
 			selectedWeekday,
