@@ -1,12 +1,14 @@
 // import App from 'next/app'
 import "../assets/css/app.css"
 import {Toaster} from "react-hot-toast"
+import { Analytics } from '@vercel/analytics/react';
 
 function MyApp({ Component, pageProps }) {
     return (
       <>
       <Toaster />
-    <Component {...pageProps} />
+      <Component {...pageProps} />
+      <Analytics />
       </>
     )
   }
