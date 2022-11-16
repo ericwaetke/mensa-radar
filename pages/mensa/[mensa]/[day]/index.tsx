@@ -250,7 +250,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		.from("mensen")
 		.select('url')
 	
-	const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"]
+	const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag"]
 
 	let paths = [];
 	mensaData.map(mensa => {
