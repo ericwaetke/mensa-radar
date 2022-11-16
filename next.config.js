@@ -8,6 +8,14 @@ const withPWA = require("next-pwa")({
 });
 
 const nextConfig = withPWA({
-    // next config
+    pwa: {
+        dest: 'public',
+        disable: process.env.NODE_ENV === 'production' ? false : true
+    },
+    api: {
+        bodyParser: {
+            sizeLimit: '20mb' // Set desired value here
+        }
+    }
 });
 module.exports = nextConfig;

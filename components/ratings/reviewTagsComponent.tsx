@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { qualityDescriptions } from "./ratingOverview"
 import { motion } from "framer-motion";
 import { Pill } from "../pill";
 

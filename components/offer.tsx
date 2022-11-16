@@ -1,7 +1,14 @@
+import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { ChangeEvent, useState } from "react"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
+import { RatingOverview } from "./ratings/ratingOverview"
+
+import Modal from "react-modal"
+Modal.setAppElement('#__next');
+import { CaptureImage } from "./imageFlow/CaptureImage"
 
 export const Offer = (
 	{
@@ -9,6 +16,29 @@ export const Offer = (
 		
 		mensa,
 		day
+	}: {
+		offer: {
+			id: number,
+			mensa: number,
+			food_title: string,
+			food_desc: string,
+			vegan: boolean,
+			vegetarian: boolean,
+			nutrients: {
+				name: string,
+				value: string,
+				unit: string,
+			}[],
+			allergens: string[]
+			date: string,
+			price_students: number,
+			price_other: number,
+			sold_out: boolean,
+
+			imageUrls: string[],
+		},
+		mensa: string | string[],
+		day: string | string[],
 	}
 ) => {
 	
@@ -46,45 +76,130 @@ export const Offer = (
 		}
 	}
 
+	const formatter = new Intl.NumberFormat('de-DE', {
+		style: 'currency',
+		currency: 'EUR',
+		minimumFractionDigits: 2
+	})
+
+	const [modalOpen, setModalOpen] = useState(false);
+	const customStyles = {
+		content: {
+			top: 0,
+			left: 0,
+			height: "100%",
+			width: "100%",
+			border: "none",
+			borderRadius: 0,
+			inset: 0,
+			padding: 0
+		},
+	};
+	  
+	const [tempImage, setTempImage] = useState("");
+
 	return (
-		<div className={`my-4 p-5 flex flex-col gap-8 rounded-xl bg-background-container justify-between snap-start ${offer.soldOut ? "opacity-50" : ""}`}>
-			{/* <p className="font-medium text-sm text-gray-400">{offer.titel}</p> */}
-			<motion.div className='flex-initial w-full'
+		<>
+		<Modal
+			isOpen={modalOpen}
+			onRequestClose={() => setModalOpen(false)}
+			style={customStyles}
+			>
+			<CaptureImage 
+				setModalOpen={setModalOpen} 
+				setTempImage={setTempImage} 
+				
+				foodTitle={offer.food_title}
+				foodId={offer.id}/>
+		</Modal>
+		<motion.div 
+			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show">
-				<motion.p variants={dayVariantAnimation} className="text-2xl font-bold">{offer.food_title}</motion.p>
-				<div className="mt-5 flex justify-between flex-wrap flex-row items-start gap-y-2">
-					{
-						offer.soldOut ? (
-							<Pill>
-								😔 Ausverkauft
-							</Pill>
-						) : (
-							<>
-								<motion.div variants={dayVariantAnimation} className="font-medium text-black text-sm flex gap-2 items-center">
-									<Pill>{offer.price_students} €</Pill>
-									<span className='text-gray-400 min-w-max'>{offer.price_other} €</span>
-								</motion.div>
-								<motion.div variants={dayVariantAnimation} className='flex gap-2 justify-end'>
-									{offer.qualityRating && <Pill>
-										<svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M9.55706 0.846068C9.74421 0.488621 10.2558 0.488621 10.443 0.846068L12.8792 5.49937C12.9497 5.6339 13.0774 5.72913 13.2265 5.75821L18.2594 6.73997C18.6417 6.81455 18.7957 7.27832 18.5339 7.56676L14.9933 11.4678C14.8954 11.5757 14.8494 11.721 14.8674 11.8656L15.5279 17.1685C15.5772 17.5637 15.1672 17.855 14.8102 17.6785L10.2216 15.4096C10.082 15.3405 9.91808 15.3405 9.7784 15.4096L5.18989 17.6785C4.8329 17.855 4.42287 17.5637 4.4721 17.1685L5.13267 11.8656C5.15068 11.721 5.1047 11.5757 5.00675 11.4678L1.46612 7.56676C1.20433 7.27832 1.35831 6.81455 1.74063 6.73997L6.77357 5.75821C6.92262 5.72913 7.05037 5.6339 7.12081 5.49937L9.55706 0.846068Z" fill="#161616"/>
-										</svg>
-										</Pill>}
-										{
-											offer.vegan ? <Pill>Vegan</Pill> : offer.vegetarian ? <Pill>Vegetarisch</Pill> : null
-										}
-								</motion.div>
-							</>
-						)
-					}
+
+			<div className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
+				<div className="flex-col space-y-3 mb-auto">
+				{
+					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
+						{
+							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-xl" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-xl" />
+						}
+					</div> : null
+				}
+					
+					<h2 className="text-h2 font-serif-semi px-4 pt-3">
+						{offer.food_title}
+					</h2>
+
+					<div className="-mx-1 px-4 pb-4">
+						{
+							offer.allergens.map((allergen, index) => {
+								return (
+									<div className="mx-1 inline-flex flex-row space-x-0.5 text-gray/50" key={index}> 
+										<img src={`/icons/allergene/${allergen}.svg`} className="w-4 stroke-gray/50 opacity-70 " />
+										<p className="text-sm font-serif-reg">{allergen}</p>
+									</div>
+								)
+							})
+						}
+					</div>
 				</div>
-			</motion.div>
-			<NutrientOverview nutrients={offer.nutrients} />
-			<div className="pb-4 text-sm font-serif">
-				{offer.allergens.join(", ")}
+				<div className="flex flex-col space-y-6">
+					<div className="px-4 flex-col space-y-2">
+						<div className="flex flex-row space-x-2">
+							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 border border-gray/20 rounded-full font-sans-reg text-sm">
+								<p>{formatter.format(offer.price_students)}</p>
+								<p className="text-gray/50">·</p>
+								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
+							</div>
+							{
+								offer.vegan ? <>
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+										<img src="/icons/vegan.svg" className="w-4"></img>
+										<p>vegan</p>
+									</div>
+								</> : offer.vegetarian ? <>
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+										<img src="/icons/vegan.svg" className="w-4"></img>
+										<p>vegetarisch</p>
+									</div>
+
+								</> : offer.sold_out? <>
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+										<p>😢</p>
+										<p>Ausverkauft</p>
+									</div>
+								</> :
+								null
+							}
+							
+							
+						</div>
+						{/* TODO: Rating */}
+						{/* 
+						 </br> <div className="inline-flex  flex-row space-x-1 px-3 py-1 border border-gray/20 rounded-full font-sans-reg text-sm">
+							<p>😕 2,4 / 5</p>
+							<p className="text-gray/50">·</p>
+							<p className="text-gray/50">3 Bewertungen</p>
+						</div> */}
+						
+					</div>
+					<div className="flex space-x-2 sm:space-x-0 w-full">
+						<button 
+						className="p-3 px-8 w-full rounded-lg flex items-center justify-center border-gray/20 border space-x-2 overflow-hidden whitespace-nowrap sm:hidden"
+						onClick={() => setModalOpen(true)}>
+							<img src="/icons/camera.png" className="w-5" />
+							<p className="font-sans-med">Fotografieren</p>
+						</button>
+						<div className="p-3 px-8 rounded-lg flex items-center justify-center border-gray/20 border space-x-2 sm:w-full">
+							<img src="/icons/star.png" className="w-5" />
+							<p className="font-sans-med">Bewerten</p>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+		</motion.div>
+		</>
 	)
 }

@@ -10,9 +10,9 @@ function foodTypeChecker(label){
     }
     
     const filterTypes = {
-        VEGETARISCH: "🥛 Vegetarisch",
-        VEGAN: "🌱 Vegan",
-        PESCETARISCH: "🐟 Pescetarisch",
+        VEGETARISCH: "Vegetarisch",
+        VEGAN: "Vegan",
+        PESCETARISCH: "Pescetarisch",
         ALL: "all"
     }
     

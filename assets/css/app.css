@@ -1,19 +1,82 @@
-@font-face {
-	font-family: 'Noto Sans';
-	src: url('../fonts/Noto_Sans/NotoSans-Medium.woff2') format('woff2'),
-		 url('../fonts/Noto_Sans/NotoSans-Medium.woff') format('woff'),
-		 url('../fonts/Noto_Sans/NotoSans-Medium.ttf') format('truetype');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.min-height-96 {
+  min-height: 26rem;
 }
+
+.hide-scroll-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
 @font-face {
-	font-family: 'IBM Plex Serif';
-	src: url('../fonts/IBM_Plex_Serif/IBMPlexSerif-Italic.woff2') format('woff2'),
-		 url('../fonts/IBM_Plex_Serif/IBMPlexSerif-Italic.woff') format('woff'),
-		 url('../fonts/IBM_Plex_Serif/IBMPlexSerif-Italic.ttf') format('truetype');
+  font-family: "IBM-Bold";
+  src: url("../fonts/ibm-plex-serif-700.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Semi";
+  src: url("../fonts/ibm-plex-serif-600.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Medium";
+  src: url("../fonts/ibm-plex-serif-500.ttf");
+}
+
+@font-face {
+  font-family: "IBM-Reg";
+  src: url("../fonts/ibm-plex-serif-400.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Reg";
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Medium";
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Semi";
+  src: url("../fonts/NotoSans-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Noto-Bold";
+  src: url("../fonts/NotoSans-Bold.ttf");
+}
+
+.text-h1 {
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+}
+
+.text-h2 {
+  font-size: 1.5rem;
+  line-height: 1.9rem;
+}
+
+.w-92 {
+  width: 22.5rem;
+}
+
+.padding-ign {
+  padding-right: -50px;
 }
 
 .ReactModal__Body--open {
 	overflow-y: hidden;
 }
+
 
 @supports (-webkit-touch-callout: none) {
 	.h-screen {

@@ -2,11 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../lib/getSupabaseClient';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	const { mensa, offerId } = JSON.parse(req.body);
+	const { offerId } = JSON.parse(req.body);
 	try {
 		const { data: qualityRatings, error: qualityRatingError } = await supabase
 			.from('quality_reviews')
-			.select('rating')
+			.select('rating, userSessionId')
 			.eq('offerId', offerId)
 
 		const { data: tagReviews, error: tagReviewError } = await supabase
