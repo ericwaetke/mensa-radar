@@ -75,7 +75,9 @@ export const fetchDbData = async (reqDay, mensa) => {
 						// => mark as sold out
 						if(change.id){
 							// If change is in the future, delete it
-							if(change.date > dateFormated){
+							console.log("CHANGE MAP")
+							console.log(change.date > new Date().toISOString().split('T')[0])
+							if(change.date > new Date().toISOString().split('T')[0]){
 								const {data, error } = await supabase
 								.from('food_offerings')
 								.update({
