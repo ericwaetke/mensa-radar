@@ -34,12 +34,14 @@ export const CaptureImage = (
 	{
 		setModalOpen,
 		setTempImage,
+		setCurrentModalContent,
 
 		foodTitle,
 		foodId,
 	} : {
 		setModalOpen: (open: boolean) => void,
 		setTempImage: (image: string) => void,
+		setCurrentModalContent: (content: string) => void,
 
 		foodTitle: string,
 		foodId: number,

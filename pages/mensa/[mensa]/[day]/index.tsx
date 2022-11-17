@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router'
 import 'tailwindcss/tailwind.css'
 
@@ -17,6 +17,19 @@ import { GetStaticPaths } from 'next';
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
 import Modal from "react-modal"
 
+
+function useOnScreen (ref, rootMargin = '0px') {
+	const [isIntersecting, setIntersecting] = useState(false);
+
+	const observer = useMemo(() => new IntersectionObserver(([entry]) => setIntersecting(entry.isIntersecting)), [ref, rootMargin]);
+
+	useEffect(() => {
+		observer.observe(ref.current);
+		return () => { observer.disconnect(); }
+	}, []);
+
+	return isIntersecting;
+}
 
 export default function Mensa(
 	{
@@ -106,6 +119,9 @@ export default function Mensa(
 			padding: 0
 		},
 	};
+
+	const visibleOffers = useRef([])
+	const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
 
 	return (
 		<>
@@ -205,7 +221,7 @@ export default function Mensa(
 								foodOffers?.map((offer, i) => {
 									if(!offer.sold_out){
 										return (
-											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
+											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el}/>
 										)
 									}
 								})
@@ -215,17 +231,18 @@ export default function Mensa(
 								// Sold out
 							}
 							{
-								foodOffers?.map((offer, i) => {
-									if(offer.sold_out){
-										return (
-											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day}/>
-										)
-									}
-								})
+								// foodOffers?.map((offer, i) => {
+								// 	if(offer.sold_out){
+								// 		return (
+								// 			<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} ref={el => visibleOffers.current[i*2] = el}/>
+								// 		)
+								// 	}
+								// })
 							}
 						</div>
 
 				</div>
+
 				<div className='grid grid-cols-3 px-4'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
@@ -239,6 +256,7 @@ export default function Mensa(
 						</p>
 						<img src="/icons/right-arrw.svg" className="w-4" />
 					</div>
+
 				</div>
 			</div>
 		</>		
