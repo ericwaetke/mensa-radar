@@ -2,10 +2,12 @@
 import "../assets/css/app.css"
 import {Toaster} from "react-hot-toast"
 import { Analytics } from '@vercel/analytics/react';
+import NextNProgress from 'nextjs-progressbar';
 
 function MyApp({ Component, pageProps }) {
     return (
       <>
+      <NextNProgress color="#88E2A1"/>
       <Toaster />
       <Component {...pageProps} />
       <Analytics />
