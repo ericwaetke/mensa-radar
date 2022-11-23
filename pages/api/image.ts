@@ -20,20 +20,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	 }
  
 	 // here's where the Transformation happens
-	 sharp(buffer)
-	   .resize(800, null)
+	sharp(buffer)
+	 	.rotate()
+		.resize({
+				width: new_params.w,
+				height: new_params.h,
+				fit: sharp.fit.cover,
+		})
 	//    .resize(new_params.w, new_params.h)
-	   .webp({quality: new_params.q})     // change to .webp() if you want to serve as webp
-	   .toBuffer()
-	   .then((data) => {
+		.webp({quality: new_params.q})     // change to .webp() if you want to serve as webp
+		.withMetadata()
+		.toBuffer()
+		.then((data) => {
 		 // here's where set the cache
 		 // I set to cache the media for 1 week, 60seconds * 60minutes * 24hours * 7days
 		 // remove setHeader('Cache-Control') if you wish not to cache it
-		 res.statusCode = 200
-		 res.setHeader("Cache-Control", `public, immutable, no-transform, s-maxage=604800, max-age=604800`)  
-		 res.setHeader("Content-Type", "image/jpeg")
-		 res.end(data)
-	   })
+			res.statusCode = 200
+			res.setHeader("Cache-Control", `public, immutable, no-transform, s-maxage=604800, max-age=604800`)  
+			res.setHeader("Content-Type", "image/webp")
+			res.end(data)
+		})
  
    } else {
 	 res.statusCode = 500
