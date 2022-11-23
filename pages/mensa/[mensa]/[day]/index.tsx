@@ -245,34 +245,7 @@ export default function Mensa(
     )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-	const {data: mensaData} = await supabase
-		.from("mensen")
-		.select('url')
-	
-	const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag"]
-
-	let paths = [];
-	mensaData.map(mensa => {
-		days.map(day => {
-			paths.push({
-				params: {
-					mensa: mensa.url,
-					day: day
-				},
-			})
-		})
-	})
-
-	return {
-		paths,
-		fallback: false
-	}
-}
-
-
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
 	const { params } = context
 	const { mensa, day } = params
 	
@@ -354,6 +327,5 @@ export async function getStaticProps(context) {
 			mensaData: thisMensaData,
 			selectedWeekday
 		},
-		revalidate: 60
 	}
 }

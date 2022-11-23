@@ -18,7 +18,7 @@ const getMensaId = {
 	'wildau': 7,
 }
 
-export const fetchDbData = async (reqDay, mensa) => {
+export const fetchDbData = async (reqDay: number, mensa: string) => {
 	const selectedWeekday = reqDay
 	const today = new Date();
 	const currentWeekday = getDates(today).currentWeekday;
@@ -33,107 +33,6 @@ export const fetchDbData = async (reqDay, mensa) => {
 
 	let foodOffers = []
 	try {
-			// Check if selected day is today or in the future
-			if (selectedDay >= today) {
-				// Add the current STUDENTENWERK Data to the Database
-			
-				const stwData = await getAllMensaDataFromSTW(mensa);
-				let sortedStwData = {};
-				stwData.map((offer) => {
-					sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
-				})
-
-
-				const getDifference = (obj1: {data: any[], key: string}, obj2: {data: any[], key: string}) => {
-					return obj1.data.filter(object1 => {
-						return !obj2.data.some(object2 => {
-						return object1[obj1.key] === object2[obj2.key];
-						});
-					});
-				}
-
-
-				// Cycling through each day of the STW Data and see if there are any changes to the already stored data
-				Object.keys(sortedStwData).map(async (date) => {
-					// Get MongoDB Data by date
-					const { data: dbData, error } = await supabase
-						.from('food_offerings')
-						.select('*')
-						.eq('date', `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`)
-						.eq('mensa', getMensaId[mensa])
-
-					console.error(error)
-
-					// Compare the two arrays
-					const changes = [
-						...getDifference({data: sortedStwData[date], key: "beschreibung"}, {data: dbData, key: "food_title"}),
-						...getDifference({data: dbData, key: "food_title"}, {data: sortedStwData[date], key: "beschreibung"})
-					];
-					changes.map(async (change) => {
-						// If the change has _id, it exists in MongoDB but not in STW Data
-						// => It was there once, but is not anymore
-						// => mark as sold out
-						if(change.id){
-							// If change is in the future, delete it
-							console.log("CHANGE MAP")
-							console.log(change.date > new Date().toISOString().split('T')[0])
-							if(change.date > new Date().toISOString().split('T')[0]){
-								const {data, error } = await supabase
-								.from('food_offerings')
-								.update({
-									...change,
-									sold_out: true,
-									changed_at: new Date()
-								})
-								.eq('id', change.id)
-		
-								console.log(error)
-							}
-
-							else {
-								// Delete the food offering
-								const { data, error } = await supabase
-									.from('food_offerings')
-									.delete()
-									.eq('id', change.id)
-								console.log(error)
-							}
-						} else {
-							// If the change has no _id, it exists in STW Data but not in MongoDB
-							// => It is new
-							// => add to MongoDB
-							const {data, error } = await supabase
-							.from('food_offerings')
-							.insert({
-								// Mensa ID
-								mensa: getMensaId[mensa],
-								// Title or Name of the food
-								food_title: change.beschreibung,
-								// Description of the food
-								food_desc: "",
-								// Is the food vegan?
-								vegan: change.labels?.foodType === "vegan",
-								// Is the food vegetarian?
-								vegetarian: change.labels?.foodType === "vegan" || change.labels?.foodType === "vegetarisch",
-								// JSON Object of the nutrients
-								nutrients: change.nutrients,
-								// JSON Object of the allergens
-								allergens: change.allergene,
-
-								date: `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`,
-
-								price_students: change.preise.preis_s[0],
-								price_other: change.preise.preis_g[0],
-							})
-
-							console.log(error)
-						}
-					})
-				})
-			}
-
-			// await coll.insertMany(await getAllMensaDataFromSTW(mensa));
-		
 			const { data: foodOfferingsOfSelectedDay, error } = await supabase
 				.from('food_offerings')
 				.select()
