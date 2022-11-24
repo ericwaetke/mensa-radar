@@ -1,28 +1,5 @@
 import { NutrientComponent } from "./nutrientComponent"
 
-const nutrientType = {
-	"Eiweiß (Protein)": {
-		name: "Eiweiß",
-		reference: 72,
-		unit: "g"
-	},
-	"Kohlenhydrate, resorbierbar": {
-		name: "Kohlenhydrate",
-		reference: 264,
-		unit: "g"
-	},
-	"Fett": {
-		name: "Fett",
-		reference: 66,
-		unit: "g"
-	},
-	"Energie (Kilojoule)": {
-		name: "Energie",
-		reference: 2000,
-		unit: "kcal"
-	}
-}
-
 export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 	return (
 		<div className="space-y-4 flex flex-col bg-light-green h-full overflow-scroll">
@@ -66,7 +43,7 @@ export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 												{
 													twoAvailable ? (
 														<NutrientComponent nutrient={foodOffers[index + 1].nutrients[i]} />
-													) : null
+													) : <div className="w-5/12 flex flex-col space-y-1"></div>
 												}
 											</div>
 										)

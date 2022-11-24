@@ -1,7 +1,7 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
-import { getItem } from '../../lib/localStorageHelper';
+import { getSessionId } from '../../lib/localStorageHelper';
 
 export default function RateFood(
 	{
@@ -81,7 +81,7 @@ export default function RateFood(
 		}
 	}, [ratingPercentage])
 
-	const sessionId = useRef(getItem("sessionId"))
+	const sessionId = useRef(getSessionId())
 
 	const saveRating = async () => {
 		// Round to 2 decimals
@@ -97,7 +97,8 @@ export default function RateFood(
 			})
 		}).then(res => {
 			console.log(res);
-			setModalOpen(false);
+		}).catch(err => {
+			console.error(err);
 		})
 	}
 
@@ -159,7 +160,12 @@ export default function RateFood(
 
 			{/* Bottom Row in Flexbox */}
 			<div className="px-4 mb-6 flex flex-col gap-2">
-				<button className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+				<button 
+				onClick={() => {
+					saveRating();
+					setCurrentModalContent("image");
+				}}
+				className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
 					<img src="/icons/camera.svg" className="w-5" />	
 					<p>
 						{"Foto vom Essen aufnehmen"}
@@ -167,7 +173,10 @@ export default function RateFood(
 				</button>
 
 				<button 
-				onClick={() => saveRating()}
+				onClick={() => {
+					saveRating()
+					setModalOpen(false);
+				}}
 				className={`bg-main-green font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
 					<p>
 						Bewertung speichern

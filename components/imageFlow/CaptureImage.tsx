@@ -149,11 +149,15 @@ export const CaptureImage = (
 			.upload(fileName, file)
 	}
 
-	const saveImage = () => {
+	const saveImage = (nextStep: string = "close") => {
 		if(!processing) {
 			if(imageValid) {
-				setModalOpen(false)
 				attachImageToFood()
+				if(nextStep === "close") {
+					setModalOpen(false)
+				} else if(nextStep === "rating") {
+					setCurrentModalContent("rating")
+				}
 			}
 		} else {
 			setQueued(true)
@@ -283,7 +287,9 @@ export const CaptureImage = (
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
 					</> : currentStep === "preview" ? <>
-						<button className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+						<button 
+						onClick={() => saveImage("rating")}
+						className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
 							<p>
 								{"Foto speichern und Essen bewerten"}
 							</p>
@@ -291,7 +297,7 @@ export const CaptureImage = (
 						</button>
 
 						<button 
-						onClick={() => saveImage()}
+						onClick={() => saveImage("close")}
 						className={`${queued ? "bg-black/20" : "bg-main-green"} font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
 							{
 								!queued ? <>

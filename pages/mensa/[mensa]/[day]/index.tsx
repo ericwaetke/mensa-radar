@@ -292,7 +292,7 @@ export default function Mensa(
 						</p>
 					</Link>
 					<div></div>
-					<div className='flex gap-2 cursor-pointer' onClick={() => setModalOpen(true)}>
+					<div className='flex gap-2 cursor-pointer' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
 							Nährwerte vlg.
 						</p>

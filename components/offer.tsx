@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { ChangeEvent, useMemo, useRef, useState } from "react"
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
 import { RatingOverview } from "./ratings/ratingOverview"
@@ -11,7 +11,7 @@ Modal.setAppElement('#__next');
 import { CaptureImage } from "./imageFlow/CaptureImage"
 import RateFood from "./ratings/RateFood"
 import { Allergens } from "./allergens"
-import { getItem } from "../lib/localStorageHelper"
+import { getSessionId } from "../lib/localStorageHelper"
 
 export const Offer = (
 	{
@@ -105,11 +105,9 @@ export const Offer = (
 		return (sum / ratings.length) * 100 || 0;
 	}
 	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
-	const sessionId = useRef(getItem("sessionId"))
+	const sessionId = useRef(getSessionId())
 
-	const hasUserRated = useMemo(() => {
-		return offer.ratings.some(rating => rating.userSessionId === sessionId.current)
-	}, [offer.ratings])
+	const [hasUserRated, setHasUserRated] = useState(false)
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
@@ -137,6 +135,11 @@ export const Offer = (
 	};
 	  
 	const [tempImage, setTempImage] = useState("");
+
+
+	useEffect(() => {
+		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
+	}, [])
 
 	return (
 		<>
@@ -231,7 +234,12 @@ export const Offer = (
 										averageRating < 75 ? emojis[2] :
 										emojis[3]
 									}
-										{averageRating}%</p>
+									{
+										averageRating < 25 ? "1/4" :
+										averageRating < 50 ? "2/4" :
+										averageRating < 75 ? "3/4" :
+										"4/4"
+									}</p>
 									<p className="text-gray/50">·</p>
 									<p className="text-gray/50">{offer.ratings.length === 1 ? "1 Bewertung" : `${offer.ratings.length} Bewertungen`}</p>
 								</div>
@@ -252,7 +260,7 @@ export const Offer = (
 										}
 									</p>
 								</div>
-							</> : null
+							</> : <div><p></p><p></p></div>
 						}
 						
 					</div>

@@ -34,7 +34,7 @@ const ratingSVG = (rating: string, userRating: number) => {
 	}
 }
 
-import { getItem } from "../../lib/localStorageHelper"
+import { getSessionId } from "../../lib/localStorageHelper"
 
 const getQualityRatings = (offerId: number) => {
 	const apiUrl = `${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/getRatings`
@@ -73,7 +73,7 @@ export const RatingOverview = (
 	const [qualityRatingsState, setQualityRatingsState] = useState<{1: any[], 2: any[], 3: any[]}>({1: [], 2: [], 3: []}) 
 	const [userQualityRatingState, setUserQualityRatingState] = useState<number>(0)
 
-	const sessionId = useRef(getItem("sessionId"))
+	const sessionId = useRef(getSessionId("sessionId"))
 	
 	// This currently doesnt fetch the user rating after a reload
 	const handleQualityRatingClick = (rating: number) => {

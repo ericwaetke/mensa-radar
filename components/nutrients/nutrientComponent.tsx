@@ -37,14 +37,14 @@ export const NutrientComponent = ({nutrient}) => {
 	console.log(nutrientData)
 
 	// In Float Percentage from 0 to 1
-	const barPosition = .1
-	const barWidth = nutrientData.reference / nutrientData.value > 10 ? 100 : nutrientData.reference / nutrientData.value * 10;
+	const actualBarWitdh = nutrientData.value / nutrientData.reference * 100
+	const barWidth = actualBarWitdh > 100 ? 100 : actualBarWitdh;
 
 	return (
 		<div className="w-5/12 flex flex-col space-y-1">
 
-			<p className="w-5/12 font-sans-med">{nutrientData.value} {nutrientData.unit}</p>
-			<div className='h-2 w-full bg-white relative rounded-full'>
+			<p className="font-sans-med">{nutrientData.value} {nutrientData.unit}</p>
+			<div className='h-2 w-full relative rounded-full'>
 
 				<motion.div className='h-2 bg-main-green absolute rounded-full' 
 				initial={{width: 0}}
