@@ -63,6 +63,10 @@ export const CaptureImage = (
 	const [supabaseKey, setSupabaseKey] = useState(process.env.NEXT_PUBLIC_SUPABASE_KEY);
 	// const supabase = useRef(createClient(supabaseUrl, supabaseKey)).current
 
+	const resetFileName = () => {
+		setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+	}
+
 	const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
 		let file: File;
 	
@@ -70,14 +74,15 @@ export const CaptureImage = (
 		  file = e.target.files[0];
 		}
 
-		setModalTempImage(URL.createObjectURL(file))
-		setTempImage(URL.createObjectURL(file))
+		const tempImage = URL.createObjectURL(file)
+		setModalTempImage(tempImage)
+		setTempImage(tempImage)
 		setProcessing(true)
+		setCurrentStep("preview")
 
 		uploadFileToSupabase(file, fileName).then(res => {
 			const {data, error} = res
 			if (data) {
-				setCurrentStep("preview")
 	
 				const params = new URLSearchParams({
 					f: data.path,
@@ -99,12 +104,13 @@ export const CaptureImage = (
 								setCurrentStep("error")
 								setTempImage("")
 								setQueued(false)
+								resetFileName()
 							}
 						}
 					})
 					.catch(err => {
 						console.log(err)
-						setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+						resetFileName()
 					})
 			} else if (error) {
 				setErrorCode("upload")
@@ -116,8 +122,7 @@ export const CaptureImage = (
 				setQueued(false)
 
 				// Generate a new random name for the file with 12 characters
-				setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
-
+				resetFileName()
 			}
 		}).catch(err => {
 
@@ -130,7 +135,7 @@ export const CaptureImage = (
 			setQueued(false)
 
 			// Generate a new random name for the file with 12 characters
-			setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+			resetFileName()
 
 		})
 	};

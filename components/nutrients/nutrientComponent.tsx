@@ -32,6 +32,7 @@ export const NutrientComponent = ({nutrient}) => {
 	const nutrientData = {
 		...nutrientType[nutrient.name],
 		value: nutrient.name === "Energie (Kilojoule)" ? kJToKcal(nutrient.value) : parseFloat(nutrient.value),
+		unit: nutrient.name === "Energie (Kilojoule)" ? "kcal" : nutrient.unit,
 	}
 	console.log(nutrientData)
 
@@ -41,8 +42,10 @@ export const NutrientComponent = ({nutrient}) => {
 
 	return (
 		<div className="w-5/12 flex flex-col space-y-1">
-			<p className="w-5/12 font-sans-med">{nutrient.value} {nutrient.unit}</p>
-			<div className='h-2 w-full  rounded-full'>
+
+			<p className="w-5/12 font-sans-med">{nutrientData.value} {nutrientData.unit}</p>
+			<div className='h-2 w-full bg-white relative rounded-full'>
+
 				<motion.div className='h-2 bg-main-green absolute rounded-full' 
 				initial={{width: 0}}
 				animate={{width:

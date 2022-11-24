@@ -25,7 +25,7 @@ const nutrientType = {
 
 export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 	return (
-		<div className="space-y-4 flex flex-col bg-light-green h-full">
+		<div className="space-y-4 flex flex-col bg-light-green h-full overflow-scroll">
 					
 			<div className="border-y border-gray/20">
 				<div 
