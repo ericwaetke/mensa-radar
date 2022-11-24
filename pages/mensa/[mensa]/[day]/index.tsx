@@ -16,6 +16,7 @@ import { supabase } from '../../../../lib/getSupabaseClient';
 import { GetStaticPaths } from 'next';
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
 import Modal from "react-modal"
+import { SelectMensa } from '../../../../components/SelectMensa';
 
 
 function useOnScreen (ref, rootMargin = '0px') {
@@ -36,6 +37,7 @@ export default function Mensa(
 		foodOffers,
 		selectedWeekday,
 		mensaData = {},
+		mensen,
 	} : {
 		foodOffers: {
 			id: number,
@@ -59,6 +61,7 @@ export default function Mensa(
 		}[],
 		selectedWeekday: number,
 		mensaData: any,
+		mensen: any,
 	}
 ) {
 
@@ -107,7 +110,18 @@ export default function Mensa(
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
 	const [modalOpen, setModalOpen] = useState(false);
-	const customStyles = {
+	const [currentModalContent, setCurrentModalContent] = useState("");
+
+	const openNutrientsFlow = () => {
+		setCurrentModalContent("nutrients");
+		setModalOpen(true);
+	}
+	const openMensaSelectionFlow = () => {
+		setCurrentModalContent("mensaSelection");
+		setModalOpen(true);
+	}
+
+	const fullsizeModal = {
 		content: {
 			top: 0,
 			left: 0,
@@ -119,6 +133,18 @@ export default function Mensa(
 			padding: 0
 		},
 	};
+	const resizedModal = {
+		content: {
+			top: '-4px',
+			left: '50%',
+			right: 'auto',
+			bottom: 'auto',
+			marginRight: '-50%',
+			transform: 'translate(-50%, 0)',
+			border: "none",
+			background: "none",
+		},
+	};
 
 	const visibleOffers = useRef([])
 	const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
@@ -128,11 +154,21 @@ export default function Mensa(
 			<Modal
 				isOpen={modalOpen}
 				onRequestClose={() => setModalOpen(false)}
-				style={customStyles}
+				style={currentModalContent === "nutrients" ? fullsizeModal : resizedModal}
 				>
-				<NutrientOverview 
-					foodOffers={foodOffers} 
-					setModalOpen={setModalOpen}/>
+				{
+					currentModalContent === "nutrients" ? <>
+						<NutrientOverview 
+						foodOffers={foodOffers} 
+						setModalOpen={setModalOpen}/>
+					</> : <>
+						<SelectMensa 
+							setModalOpen={setModalOpen}
+
+							currentMensa={mensa}
+							mensen={mensen}/>
+					</>
+				}
 			</Modal>
 			<div className="m-auto sm:max-w-3xl my-4 h-screen flex flex-col space-y-4">
 				<Head>
@@ -140,7 +176,9 @@ export default function Mensa(
 				</Head>
 				<div className="px-4">
 					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
-						<div className="flex justify-center space-x-1 items-center flex-row w-full">
+						<div
+							onClick={() => openMensaSelectionFlow()} 
+							className="flex justify-center space-x-1 items-center flex-row w-full">
 							<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
 							<img className="w-4 mt-0.5"
 							src="/icons/chev-down.svg"></img>
@@ -366,10 +404,32 @@ export async function getStaticProps(context) {
 		openingString: await getTempOpeningString(currentMensa)
 	}
 
+	const dateFormated = new Date().toISOString().split('T')[0]
+	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
+		.from('food_offerings')
+		.select('mensa, date')
+		.gte('date', dateFormated)
+
+	const mensaData = mensen.map(async mensa => {
+		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
+
+		// Filter days with food to mensaId and make date unique
+		const daysWithFood = [...new Set(daysWithFoodUnfiltered.filter((day) => day.mensa === mensa.id).map((day) => day.date))]
+		return {
+			...mensa,
+			...currentMensa,
+			openingString: await getTempOpeningString(currentMensa),
+			daysWithFood,
+		}
+	})
+
+	const mensaDataResolved = await Promise.all(mensaData)
+
 	return {
 		props: {
 			foodOffers: foodOffersWithImages,
 			mensaData: thisMensaData,
+			mensen: mensaDataResolved,
 			selectedWeekday
 		},
 		revalidate: 60
