@@ -9,13 +9,15 @@ import { RatingOverview } from "./ratings/ratingOverview"
 import Modal from "react-modal"
 Modal.setAppElement('#__next');
 import { CaptureImage } from "./imageFlow/CaptureImage"
+import RateFood from "./ratings/RateFood"
 
 export const Offer = (
 	{
 		offer,
 		
 		mensa,
-		day
+		day,
+		reff
 	}: {
 		offer: {
 			id: number,
@@ -39,6 +41,7 @@ export const Offer = (
 		},
 		mensa: string | string[],
 		day: string | string[],
+		reff: any
 	}
 ) => {
 	
@@ -83,6 +86,17 @@ export const Offer = (
 	})
 
 	const [modalOpen, setModalOpen] = useState(false);
+	const [currentModalContent, setCurrentModalContent] = useState("");
+
+	const openImageFlow = () => {
+		setCurrentModalContent("image");
+		setModalOpen(true);
+	}
+	const openRatingFlow = () => {
+		setCurrentModalContent("rating");
+		setModalOpen(true);
+	}
+
 	const customStyles = {
 		content: {
 			top: 0,
@@ -105,20 +119,34 @@ export const Offer = (
 			onRequestClose={() => setModalOpen(false)}
 			style={customStyles}
 			>
-			<CaptureImage 
-				setModalOpen={setModalOpen} 
-				setTempImage={setTempImage} 
-				
-				foodTitle={offer.food_title}
-				foodId={offer.id}/>
+			{
+				currentModalContent == "image" ? <>
+					<CaptureImage 
+						setModalOpen={setModalOpen} 
+						setCurrentModalContent={setCurrentModalContent}
+						setTempImage={setTempImage} 
+						
+						foodTitle={offer.food_title}
+						foodId={offer.id}/>
+				</> : currentModalContent === "rating" ? <>
+					<RateFood
+						setModalOpen={setModalOpen}
+						setCurrentModalContent={setCurrentModalContent}
+
+						foodTitle={offer.food_title}
+						foodId={offer.id}
+						/>
+				</> : <></>
+			}
 		</Modal>
 		<motion.div 
 			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}
 			variants={containerAnimation}
 			initial="hidden"
-			animate="show">
+			animate="show"
+			>
 
-			<div className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
+			<div ref={reff} className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
 				<div className="flex-col space-y-3 mb-auto">
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
@@ -188,14 +216,16 @@ export const Offer = (
 					<div className="flex space-x-2 sm:space-x-0 w-full">
 						<button 
 						className="p-3 px-8 w-full rounded-lg flex items-center justify-center border-gray/20 border space-x-2 overflow-hidden whitespace-nowrap sm:hidden"
-						onClick={() => setModalOpen(true)}>
+						onClick={() => openImageFlow()}>
 							<img src="/icons/camera.png" className="w-5" />
 							<p className="font-sans-med">Fotografieren</p>
 						</button>
-						<div className="p-3 px-8 rounded-lg flex items-center justify-center border-gray/20 border space-x-2 sm:w-full">
+						<button 
+						className="p-3 px-8 rounded-lg flex items-center justify-center border-gray/20 border space-x-2 sm:w-full"
+						onClick={() => openRatingFlow()}>
 							<img src="/icons/star.png" className="w-5" />
 							<p className="font-sans-med">Bewerten</p>
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
