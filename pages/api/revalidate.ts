@@ -5,22 +5,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		// Check for secret to confirm this is a valid request
 
 		if (req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`) {
-			return res.status(401).json({ message: 'Invalid token' })
+			return res.status(401).json({ message: 'Invalid token: ' + req.headers.authorization })
 		}
 	
 		try {
-
 			const {data: mensaData} = await supabase
 				.from("mensen")
 				.select('url')
 
-			const days = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"]
 
 			Promise.all(
 				mensaData.map(mensa => {
-					days.map(day => {
-						console.log(`Revalidating ${mensa.url}/${day}`)
-						res.revalidate(`/mensa/${mensa.url}/${day}`)
+					const dev = process.env.NODE_ENV === "development"
+					fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
+						method: 'POST',
+						body: JSON.stringify({
+							mensa: mensa.url,
+						}),
 					})
 				})
 			)
