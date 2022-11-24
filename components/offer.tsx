@@ -10,6 +10,7 @@ import Modal from "react-modal"
 Modal.setAppElement('#__next');
 import { CaptureImage } from "./imageFlow/CaptureImage"
 import RateFood from "./ratings/RateFood"
+import { Allergens } from "./allergens"
 
 export const Offer = (
 	{
@@ -160,18 +161,7 @@ export const Offer = (
 						{offer.food_title}
 					</h2>
 
-					<div className="-mx-1 px-4 pb-4">
-						{
-							offer.allergens.map((allergen, index) => {
-								return (
-									<div className="mx-1 inline-flex flex-row space-x-0.5 text-gray/50" key={index}> 
-										<img src={`/icons/allergene/${allergen}.svg`} className="w-4 stroke-gray/50 opacity-70 " />
-										<p className="text-sm font-serif-reg">{allergen}</p>
-									</div>
-								)
-							})
-						}
-					</div>
+					<Allergens allergens={offer.allergens}/>
 				</div>
 				<div className="flex flex-col space-y-6">
 					<div className="px-4 flex-col space-y-2">

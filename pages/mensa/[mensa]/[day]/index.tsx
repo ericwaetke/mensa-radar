@@ -147,7 +147,7 @@ export default function Mensa(
 	};
 
 	const visibleOffers = useRef([])
-	const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
+	// const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
 
 	return (
 		<>
