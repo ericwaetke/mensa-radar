@@ -1,22 +1,17 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { useRouter } from 'next/router'
-import 'tailwindcss/tailwind.css'
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import 'tailwindcss/tailwind.css';
 
 import { getWeekdayByName } from '../../../../lib/getWeekdayByName';
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { DayButton } from '../../../../components/dayButton';
-import { Offer } from '../../../../components/offer';
 import Head from 'next/head';
-import { PillOnWhiteBG } from '../../../../components/pill';
-import { getDates, getTempOpeningString } from '../../../../lib/getOpeningString';
-import { createClient } from '@supabase/supabase-js';
-import { supabase } from '../../../../lib/getSupabaseClient';
-import { GetStaticPaths } from 'next';
+import Link from 'next/link';
+import Modal from "react-modal";
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-import Modal from "react-modal"
+import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
+import { getTempOpeningString } from '../../../../lib/getOpeningString';
+import { supabase } from '../../../../lib/getSupabaseClient';
 
 
 function useOnScreen (ref, rootMargin = '0px') {

@@ -1,10 +1,5 @@
-import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
-import Link from "next/link"
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
-import { NutrientOverview } from "./nutrients/nutrientOverview"
-import { Pill } from "./pill"
-import { RatingOverview } from "./ratings/ratingOverview"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 import Modal from "react-modal"
 Modal.setAppElement('#__next');

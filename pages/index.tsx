@@ -1,11 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Head from "next/head";
 import Link from 'next/link';
 
+import { createClient } from "@supabase/supabase-js";
 import Footer from "../components/footer";
 import { getTempOpeningString } from "../lib/getOpeningString";
-import { createClient } from "@supabase/supabase-js";
 
 
 export default function Home(props) {
