@@ -58,6 +58,10 @@ export default function Mensa(
 			sold_out: boolean,
 
 			imageUrls: string[],
+			ratings: {
+				rating: number,
+				userSessionId: string,
+			}[]
 		}[],
 		selectedWeekday: number,
 		mensaData: any,
@@ -323,11 +327,12 @@ export async function getServerSideProps(context) {
 		// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
 
 	// Get Images to the food offers
-	const foodOffersWithImages = await Promise.all(foodOffers.map(async (offer) => {
+	const foodOffersWithAdditionalInfo = await Promise.all(foodOffers.map(async (offer) => {
 		const {data: images} = await supabase
 			.from("food_images")
 			.select('image_name')
 			.eq('food_id', offer.id)
+
 
 		images.map(async image => {
 			const { data, error } = await supabase
@@ -355,8 +360,14 @@ export async function getServerSideProps(context) {
 
 		const imageUrls = images.map(image => generateUrls(image.image_name))
 
+		const {data: ratings} = await supabase
+			.from("quality_reviews")
+			.select('rating, userSessionId')
+			.eq('offerId', offer.id)
+
 		return {
 			...offer,
+			ratings,
 			imageUrls
 		}
 	}))
@@ -400,7 +411,7 @@ export async function getServerSideProps(context) {
 
 	return {
 		props: {
-			foodOffers: foodOffersWithImages,
+			foodOffers: foodOffersWithAdditionalInfo,
 			mensaData: thisMensaData,
 			mensen: mensaDataResolved,
 			selectedWeekday

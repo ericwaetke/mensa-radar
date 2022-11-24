@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useMemo, useRef, useState } from "react"
 import { NutrientOverview } from "./nutrients/nutrientOverview"
 import { Pill } from "./pill"
 import { RatingOverview } from "./ratings/ratingOverview"
@@ -11,6 +11,7 @@ Modal.setAppElement('#__next');
 import { CaptureImage } from "./imageFlow/CaptureImage"
 import RateFood from "./ratings/RateFood"
 import { Allergens } from "./allergens"
+import { getItem } from "../lib/localStorageHelper"
 
 export const Offer = (
 	{
@@ -39,6 +40,10 @@ export const Offer = (
 			sold_out: boolean,
 
 			imageUrls: string[],
+			ratings: {
+				rating: number,
+				userSessionId: string,
+			}[]
 		},
 		mensa: string | string[],
 		day: string | string[],
@@ -85,6 +90,26 @@ export const Offer = (
 		currency: 'EUR',
 		minimumFractionDigits: 2
 	})
+
+	const emojis = [
+		"🤮",
+		"😕",
+		"😊",
+		"😋"
+	]
+	const calculateAverageRating = (ratings: {rating: number, userSessionId: string}[]) => {
+		let sum = 0;
+		ratings.forEach(rating => {
+			sum += rating.rating;
+		})
+		return (sum / ratings.length) * 100 || 0;
+	}
+	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
+	const sessionId = useRef(getItem("sessionId"))
+
+	const hasUserRated = useMemo(() => {
+		return offer.ratings.some(rating => rating.userSessionId === sessionId.current)
+	}, [offer.ratings])
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
@@ -166,25 +191,25 @@ export const Offer = (
 				<div className="flex flex-col space-y-6">
 					<div className="px-4 flex-col space-y-2">
 						<div className="flex flex-row space-x-2">
-							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 border border-gray/20 rounded-full font-sans-reg text-sm">
+							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full font-sans-semi text-sm bg-light-green">
 								<p>{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
 								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
 							</div>
 							{
 								offer.vegan ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegan</p>
 									</div>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
 
 								</> : offer.sold_out? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-reg text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
 										<p>😢</p>
 										<p>Ausverkauft</p>
 									</div>
@@ -195,12 +220,40 @@ export const Offer = (
 							
 						</div>
 						{/* TODO: Rating */}
-						{/* 
-						 </br> <div className="inline-flex  flex-row space-x-1 px-3 py-1 border border-gray/20 rounded-full font-sans-reg text-sm">
-							<p>😕 2,4 / 5</p>
-							<p className="text-gray/50">·</p>
-							<p className="text-gray/50">3 Bewertungen</p>
-						</div> */}
+
+						{
+							offer.ratings.length !== 0 ? <>
+								<div className="inline-flex  flex-row space-x-1 px-3 py-1 rounded-full font-sans-semi text-sm bg-light-green">
+									<p>
+									{
+										averageRating < 25 ? emojis[0] :
+										averageRating < 50 ? emojis[1] :
+										averageRating < 75 ? emojis[2] :
+										emojis[3]
+									}
+										{averageRating}%</p>
+									<p className="text-gray/50">·</p>
+									<p className="text-gray/50">{offer.ratings.length === 1 ? "1 Bewertung" : `${offer.ratings.length} Bewertungen`}</p>
+								</div>
+							</> : null
+						}
+						{
+							hasUserRated ? <>
+								<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-semi text-sm bg-main-green">
+									<p>
+										Deine Bewertung: 
+									</p>
+									<p>
+										{
+											averageRating < 25 ? emojis[0] :
+											averageRating < 50 ? emojis[1] :
+											averageRating < 75 ? emojis[2] :
+											emojis[3]
+										}
+									</p>
+								</div>
+							</> : null
+						}
 						
 					</div>
 					<div className="flex space-x-2 sm:space-x-0 w-full">

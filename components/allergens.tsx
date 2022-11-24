@@ -188,12 +188,16 @@ export const Allergens = (
 				allergens.map((allergen, index) => {
 					return (
 						<div className="mx-1 inline-flex flex-row space-x-0.5 text-gray/50" key={index}> 
-						{
-							allergyHelper[allergen].icon !== "" ? (
-								<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-4 stroke-gray/50 opacity-70 " />
-							) : null
-						}
-							<p className="text-sm font-serif-reg">{allergyHelper[allergen].name}</p>
+							{
+								allergyHelper[allergen] ? <>
+									{
+										allergyHelper[allergen].icon !== "" ? (
+											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-4 stroke-gray/50 opacity-70 " />
+										) : null
+									}
+									<p className="text-sm font-serif-reg">{allergyHelper[allergen].name}</p>
+								</> : null
+							}
 						</div>
 					)
 				})

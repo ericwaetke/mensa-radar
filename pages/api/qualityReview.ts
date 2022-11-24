@@ -4,20 +4,21 @@ import { supabase } from "../../lib/getSupabaseClient";
 export default async function handler(req, res) {
 	try {
 		const request = JSON.parse(req.body);
+		console.log(req.body);
 		
 		const { 
 			offerId,
-			mensa,
 
 			rating,
 			sessionId
 		} : {
 			offerId: string,
-			mensa: string,
 
 			rating: 0|1|2|3,
 			sessionId: string
 		} = request
+
+		console.log(offerId, rating, sessionId);
 
 		// Check if the user has already rated this food offering
 		// if so, get ID
