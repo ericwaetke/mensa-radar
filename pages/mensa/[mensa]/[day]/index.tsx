@@ -64,6 +64,25 @@ export default function Mensa(
 	}
 ) {
 
+	const sortedFoodOffers = useMemo(() => {
+		// Show vegan first, then vegetarian, then everything else
+		return foodOffers.sort((a, b) => {
+			if (a.vegan && !b.vegan) {
+				return -1;
+			}
+			if (!a.vegan && b.vegan) {
+				return 1;
+			}
+			if (a.vegetarian && !b.vegetarian) {
+				return -1;
+			}
+			if (!a.vegetarian && b.vegetarian) {
+				return 1;
+			}
+			return 0;
+		})
+	}, [foodOffers]);
+
 	const router = useRouter()
   	const { mensa, day } = router.query
 
@@ -255,7 +274,7 @@ export default function Mensa(
 							
 							{
 								// Show rest later
-								foodOffers?.map((offer, i) => {
+								sortedFoodOffers?.map((offer, i) => {
 									if(!offer.sold_out){
 										return (
 											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el}/>
@@ -280,7 +299,7 @@ export default function Mensa(
 
 				</div>
 
-				<div className='grid grid-cols-3 px-4'>
+				<div className='grid grid-cols-3 px-4 pb-4'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
@@ -293,7 +312,6 @@ export default function Mensa(
 						</p>
 						<img src="/icons/right-arrw.svg" className="w-4" />
 					</div>
-
 				</div>
 			</div>
 		</>		
