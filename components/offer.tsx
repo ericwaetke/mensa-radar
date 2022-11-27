@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 import Modal from "react-modal"
 Modal.setAppElement('#__next');
-import { CaptureImage } from "./imageFlow/CaptureImage"
-import RateFood from "./ratings/RateFood"
+import { CaptureImage, CaptureImageHeader } from "./imageFlow/CaptureImage"
+import RateFood, { RateFoodHeader } from "./ratings/RateFood"
 import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
@@ -140,26 +140,35 @@ export const Offer = (
 
 	return (
 		<>
-		<BottomSheet open={modalOpen} onDismiss={() => setModalOpen(false)}>
-			{
+		<BottomSheet 
+			open={modalOpen} 
+			onDismiss={() => setModalOpen(false)}
+			header={
 				currentModalContent == "image" ? <>
-					<CaptureImage 
-						setModalOpen={setModalOpen} 
-						setCurrentModalContent={setCurrentModalContent}
-						setTempImage={setTempImage} 
-						
-						foodTitle={offer.food_title}
-						foodId={offer.id}/>
-				</> : currentModalContent === "rating" ? <>
-					<RateFood
-						setModalOpen={setModalOpen}
-						setCurrentModalContent={setCurrentModalContent}
+					<CaptureImageHeader foodTitle={offer.food_title}/>
+				</> : <>
+					<RateFoodHeader foodTitle={offer.food_title}/>
+				</>
+			}>
+				{
+					currentModalContent == "image" ? <>
+						<CaptureImage 
+							setModalOpen={setModalOpen} 
+							setCurrentModalContent={setCurrentModalContent}
+							setTempImage={setTempImage} 
+							
+							foodTitle={offer.food_title}
+							foodId={offer.id}/>
+					</> : currentModalContent === "rating" ? <>
+						<RateFood
+							setModalOpen={setModalOpen}
+							setCurrentModalContent={setCurrentModalContent}
 
-						foodTitle={offer.food_title}
-						foodId={offer.id}
-						/>
-				</> : <></>
-			}
+							foodTitle={offer.food_title}
+							foodId={offer.id}
+							/>
+					</> : <></>
+				}
 		</BottomSheet>
 		<motion.div 
 			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}

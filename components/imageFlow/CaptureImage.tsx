@@ -196,26 +196,6 @@ export const CaptureImage = (
 
 	return (
 		<div className="bg-light-green flex flex-col justify-between text-center sm:max-w-md mx-auto">
-			
-			{/* First Row in Flexbox */}
-			<div>
-				<div 
-					className="flex pt-6 justify-center items-center text-xl cursor-pointer px-8"
-					onClick={() => setModalOpen(false)}>
-
-					<img src="/icons/right-arrw.svg" className="rotate-180 mr-auto w-4" />	
-
-					<h2 className="font-sans-bold">
-						Foto Aufnehmen
-					</h2>
-					<div className="ml-auto"></div>
-				</div>
-				<div className="px-12 my-6 py-6 border-y border-black/20">
-					<p className="font-serif-reg text-xl">
-						{foodTitle}
-					</p>
-				</div>
-			</div>
 
 			{/* Second Row in Flexbox */}
 			<div className="px-4 font-sans-reg">
@@ -323,6 +303,24 @@ export const CaptureImage = (
 						<CaptureImageButton label="Neues Foto aufnehmen" handleUpload={handleUpload} />
 					</> : null
 				}
+			</div>
+		</div>
+	)
+}
+
+export const CaptureImageHeader = ({foodTitle}: {foodTitle: string}) => {
+	return (
+		<div>
+			<div>
+				<h2 className="font-sans-bold">
+					Foto Aufnehmen
+				</h2>
+				<div className="ml-auto"></div>
+			</div>
+			<div className="px-12 my-6 py-6 border-y border-black/20">
+				<p className="font-serif-reg text-xl">
+					{foodTitle}
+				</p>
 			</div>
 		</div>
 	)
