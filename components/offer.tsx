@@ -7,6 +7,8 @@ import { CaptureImage } from "./imageFlow/CaptureImage"
 import RateFood from "./ratings/RateFood"
 import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
+import { BottomSheet } from "react-spring-bottom-sheet";
+import 'react-spring-bottom-sheet/dist/style.css'
 
 export const Offer = (
 	{
@@ -138,11 +140,7 @@ export const Offer = (
 
 	return (
 		<>
-		<Modal
-			isOpen={modalOpen}
-			onRequestClose={() => setModalOpen(false)}
-			style={customStyles}
-			>
+		<BottomSheet open={modalOpen} onDismiss={() => setModalOpen(false)}>
 			{
 				currentModalContent == "image" ? <>
 					<CaptureImage 
@@ -162,14 +160,14 @@ export const Offer = (
 						/>
 				</> : <></>
 			}
-		</Modal>
+		</BottomSheet>
 		<motion.div 
 			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show"
 			>
-
+				
 			<div ref={reff} className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
 				<div className="flex-col space-y-3 mb-auto">
 				{

@@ -195,7 +195,7 @@ export const CaptureImage = (
 	}, [])
 
 	return (
-		<div className="bg-light-green h-screen flex flex-col justify-between text-center sm:max-w-md">
+		<div className="bg-light-green flex flex-col justify-between text-center sm:max-w-md mx-auto">
 			
 			{/* First Row in Flexbox */}
 			<div>

@@ -175,6 +175,7 @@ export default function Mensa(
 				</Head>
 				<div className="px-4">
 					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
+						{process.env.NODE_ENV}
 						<div
 							onClick={() => openMensaSelectionFlow()} 
 							className="flex justify-center space-x-1 items-center flex-row w-full">
