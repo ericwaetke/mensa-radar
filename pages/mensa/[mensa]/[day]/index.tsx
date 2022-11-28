@@ -41,6 +41,8 @@ export default function Mensa(
 			food_desc: string,
 			vegan: boolean,
 			vegetarian: boolean,
+			fish: boolean,
+			meat: boolean,
 			nutrients: {
 				name: string,
 				value: string,

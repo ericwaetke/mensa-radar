@@ -25,6 +25,8 @@ export const Offer = (
 			food_desc: string,
 			vegan: boolean,
 			vegetarian: boolean,
+			fish: boolean,
+			meat: boolean,
 			nutrients: {
 				name: string,
 				value: string,
@@ -212,7 +214,16 @@ export const Offer = (
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
-
+								</> : offer.fish ? <>
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-indigo-300 items-center rounded-full font-sans-semi text-sm">
+										<img src="/icons/vegan.svg" className="w-4"></img>
+										<p>Fisch</p>
+									</div>
+								</> : offer.meat ? <>
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-red-300 items-center rounded-full font-sans-semi text-sm">
+										<img src="/icons/vegan.svg" className="w-4"></img>
+										<p>Fleisch</p>
+									</div>
 								</> : offer.sold_out? <>
 									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
 										<p>😢</p>
