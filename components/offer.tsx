@@ -216,12 +216,12 @@ export const Offer = (
 									</div>
 								</> : offer.fish ? <>
 									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-indigo-300 items-center rounded-full font-sans-semi text-sm">
-										<img src="/icons/vegan.svg" className="w-4"></img>
+										<img src="/icons/allergene/Fisch.svg" className="w-4"></img>
 										<p>Fisch</p>
 									</div>
 								</> : offer.meat ? <>
 									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-red-300 items-center rounded-full font-sans-semi text-sm">
-										<img src="/icons/vegan.svg" className="w-4"></img>
+										<img src="/icons/meat.svg" className="w-4"></img>
 										<p>Fleisch</p>
 									</div>
 								</> : offer.sold_out? <>
