@@ -103,27 +103,7 @@ export default function RateFood(
 	}
 
 	return (
-		<div className="bg-light-green h-screen flex flex-col justify-between text-center sm:max-w-md">
-			
-			{/* First Row in Flexbox */}
-			<div>
-				<div 
-					className="flex pt-6 justify-center items-center text-xl cursor-pointer px-8"
-					onClick={() => setModalOpen(false)}>
-
-					<img src="/icons/right-arrw.svg" className="rotate-180 mr-auto w-4" />	
-
-					<h2 className="font-sans-bold">
-						Bewerten
-					</h2>
-					<div className="ml-auto"></div>
-				</div>
-				<div className="px-12 my-6 py-6 border-y border-black/20">
-					<p className="font-serif-reg text-xl">
-						{foodTitle}
-					</p>
-				</div>
-			</div>
+		<div className="bg-light-green w-full flex gap-6 flex-col justify-between text-center lg:max-w-lg justify-center mx-auto">
 
 			{/* Second Row in Flexbox */}
 			<div className="px-4 font-sans-reg w-full">
@@ -182,6 +162,25 @@ export default function RateFood(
 						Bewertung speichern
 					</p>
 				</button>
+			</div>
+		</div>
+	)
+}
+
+export const RateFoodHeader = ({foodTitle}: {foodTitle: string}) => {
+
+	return (
+		<div>
+			<div className="flex pt-6 justify-center items-center text-xl cursor-pointer px-8">
+				<h2 className="font-sans-bold">
+					Bewerten
+				</h2>
+				<div className="ml-auto"></div>
+			</div>
+			<div className="px-12 my-6 py-6 border-y border-black/20">
+				<p className="font-serif-reg text-xl">
+					{foodTitle}
+				</p>
 			</div>
 		</div>
 	)
