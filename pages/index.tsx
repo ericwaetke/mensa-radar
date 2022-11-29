@@ -53,6 +53,10 @@ export default function Home(props) {
 			// Sorting Mensas from closest to furthest
 			tempMensen.sort((firstItem, secondItem) => firstItem.distance - secondItem.distance)
 
+			// Get nearest Mensa and redirect client
+			const nearestMensa = tempMensen[0]
+			
+
 			// Setting the State so the data gets updated
 			setMensen(tempMensen)
 			setLocationLoaded(true);

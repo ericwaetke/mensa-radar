@@ -280,13 +280,12 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-3 px-4 pb-4'>
+				<div className='grid grid-cols-2 px-4 pb-4'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
 						</p>
 					</Link>
-					<div></div>
 					<div className='flex gap-2 cursor-pointer' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
 							Nährwerte vlg.
