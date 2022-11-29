@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				.select('url')
 
 
-			Promise.all(
+			await Promise.all(
 				mensaData.map(mensa => {
 					const dev = process.env.NODE_ENV === "development"
 					fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
@@ -24,8 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 						}),
 					})
 				})
-			)
-			return res.json({ revalidated: true })
+			).then((data) => {
+				return res.json({ revalidated: true, data: data })
+			})
 		} catch (err) {
 			// If there was an error, Next.js will continue
 			// to show the last successfully generated page

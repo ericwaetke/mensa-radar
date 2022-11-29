@@ -102,7 +102,7 @@ export const getAllMensaDataFromSTW = async (mensa) => {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const data = await getAllMensaDataFromSTW(req.query.mensa ? req.query.mensa : 'mensa')
+    const data = await getAllMensaDataFromSTW(req.query.mensa ? req.query.mensa : 'golm')
 
     res.status(200).json(data)
 }

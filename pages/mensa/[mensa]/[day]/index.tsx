@@ -41,6 +41,8 @@ export default function Mensa(
 			food_desc: string,
 			vegan: boolean,
 			vegetarian: boolean,
+			fish: boolean,
+			meat: boolean,
 			nutrients: {
 				name: string,
 				value: string,
@@ -277,18 +279,19 @@ export default function Mensa(
 						})
 					}
 
-					{
-						// Sold out
-					}
-					{
-						// foodOffers?.map((offer, i) => {
-						// 	if(offer.sold_out){
-						// 		return (
-						// 			<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} ref={el => visibleOffers.current[i*2] = el}/>
-						// 		)
-						// 	}
-						// })
-					}
+						<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
+							{
+								// Not sold out
+							}
+
+							{
+								// Show rest later
+								sortedFoodOffers?.map((offer, i) => {
+									return (
+										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el}/>
+									)
+								})
+							}
 
 
 				</div>

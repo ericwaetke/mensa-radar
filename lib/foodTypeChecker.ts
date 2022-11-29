@@ -1,10 +1,11 @@
 function foodTypeChecker(label){
+    console.log(label)
     const foodTypes = {
-        SCHWEIN: "schweinefleisch",
-        GEFLUEGEL: "gefluegel",
-        LAMM: "lamm",
-        RIND: "rindfleisch",
-        FISCH: "fisch",
+        SCHWEIN: "Schwein",
+        GEFLUEGEL: "Gefluegel",
+        LAMM: "Lamm",
+        RIND: "Rind",
+        FISCH: "Fisch",
         VEGETARISCH: "vegetarisch",
         VEGAN: "vegan"
     }
