@@ -171,44 +171,52 @@ export const Offer = (
 				}
 		</BottomSheet>
 		<motion.div 
-			className={`inline-block snap-center first:snap-start last:snap-end first:pl-4 last:pr-4 sm:first:p-0 sm:last:p-0`}
+			className={`snap-start flex-row pt-4 sm:max-w-xl mx-auto`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show"
 			>
 				
-			<div ref={reff} className={`w-92 min-height-96 h-full overflow-hidden rounded-2xl bg-white  ease-in-out p-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
-				<div className="flex-col space-y-3 mb-auto">
+			<div ref={reff} className={`rounded-2xl bg-white pt-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
+				<div className="flex-col space-y-3  px-3 mb-auto">
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
 						{
 							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-xl" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-xl" />
+						} 
+					</div> : 
+					<div className="w-full h-44 bg-lightshiny-green rounded-xl flex justify-center items-center">
+						{
+							<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm" >
+								<img src="/icons/camera.svg" className="w-4"></img>
+								<p>Foto hochladen</p>
+							</div>
 						}
-					</div> : null
+					</div>
 				}
 					
-					<h2 className="text-h2 font-serif-semi px-4 pt-3">
+					<h2 className="text-h2 font-serif-semi px-4 pt-2">
 						{offer.food_title}
 					</h2>
 
 					<Allergens allergens={offer.allergens}/>
 				</div>
-				<div className="flex flex-col space-y-6">
+				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-4 flex-col space-y-2">
-						<div className="flex flex-row space-x-2">
-							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full font-sans-semi text-sm bg-light-green">
+						<div className="flex px-2 flex-row justify-between">
+							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full font-sans-med  bg-light-green">
 								<p>{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
 								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
 							</div>
 							{
 								offer.vegan ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-med">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegan</p>
 									</div>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-med text-sm">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
@@ -221,65 +229,62 @@ export const Offer = (
 								</> :
 								null
 							}
-							
-							
+								{
+									hasUserRated ? <>
+										<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-semi text-sm bg-main-green">
+											<p>
+												Deine Bewertung: 
+											</p>
+											<p>
+												{
+													averageRating < 25 ? emojis[0] :
+													averageRating < 50 ? emojis[1] :
+													averageRating < 75 ? emojis[2] :
+													emojis[3]
+												}
+											</p>
+										</div>
+									</> : null
+								}	
 						</div>
 						{/* TODO: Rating */}
-
-						{
-							offer.ratings.length !== 0 ? <>
-								<div className="inline-flex  flex-row space-x-1 px-3 py-1 rounded-full font-sans-semi text-sm bg-light-green">
-									<p>
-									{
-										averageRating < 25 ? emojis[0] :
-										averageRating < 50 ? emojis[1] :
-										averageRating < 75 ? emojis[2] :
-										emojis[3]
-									}
-									{
-										averageRating < 25 ? "1/4" :
-										averageRating < 50 ? "2/4" :
-										averageRating < 75 ? "3/4" :
-										"4/4"
-									}</p>
-									<p className="text-gray/50">·</p>
-									<p className="text-gray/50">{offer.ratings.length === 1 ? "1 Bewertung" : `${offer.ratings.length} Bewertungen`}</p>
-								</div>
-							</> : null
-						}
-						{
-							hasUserRated ? <>
-								<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-semi text-sm bg-main-green">
-									<p>
-										Deine Bewertung: 
-									</p>
-									<p>
-										{
-											averageRating < 25 ? emojis[0] :
-											averageRating < 50 ? emojis[1] :
-											averageRating < 75 ? emojis[2] :
-											emojis[3]
-										}
-									</p>
-								</div>
-							</> : <div><p></p><p></p></div>
-						}
 						
 					</div>
-					<div className="flex space-x-2 sm:space-x-0 w-full">
-						<button 
-						className="p-3 px-8 w-full rounded-lg flex items-center justify-center border-gray/20 border space-x-2 overflow-hidden whitespace-nowrap sm:hidden"
-						onClick={() => openImageFlow()}>
-							<img src="/icons/camera.png" className="w-5" />
-							<p className="font-sans-med">Fotografieren</p>
-						</button>
-						<button 
-						className="p-3 px-8 rounded-lg flex items-center justify-center border-gray/20 border space-x-2 sm:w-full"
-						onClick={() => openRatingFlow()}>
-							<img src="/icons/star.png" className="w-5" />
-							<p className="font-sans-med">Bewerten</p>
-						</button>
-					</div>
+					{
+					offer.ratings.length !== 0 ? <>
+						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-14 items-center text-sm" onClick={() => openRatingFlow()}>
+							<div className="flex-row  flex space-x-2 font-sans-semi">
+								
+								<p>
+									{
+									averageRating < 25 ? emojis[0] :
+									averageRating < 50 ? emojis[1] :
+									averageRating < 75 ? emojis[2] :
+									emojis[3]
+									}
+								</p>
+								<p>{
+										averageRating/20
+									} / 5</p>
+								<p className=" font-sans-med text-gray/50">·</p>
+								<p className="font-sans-med text-gray/50">{offer.ratings.length === 1 ? "1 Bewertung" : `${offer.ratings.length} Bewertungen`}</p>
+								
+								
+							</div>
+							<div className="flex-row flex border-l border-gray/20  space-x-1 font-sans-semi h-full items-center pl-6">
+								<p className="font-sans-med">Bewerten</p>
+								<img src="/icons/right-arrw.svg" className="w-4"></img>
+							</div>
+						</div>	
+					</> : <>
+						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-14 items-center text-sm" onClick={() => openRatingFlow()}>
+							<div className="flex-row flex border-gray/20  space-x-1 font-sans-semi h-full items-center">
+								<p className="font-sans-med">Bewerten</p>
+								<img src="/icons/right-arrw.svg" className="w-4"></img>
+							</div>
+						</div>
+					</>
+					}			
 				</div>
 			</div>
 		</motion.div>

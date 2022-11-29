@@ -14,7 +14,7 @@ import { getTempOpeningString } from '../../../../lib/getOpeningString';
 import { supabase } from '../../../../lib/getSupabaseClient';
 
 
-function useOnScreen (ref, rootMargin = '0px') {
+function useOnScreen(ref, rootMargin = '0px') {
 	const [isIntersecting, setIntersecting] = useState(false);
 
 	const observer = useMemo(() => new IntersectionObserver(([entry]) => setIntersecting(entry.isIntersecting)), [ref, rootMargin]);
@@ -33,7 +33,7 @@ export default function Mensa(
 		selectedWeekday,
 		mensaData = {},
 		mensen,
-	} : {
+	}: {
 		foodOffers: {
 			id: number,
 			mensa: number,
@@ -84,7 +84,7 @@ export default function Mensa(
 	}, [foodOffers]);
 
 	const router = useRouter()
-  	const { mensa, day } = router.query
+	const { mensa, day } = router.query
 
 
 	const containerAnimation = {
@@ -124,7 +124,7 @@ export default function Mensa(
 	}
 
 	// get current weekday
-	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay()-1);
+	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay() - 1);
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
 	const [modalOpen, setModalOpen] = useState(false);
@@ -173,48 +173,48 @@ export default function Mensa(
 				isOpen={modalOpen}
 				onRequestClose={() => setModalOpen(false)}
 				style={currentModalContent === "nutrients" ? fullsizeModal : resizedModal}
-				>
+			>
 				{
 					currentModalContent === "nutrients" ? <>
-						<NutrientOverview 
-						foodOffers={foodOffers} 
-						setModalOpen={setModalOpen}/>
+						<NutrientOverview
+							foodOffers={foodOffers}
+							setModalOpen={setModalOpen} />
 					</> : <>
-						<SelectMensa 
+						<SelectMensa
 							setModalOpen={setModalOpen}
 
 							currentMensa={mensa}
-							mensen={mensen}/>
+							mensen={mensen} />
 					</>
 				}
 			</Modal>
-			<div className="m-auto sm:max-w-3xl my-4 h-screen flex flex-col space-y-4">
+			<div className="mx-auto h-screen flex flex-col space-y-4 py-4">
 				<Head>
-					<title>{ mensaData.name } - Mensa Radar</title>
+					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
 				<div className="px-4">
-					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-md m-auto">
+					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-xl m-auto">
 						<div
-							onClick={() => openMensaSelectionFlow()} 
+							onClick={() => openMensaSelectionFlow()}
 							className="flex justify-center space-x-1 items-center flex-row w-full">
 							<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
 							<img className="w-4 mt-0.5"
-							src="/icons/chev-down.svg"></img>
+								src="/icons/chev-down.svg"></img>
 						</div>
 						<div className="border-b border-gray/20"></div>
 
 						<div className="flex items-center justify-between flex-row w-full px-4">
 							{
 								selectedWeekday > 0 ? <>
-								<Link href={`/mensa/${mensa}/${days[selectedWeekday-1]}`}>
-									<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
-										<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
+									<Link href={`/mensa/${mensa}/${days[selectedWeekday - 1]}`}>
+										<a className='font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0'>
+											<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
 
-										<p className='capitalize'>
-											{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
-										</p>
-									</a>
-								</Link>
+											<p className='capitalize'>
+												{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
+											</p>
+										</a>
+									</Link>
 								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
 
 							}
@@ -225,7 +225,7 @@ export default function Mensa(
 							</p>
 							{
 								selectedWeekday < 4 ? <>
-									<Link href={`/mensa/${mensa}/${days[selectedWeekday+1]}`}>
+									<Link href={`/mensa/${mensa}/${days[selectedWeekday + 1]}`}>
 										<a className="font-sans-bold text-sm inline-flex items-center flex-row space-x-1 text-gray/70 grow basis-0 text-right">
 											<p className='capitalize w-full'>
 												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
@@ -233,69 +233,63 @@ export default function Mensa(
 
 											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
 										</a>
-									</Link>	
+									</Link>
 								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
 							}
 						</div>
-						
+
 
 						<div className="border-b border-gray/20"></div>
 						<div className="flex justify-between items-center flex-row w-full px-4">
-						<div className="flex space-x-2 items-center">
-							<div className="w-2 h-2 bg-dark-green rounded-full"></div>
-							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingString }</p>
-						</div>
+							<div className="flex space-x-2 items-center">
+								<div className="w-2 h-2 bg-dark-green rounded-full"></div>
+								<p className="text-gray/70 font-sans-med text-sm">{mensaData.url === undefined ? "" : mensaData.openingString}</p>
+							</div>
 						</div>
 					</div>
 				</div>
 
 
 				{
-						day === "samstag" || day === "sonntag" ? (
-							<div>
-								<p>
+					day === "samstag" || day === "sonntag" ? (
+						<div>
+							<p>
 								Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
-								</p>
-								<Link href={`/mensa/${mensa}/freitag`}>
-									<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
-										Zu vergangenem Freitag
-									</a>
-								</Link>
-							</div>
-						) : null
+							</p>
+							<Link href={`/mensa/${mensa}/freitag`}>
+								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
+									Zu vergangenem Freitag
+								</a>
+							</Link>
+						</div>
+					) : null
 				}
 
-				<div className="flex flex-col w-full sm:px-4">
+				<div className="flex flex-col w-full border-y border-gray/20 overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-4 pb-4">
+					{
+						// Show rest later
+						sortedFoodOffers?.map((offer, i) => {
+							if (!offer.sold_out) {
+								return (
+									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el} />
+								)
+							}
+						})
+					}
 
-						<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
-							{
-								// Not sold out
-							}
-							
-							{
-								// Show rest later
-								sortedFoodOffers?.map((offer, i) => {
-									if(!offer.sold_out){
-										return (
-											<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el}/>
-										)
-									}
-								})
-							}
+					{
+						// Sold out
+					}
+					{
+						// foodOffers?.map((offer, i) => {
+						// 	if(offer.sold_out){
+						// 		return (
+						// 			<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} ref={el => visibleOffers.current[i*2] = el}/>
+						// 		)
+						// 	}
+						// })
+					}
 
-							{
-								// Sold out
-							}
-							{
-								// foodOffers?.map((offer, i) => {
-								// 	if(offer.sold_out){
-								// 		return (
-								// 			<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} ref={el => visibleOffers.current[i*2] = el}/>
-								// 		)
-								// 	}
-								// })
-							}
-						</div>
 
 				</div>
 
@@ -314,14 +308,14 @@ export default function Mensa(
 					</div>
 				</div>
 			</div>
-		</>		
-    )
+		</>
+	)
 }
 
 export async function getServerSideProps(context) {
 	const { params } = context
 	const { mensa, day } = params
-	
+
 	const selectedWeekday = getWeekdayByName(day)
 
 	const dev = process.env.NODE_ENV !== 'production';
@@ -336,12 +330,12 @@ export async function getServerSideProps(context) {
 		foodOffers,
 	} = await getMensaDataReq.json()
 
-	const windowWidth = 1200	
-		// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
+	const windowWidth = 1200
+	// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
 
 	// Get Images to the food offers
 	const foodOffersWithAdditionalInfo = await Promise.all(foodOffers.map(async (offer) => {
-		const {data: images} = await supabase
+		const { data: images } = await supabase
 			.from("food_images")
 			.select('image_name')
 			.eq('food_id', offer.id)
@@ -356,7 +350,7 @@ export async function getServerSideProps(context) {
 					offset: 0,
 					sortBy: { column: 'name', order: 'asc' },
 					search: image.image_name
-				})	
+				})
 		})
 
 		const generateUrls = (imageName: string) => {
@@ -373,7 +367,7 @@ export async function getServerSideProps(context) {
 
 		const imageUrls = images.map(image => generateUrls(image.image_name))
 
-		const {data: ratings} = await supabase
+		const { data: ratings } = await supabase
 			.from("quality_reviews")
 			.select('rating, userSessionId')
 			.eq('offerId', offer.id)
