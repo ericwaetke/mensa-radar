@@ -278,22 +278,6 @@ export default function Mensa(
 							}
 						})
 					}
-
-						<div className="flex flex-nowrap sm:flex-wrap space-x-2 snap-mandatory snap-x sm:space-x-0 sm:justify-between overflow-x-scroll hide-scroll-bar sm:gap-y-4">
-							{
-								// Not sold out
-							}
-
-							{
-								// Show rest later
-								sortedFoodOffers?.map((offer, i) => {
-									return (
-										<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el}/>
-									)
-								})
-							}
-
-
 				</div>
 
 				<div className='grid grid-cols-3 px-4 pb-4'>
