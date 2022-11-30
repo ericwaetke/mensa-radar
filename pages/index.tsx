@@ -6,9 +6,12 @@ import Link from 'next/link';
 import { createClient } from "@supabase/supabase-js";
 import Footer from "../components/footer";
 import { getTempOpeningString } from "../lib/getOpeningString";
+import { useRouter } from "next/router";
 
 
 export default function Home(props) {
+	const router = useRouter()
+
 	const { mensaData } = props;
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes() / 60
@@ -55,7 +58,8 @@ export default function Home(props) {
 
 			// Get nearest Mensa and redirect client
 			const nearestMensa = tempMensen[0]
-			
+			router.push(`/mensa/${nearestMensa.url}`)
+			console.log("redirecting to", nearestMensa)
 
 			// Setting the State so the data gets updated
 			setMensen(tempMensen)
@@ -66,7 +70,7 @@ export default function Home(props) {
 			console.error('Geolocation is not supported by your browser');
 
 		} else {
-			navigator.geolocation.getCurrentPosition(success, (e) => console.log(e));
+			navigator.geolocation.getCurrentPosition(success, (e) => console.log("error getting location: ",e));
 			setLocationLoaded(true);
 		}
 	}
