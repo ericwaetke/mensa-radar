@@ -195,7 +195,7 @@ export default function Mensa(
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
 				<div className="px-4">
-					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-xl m-auto">
+					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-2.5 py-2.5 sm:max-w-xl m-auto">
 						<div
 							onClick={() => openMensaSelectionFlow()}
 							className="flex justify-center space-x-1 items-center flex-row w-full">
