@@ -254,11 +254,11 @@ export default function Mensa(
 					</>
 				}
 			</Modal>
-			<div className="mx-auto h-screen flex flex-col space-y-4 py-4">
+			<div className="mx-auto h-screen flex flex-col py-2">
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
-				<div className="px-4">
+				<div className="px-3 pb-4">
 					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-2.5 py-2.5 sm:max-w-xl m-auto">
 						<div
 							onClick={() => openMensaSelectionFlow()}
@@ -331,7 +331,7 @@ export default function Mensa(
 					) : null
 				}
 
-				<div className="flex flex-col w-full border-y border-gray/20 overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-4 pb-4">
+				<div className="flex flex-col w-full border-y border-gray/20 overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-4">
 					{
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
@@ -344,13 +344,13 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-4'>
+				<div className='grid grid-cols-2 px-3 pt-2'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
 						</p>
 					</Link>
-					<div className='flex gap-2 cursor-pointer' onClick={() => openNutrientsFlow()}>
+					<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
 							Nährwerte vlg.
 						</p>

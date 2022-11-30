@@ -91,9 +91,10 @@
 
 
 @supports (-webkit-touch-callout: none) {
-	.h-screen {
-		height: -webkit-fill-available !important;
+	/*.h-screen {
+		height: -webkit-fill-available !important; 
 	}
+	*/
 	.safari-padding { 
         padding-bottom: 0px !important;
     }
