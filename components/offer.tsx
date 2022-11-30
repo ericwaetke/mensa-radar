@@ -188,7 +188,7 @@ export const Offer = (
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
 						{
-							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-xl" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-xl" />
+							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 						} 
 					</div> : 
 					<div className="w-full h-20 bg-lightshiny-green rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
@@ -222,7 +222,7 @@ export const Offer = (
 										<p>vegan</p>
 									</div>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-orange-300 items-center rounded-full font-sans-med text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-emerald-300 items-center rounded-full font-sans-med text-sm">
 										<img src="/icons/vegeterian.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
@@ -250,7 +250,7 @@ export const Offer = (
 					</div>
 					{
 					offer.ratings.length !== 0 ? <>
-						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-14 items-center text-sm" onClick={() => openRatingFlow()}>
+						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex space-x-1 font-sans-semi whitespace-nowrap">
 								<p>
 									{
@@ -294,7 +294,7 @@ export const Offer = (
 							</div>
 						</div>	
 					</> : <>
-						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-14 items-center text-sm" onClick={() => openRatingFlow()}>
+						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex border-gray/20  space-x-1 font-sans-semi h-full items-center">
 								<p className="font-sans-med">Bewerten</p>
 								<img src="/icons/right-arrw.svg" className="w-4"></img>

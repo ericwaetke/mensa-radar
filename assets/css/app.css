@@ -11,6 +11,7 @@
 	--rsbs-ml: env(safe-area-inset-left);
 	--rsbs-mr: env(safe-area-inset-right);
 	--rsbs-overlay-rounded: 16px;
+	--app-height: 100%;
 }
 
 body {
@@ -97,8 +98,10 @@ body {
 
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
-		height: -webkit-fill-available !important;
+		height: calc(-webkit-fill-available+3vh) !important; 
+		height: var(--app-height) !important;
 	}
+	
 	.safari-padding { 
         padding-bottom: 0px !important;
     }
