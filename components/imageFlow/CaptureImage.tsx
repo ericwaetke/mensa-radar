@@ -198,7 +198,7 @@ export const CaptureImage = (
 		<div className="bg-light-green flex flex-col justify-between text-center sm:max-w-md mx-auto">
 
 			{/* Second Row in Flexbox */}
-			<div className="px-4 font-sans-reg">
+			<div className="p-7 pt-0 font-sans-reg">
 				{
 					currentStep === "preparation" ? <>
 						<h2 className="font-sans-semi text-xl">
@@ -208,16 +208,7 @@ export const CaptureImage = (
 							🙋
 						</p>
 						<p>
-							Bitte halte dich an unsere Nettique-Regeln und fotografiere nur das Essen.
-							Dein Foto wird von Google analysiert.
-						</p>
-						<p className="text-5xl my-4">
-							✨
-						</p>
-						<p>
-							Dein Foto muss nicht wunderschön sein,
-							das Essen muss aber erkennbar sein.
-							Wir zeigen dir im Anschluss eine Vorschau.
+							Fotografiere nur dein Essen. Dein Foto wird im Anschluss automatisch durch Google analysiert.
 						</p>
 					</> : currentStep === "preview" ? <>
 						<h2 className="font-sans-semi text-xl">
