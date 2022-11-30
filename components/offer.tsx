@@ -111,6 +111,11 @@ export const Offer = (
 	const sessionId = useRef(getSessionId())
 
 	const [hasUserRated, setHasUserRated] = useState(false)
+	const [userRating, setUserRating] = useState(0)
+	const updateUserRating = (rating: number) => {
+		setUserRating(rating)
+		setHasUserRated(true)
+	}
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
@@ -139,9 +144,9 @@ export const Offer = (
 	  
 	const [tempImage, setTempImage] = useState("");
 
-
 	useEffect(() => {
 		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
+		setUserRating(offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating * 5 || 0)
 	}, [])
 
 	return (
@@ -172,6 +177,7 @@ export const Offer = (
 
 							foodTitle={offer.food_title}
 							foodId={offer.id}
+							updateUserRating={updateUserRating}
 							/>
 					</> : <></>
 				}
@@ -272,21 +278,22 @@ export const Offer = (
 							<div className="flex-row flex border-l border-gray/20  space-x-1 font-sans-semi h-full items-center pl-6">
 								<p className="font-sans-med">
 									{	
-									hasUserRated ? <>
+									hasUserRated ? 
+									<>
 										<div className="inline-flex flex-row items-center space-x-2">
 											<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-light-green whitespace-nowrap"> 
 												<p>Du:</p>
 												<p className="font-sans-semi">
-												{ averageRatingString } / 5</p> 
+												{ userRating } / 5</p> 
 												<img src="/icons/right-arrw.svg" className="w-4"></img>
 											</div> 
-
-										</div> </> : <>
+										</div> 
+									</> : <>
 										<div className="flex-row flex space-x-1 font-sans-med h-full items-center">
 											<p>Bewerten</p> 
 											<img src="/icons/right-arrw.svg" className="w-4"></img>
 										</div>
-										</>
+									</>
 									}
 
 								</p>

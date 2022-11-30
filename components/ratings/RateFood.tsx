@@ -10,12 +10,16 @@ export default function RateFood(
 
 		foodTitle,
 		foodId,
+
+		updateUserRating
 	} : {
 		setModalOpen: (open: boolean) => void,
 		setCurrentModalContent: (content: string) => void,
 
 		foodTitle: string,
 		foodId: number,
+
+		updateUserRating: (rating: number) => void
 	}
 ) {
 
@@ -91,8 +95,9 @@ export default function RateFood(
 	const saveRating = async () => {
 		// Round to 2 decimals
 		const rating = Math.round(ratingPercentage * 100) / 100;
-		console.log("saving " + rating);
-		console.log(`Session ID: ${sessionId.current} | Rating: ${rating}`)
+		
+		updateUserRating(rating * 5);
+
 		fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/qualityReview`, {
 			method: "POST",
 			body: JSON.stringify({
