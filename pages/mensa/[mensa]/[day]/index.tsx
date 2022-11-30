@@ -344,7 +344,7 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-4 pb-4 safari-padding'>
+				<div className='grid grid-cols-2 px-4 pb-2 safari-padding'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
