@@ -11,6 +11,7 @@
 	--rsbs-ml: env(safe-area-inset-left);
 	--rsbs-mr: env(safe-area-inset-right);
 	--rsbs-overlay-rounded: 16px;
+	--app-height: 100%;
 }
 
 .min-height-96 {
@@ -93,6 +94,7 @@
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
 		height: calc(-webkit-fill-available+3vh) !important; 
+		height: var(--app-height) !important;
 	}
 	
 	.safari-padding { 
