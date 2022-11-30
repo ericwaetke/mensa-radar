@@ -72,8 +72,8 @@
 }
 
 .text-h2 {
-	font-size: 1.5rem;
-	line-height: 1.9rem;
+	font-size: 1.4rem;
+	line-height: 1.7rem;
 }
 
 .w-92 {
@@ -89,8 +89,16 @@
 }
 
 
+
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
 		height: -webkit-fill-available !important;
 	}
+	.safari-padding { 
+        padding-bottom: 0px !important;
+    }
+}
+
+.scroll-offset {
+	scroll-snap-destination: -12px;
 }
