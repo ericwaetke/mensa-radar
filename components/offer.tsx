@@ -8,7 +8,6 @@ import RateFood, { RateFoodHeader } from "./ratings/RateFood"
 import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
-import 'react-spring-bottom-sheet/dist/style.css'
 import { userAgent } from "next/server";
 
 export const Offer = (

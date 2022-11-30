@@ -54,7 +54,7 @@ export default function RateFood(
 		// changes. We also listen for `timing` changes,
 		// in case the length of the boop delay is
 		// variable.
-	  }, [isVibrating, timing]);
+	}, [isVibrating, timing]);
 
 	const handleBar = useRef(null)
 

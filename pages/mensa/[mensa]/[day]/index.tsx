@@ -10,7 +10,6 @@ import Modal from "react-modal";
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
 import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
-import { getTempOpeningString } from '../../../../lib/getOpeningString';
 import { supabase } from '../../../../lib/getSupabaseClient';
 
 
@@ -169,6 +168,71 @@ export default function Mensa(
 	const visibleOffers = useRef([])
 	// const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
 
+	// calculate opening string based on mensen.daysWithFood
+	const openingTimes = useMemo<{open: boolean, text: string}>(() => {
+		// Get Current Mensa
+		const currentMensa = mensen.find((m) => m.url === mensa);
+		if (!currentMensa) {
+			return {
+				open: false,
+				text: "Mensa nicht gefunden"
+			};
+		}
+		const daysWithFood = currentMensa.daysWithFood;
+
+		const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
+		const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+
+		const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
+		const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
+		const currentDate = new Date()
+
+		// Check if today has food
+		const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+		if (todayHasFood) {
+			// Check if current time is between the opening hours
+			const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
+			const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+			if (open) {
+				return {
+					open: true,
+					text: `offen bis ${toHour}:${toMinute}`
+				};
+			} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
+				return {
+					open: false,
+					text: `Öffnet um ${fromHour}:${fromMinute}`
+				};
+			}
+		}
+
+		const tomorrow = new Date(currentDate)
+		tomorrow.setDate(tomorrow.getDate() + 1)
+		const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+		if (tomorrowHasFood) {
+			return {
+				open: false,
+				text: `Öffnet morgen um ${fromHour}:${fromMinute}`
+			};
+		}
+
+		const dayAfterTomorrow = new Date(currentDate)
+		dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+		const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+		if (dayAfterTomorrowHasFood) {
+			return {
+				open: false,
+				text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
+			};
+		}
+
+		return {
+			open: false,
+			text: "Öffnet nächste Woche"
+		}
+		
+	}, [mensaData.daysWithFood]);
+
 	return (
 		<>
 			<Modal
@@ -243,10 +307,10 @@ export default function Mensa(
 
 						<div className="border-b border-gray/20"></div>
 						<div className="flex justify-between items-center flex-row w-full px-4">
-							<div className="flex space-x-2 items-center">
-								<div className="w-2 h-2 bg-dark-green rounded-full"></div>
-								<p className="text-gray/70 font-sans-med text-sm">{mensaData.url === undefined ? "" : mensaData.openingString}</p>
-							</div>
+						<div className="flex space-x-2 items-center">
+							<div className={`w-2 h-2 rounded-full ${openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
+							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
+						</div>
 						</div>
 					</div>
 				</div>
@@ -280,7 +344,7 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-4 pb-4 safari-padding'>
+				<div className='grid grid-cols-2 px-4'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
@@ -378,7 +442,6 @@ export async function getServerSideProps(context) {
 	const thisMensaData = {
 		...thisMensa,
 		...currentMensa,
-		openingString: await getTempOpeningString(currentMensa)
 	}
 
 	const dateFormated = new Date().toISOString().split('T')[0]
@@ -395,7 +458,6 @@ export async function getServerSideProps(context) {
 		return {
 			...mensa,
 			...currentMensa,
-			openingString: await getTempOpeningString(currentMensa),
 			daysWithFood,
 		}
 	})

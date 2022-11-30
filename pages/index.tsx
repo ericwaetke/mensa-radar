@@ -94,13 +94,8 @@ export default function Home(props) {
 								<a className="flex p-4 justify-between space-x-2">
 									<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
 									<div className="flex font-sans-reg text-s items-center h-full">
-										{
-											mensa.open || mensa.openingString === "offen bis 14:30" ? <>
-												<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
-											</> : null
-										}
-
-										<span className="opacity-60 whitespace-nowrap"> {mensa.openingString} </span>
+										<div className={`rounded-full w-2 h-2 mr-2 my-auto ${mensa.openingTimes.open ? "bg-main-green" : "bg-red-500"}`}></div>
+										<span className="opacity-60 whitespace-nowrap"> {mensa.openingTimes.text} </span>
 									</div>
 								</a>
 							</Link>
@@ -119,6 +114,10 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function getStaticProps(context) {
+	// Get Current Weekday
+	const currentWeekday = new Date().getDay()-1;
+
+
 	const { data: mensen, error: mensenError } = await supabase
 		.from('mensen')
 		.select()
@@ -133,6 +132,61 @@ export async function getStaticProps(context) {
 		.select('mensa, date')
 		.gte('date', dateFormated)
 
+
+	const openingTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
+			const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
+			const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+	
+			const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
+			const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
+			const currentDate = new Date()
+	
+			// Check if today has food
+			const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+			if (todayHasFood) {
+				// Check if current time is between the opening hours
+				const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
+				const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+				if (open) {
+					return {
+						open: true,
+						text: `offen bis ${toHour}:${toMinute}`
+					};
+				} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
+					return {
+						open: false,
+						text: `Öffnet um ${fromHour}:${fromMinute}`
+					};
+				}
+			}
+	
+			const tomorrow = new Date(currentDate)
+			tomorrow.setDate(tomorrow.getDate() + 1)
+			const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+			if (tomorrowHasFood) {
+				return {
+					open: false,
+					text: `Öffnet morgen um ${fromHour}:${fromMinute}`
+				};
+			}
+	
+			const dayAfterTomorrow = new Date(currentDate)
+			dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+			const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+			if (dayAfterTomorrowHasFood) {
+				return {
+					open: false,
+					text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
+				};
+			}
+	
+			return {
+				open: false,
+				text: "Öffnet nächste Woche"
+			}
+			
+	};
+
 	const mensaData = mensen.map(async mensa => {
 		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
 
@@ -141,7 +195,7 @@ export async function getStaticProps(context) {
 		return {
 			...mensa,
 			...currentMensa,
-			openingString: await getTempOpeningString(currentMensa),
+			openingTimes: openingTimes(currentMensa, daysWithFood),
 			daysWithFood,
 		}
 	})
