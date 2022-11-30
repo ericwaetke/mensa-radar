@@ -3,8 +3,17 @@ import "../assets/css/app.css"
 import {Toaster} from "react-hot-toast"
 import { Analytics } from '@vercel/analytics/react';
 import NextNProgress from 'nextjs-progressbar';
+import LogRocket from 'logrocket';
+import setupLogRocketReact from 'logrocket-react';
+import '../assets/css/react-spring-bottom-sheet.css'
+
 
 function MyApp({ Component, pageProps }) {
+    if (typeof window !== 'undefined') {
+      LogRocket.init('x4o9cp/mensa-radar');
+      // plugins should also only be initialized when in the browser
+      setupLogRocketReact(LogRocket);
+    }
     return (
       <>
       <NextNProgress color="#88E2A1"/>

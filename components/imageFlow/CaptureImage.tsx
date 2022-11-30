@@ -149,11 +149,15 @@ export const CaptureImage = (
 			.upload(fileName, file)
 	}
 
-	const saveImage = () => {
+	const saveImage = (nextStep: string = "close") => {
 		if(!processing) {
 			if(imageValid) {
-				setModalOpen(false)
 				attachImageToFood()
+				if(nextStep === "close") {
+					setModalOpen(false)
+				} else if(nextStep === "rating") {
+					setCurrentModalContent("rating")
+				}
 			}
 		} else {
 			setQueued(true)
@@ -191,30 +195,10 @@ export const CaptureImage = (
 	}, [])
 
 	return (
-		<div className="bg-light-green h-screen flex flex-col justify-between text-center sm:max-w-md">
-			
-			{/* First Row in Flexbox */}
-			<div>
-				<div 
-					className="flex pt-6 justify-center items-center text-xl cursor-pointer px-8"
-					onClick={() => setModalOpen(false)}>
-
-					<img src="/icons/right-arrw.svg" className="rotate-180 mr-auto w-4" />	
-
-					<h2 className="font-sans-bold">
-						Foto Aufnehmen
-					</h2>
-					<div className="ml-auto"></div>
-				</div>
-				<div className="px-12 my-6 py-6 border-y border-black/20">
-					<p className="font-serif-reg text-xl">
-						{foodTitle}
-					</p>
-				</div>
-			</div>
+		<div className="bg-light-green flex flex-col justify-between text-center sm:max-w-md mx-auto">
 
 			{/* Second Row in Flexbox */}
-			<div className="px-4 font-sans-reg">
+			<div className="p-7 pt-0 font-sans-reg">
 				{
 					currentStep === "preparation" ? <>
 						<h2 className="font-sans-semi text-xl">
@@ -224,16 +208,7 @@ export const CaptureImage = (
 							🙋
 						</p>
 						<p>
-							Bitte halte dich an unsere Nettique-Regeln und fotografiere nur das Essen.
-							Dein Foto wird von Google analysiert.
-						</p>
-						<p className="text-5xl my-4">
-							✨
-						</p>
-						<p>
-							Dein Foto muss nicht wunderschön sein,
-							das Essen muss aber erkennbar sein.
-							Wir zeigen dir im Anschluss eine Vorschau.
+							Fotografiere nur dein Essen. Dein Foto wird im Anschluss automatisch durch Google analysiert.
 						</p>
 					</> : currentStep === "preview" ? <>
 						<h2 className="font-sans-semi text-xl">
@@ -283,7 +258,9 @@ export const CaptureImage = (
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
 					</> : currentStep === "preview" ? <>
-						<button className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+						<button 
+						onClick={() => saveImage("rating")}
+						className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
 							<p>
 								{"Foto speichern und Essen bewerten"}
 							</p>
@@ -291,7 +268,7 @@ export const CaptureImage = (
 						</button>
 
 						<button 
-						onClick={() => saveImage()}
+						onClick={() => saveImage("close")}
 						className={`${queued ? "bg-black/20" : "bg-main-green"} font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
 							{
 								!queued ? <>
@@ -317,6 +294,24 @@ export const CaptureImage = (
 						<CaptureImageButton label="Neues Foto aufnehmen" handleUpload={handleUpload} />
 					</> : null
 				}
+			</div>
+		</div>
+	)
+}
+
+export const CaptureImageHeader = ({foodTitle}: {foodTitle: string}) => {
+	return (
+		<div>
+			<div>
+				<h2 className="font-sans-bold">
+					Foto Aufnehmen
+				</h2>
+				<div className="ml-auto"></div>
+			</div>
+			<div className="px-12 my-6 py-6 border-y border-black/20">
+				<p className="font-serif-reg text-xl">
+					{foodTitle}
+				</p>
 			</div>
 		</div>
 	)
