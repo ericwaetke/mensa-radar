@@ -192,7 +192,7 @@ export const Offer = (
 			<div ref={reff} className={`rounded-2xl  bg-white pt-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
 				<div className="flex-col space-y-3  px-3 mb-auto">
 				{
-					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-gray rounded-xl">
+					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-lightshiny-green rounded-xl">
 						{
 							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 						} 
@@ -215,35 +215,35 @@ export const Offer = (
 				</div>
 				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-6 flex-col space-y-2">
-						<div className="flex flex-row justify-between">
-							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full font-sans-med  bg-light-green">
+						<div className="flex flex-row justify-between font-sans-med">
+							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full bg-light-green">
 								<p>{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
 								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
 							</div>
 							{
 								offer.vegan ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-med">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegan</p>
 									</div>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-emerald-300 items-center rounded-full font-sans-med text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-vegeterian-yellow items-center rounded-full text-sm">
 										<img src="/icons/vegeterian.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
 								</> : offer.fish ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-indigo-300 items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-blue-fish items-center rounded-full  text-sm">
 										<img src="/icons/allergene/Fisch.svg" className="w-4"></img>
 										<p>Fisch</p>
 									</div>
 								</> : offer.meat ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-red-300 items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-meat-red items-center rounded-full  text-sm">
 										<img src="/icons/meat.svg" className="w-4"></img>
 										<p>Fleisch</p>
 									</div>
 								</> : offer.sold_out? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-light-green items-center rounded-full font-sans-semi text-sm">
 										<p>😢</p>
 										<p>Ausverkauft</p>
 									</div>

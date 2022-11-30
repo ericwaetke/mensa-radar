@@ -265,7 +265,7 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-3 pt-2'>
+				<div className='grid grid-cols-2 px-3 py-2'>
 					<Link href="/impressum">
 						<p className='font-sans-semi text-sm opacity-50'>
 							Über Mensa-Radar
