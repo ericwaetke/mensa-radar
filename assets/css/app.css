@@ -92,7 +92,7 @@
 
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
-		height: -webkit-fill-available !important; 
+		height: calc(-webkit-fill-available+3vh) !important; 
 	}
 	
 	.safari-padding { 
