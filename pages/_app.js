@@ -9,20 +9,27 @@ import '../assets/css/react-spring-bottom-sheet.css'
 
 
 function MyApp({ Component, pageProps }) {
-    if (typeof window !== 'undefined') {
-      LogRocket.init('x4o9cp/mensa-radar');
-      // plugins should also only be initialized when in the browser
-      setupLogRocketReact(LogRocket);
-    }
-    return (
-      <>
-      <NextNProgress color="#88E2A1"/>
-      <Toaster />
-      <Component {...pageProps} />
-      <Analytics />
-      </>
-    )
-  }
+	if (typeof window !== 'undefined') {
+		LogRocket.init('x4o9cp/mensa-radar');
+		// plugins should also only be initialized when in the browser
+		setupLogRocketReact(LogRocket);
+		
+		const appHeight = () => {
+			const doc = document.documentElement
+			doc.style.setProperty('--app-height', `${window.innerHeight}px`)
+		}
+		window.addEventListener('resize', appHeight)
+		appHeight()
+	}
+	return (
+		<>
+		<NextNProgress color="#88E2A1"/>
+		<Toaster />
+		<Component {...pageProps} />
+		<Analytics />
+		</>
+	)
+}
   
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to

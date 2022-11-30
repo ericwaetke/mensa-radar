@@ -13,6 +13,11 @@
 	--rsbs-overlay-rounded: 16px;
 }
 
+body {
+	height: 100vh;
+    height: var(--app-height);
+}
+
 .min-height-96 {
 	min-height: 26rem;
 }
