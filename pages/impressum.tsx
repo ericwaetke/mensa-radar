@@ -21,7 +21,7 @@ export default function Impressum () {
 					</a>
 				</Link>
 				<div className="">
-					<p>Icons von icons8 :)</p>
+					<a href="https://icons8.com/">Icons von icons8.</a>
 					<p>Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
 					<p>Wir arbeiten noch am Impressum. :D</p>
 					<br></br>

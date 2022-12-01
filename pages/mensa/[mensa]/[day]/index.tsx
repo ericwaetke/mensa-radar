@@ -266,11 +266,17 @@ export default function Mensa(
 				</div>
 
 				<div className='grid grid-cols-2 px-3 py-2'>
-					<Link href="/impressum">
+					<div className="flex flex-row space-x-2">
+						<Link href="/impressum">
+							<p className='font-sans-semi text-sm opacity-50'>
+								Über Mensa-Radar
+							</p>
+						</Link>
 						<p className='font-sans-semi text-sm opacity-50'>
-							Über Mensa-Radar
+							<a href="https://icons8.com/">icons8</a>
+
 						</p>
-					</Link>
+					</div>
 					<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
 							Nährwerte vlg.
