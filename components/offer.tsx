@@ -73,7 +73,7 @@ export const Offer = (
 		"😊",
 		"😋"
 	]
-	
+
 	const calculateAverageRating = (ratings: {rating: number, userSessionId: string}[]) => {
 		let sum = 0;
 		ratings.forEach(rating => {
@@ -249,7 +249,7 @@ export const Offer = (
 							</div>
 				
 							<div className="flex-row flex border-l border-gray/20  space-x-1 font-sans-semi h-full items-center pl-6">
-								<p className="font-sans-med">
+								<div className="font-sans-med">
 									{	
 									hasUserRated ? 
 									<>
@@ -269,7 +269,7 @@ export const Offer = (
 									</>
 									}
 
-								</p>
+								</div>
 								
 							</div>
 						</div>	
