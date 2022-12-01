@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { createClient } from "@supabase/supabase-js";
 import Footer from "../components/footer";
-import { getTempOpeningString } from "../lib/getOpeningString";
+import { getOpeningTimes } from "../lib/getOpeningString";
 import { useRouter } from "next/router";
 
 
@@ -137,60 +137,6 @@ export async function getStaticProps(context) {
 		.gte('date', dateFormated)
 
 
-	const openingTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
-			const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
-			const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
-	
-			const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
-			const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
-			const currentDate = new Date()
-	
-			// Check if today has food
-			const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
-			if (todayHasFood) {
-				// Check if current time is between the opening hours
-				const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
-				const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
-				if (open) {
-					return {
-						open: true,
-						text: `offen bis ${toHour}:${toMinute}`
-					};
-				} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
-					return {
-						open: false,
-						text: `Öffnet um ${fromHour}:${fromMinute}`
-					};
-				}
-			}
-	
-			const tomorrow = new Date(currentDate)
-			tomorrow.setDate(tomorrow.getDate() + 1)
-			const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-			if (tomorrowHasFood) {
-				return {
-					open: false,
-					text: `Öffnet morgen um ${fromHour}:${fromMinute}`
-				};
-			}
-	
-			const dayAfterTomorrow = new Date(currentDate)
-			dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
-			const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-			if (dayAfterTomorrowHasFood) {
-				return {
-					open: false,
-					text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
-				};
-			}
-	
-			return {
-				open: false,
-				text: "Öffnet nächste Woche"
-			}
-			
-	};
-
 	const mensaData = mensen.map(async mensa => {
 		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
 
@@ -199,7 +145,7 @@ export async function getStaticProps(context) {
 		return {
 			...mensa,
 			...currentMensa,
-			openingTimes: openingTimes(currentMensa, daysWithFood),
+			openingTimes: getOpeningTimes(currentMensa, daysWithFood),
 			daysWithFood,
 		}
 	})

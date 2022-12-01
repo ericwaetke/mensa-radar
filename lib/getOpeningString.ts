@@ -6,10 +6,10 @@ export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, te
 	const currentWeekday = new Date().getDay() - 1
 
 	const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
-	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
 
 	const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
-	const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
+	const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
 	const currentDate = new Date()
 
 	// Check if today has food
