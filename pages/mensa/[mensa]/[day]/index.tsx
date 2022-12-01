@@ -12,20 +12,6 @@ import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
 import { supabase } from '../../../../lib/getSupabaseClient';
 
-
-function useOnScreen(ref, rootMargin = '0px') {
-	const [isIntersecting, setIntersecting] = useState(false);
-
-	const observer = useMemo(() => new IntersectionObserver(([entry]) => setIntersecting(entry.isIntersecting)), [ref, rootMargin]);
-
-	useEffect(() => {
-		observer.observe(ref.current);
-		return () => { observer.disconnect(); }
-	}, []);
-
-	return isIntersecting;
-}
-
 export default function Mensa(
 	{
 		foodOffers,
@@ -168,71 +154,6 @@ export default function Mensa(
 	const visibleOffers = useRef([])
 	// const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
 
-	// calculate opening string based on mensen.daysWithFood
-	const openingTimes = useMemo<{open: boolean, text: string}>(() => {
-		// Get Current Mensa
-		const currentMensa = mensen.find((m) => m.url === mensa);
-		if (!currentMensa) {
-			return {
-				open: false,
-				text: "Mensa nicht gefunden"
-			};
-		}
-		const daysWithFood = currentMensa.daysWithFood;
-
-		const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
-		const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
-
-		const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
-		const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
-		const currentDate = new Date()
-
-		// Check if today has food
-		const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
-		if (todayHasFood) {
-			// Check if current time is between the opening hours
-			const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
-			const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
-			if (open) {
-				return {
-					open: true,
-					text: `offen bis ${toHour}:${toMinute}`
-				};
-			} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
-				return {
-					open: false,
-					text: `Öffnet um ${fromHour}:${fromMinute}`
-				};
-			}
-		}
-
-		const tomorrow = new Date(currentDate)
-		tomorrow.setDate(tomorrow.getDate() + 1)
-		const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-		if (tomorrowHasFood) {
-			return {
-				open: false,
-				text: `Öffnet morgen um ${fromHour}:${fromMinute}`
-			};
-		}
-
-		const dayAfterTomorrow = new Date(currentDate)
-		dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
-		const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-		if (dayAfterTomorrowHasFood) {
-			return {
-				open: false,
-				text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
-			};
-		}
-
-		return {
-			open: false,
-			text: "Öffnet nächste Woche"
-		}
-		
-	}, [mensaData.daysWithFood]);
-
 	return (
 		<>
 			<Modal
@@ -254,12 +175,12 @@ export default function Mensa(
 					</>
 				}
 			</Modal>
-			<div className="mx-auto h-screen flex flex-col space-y-4 py-4">
+			<div className="mx-auto h-screen flex flex-col py-2">
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
-				<div className="px-4">
-					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-3 py-3 sm:max-w-xl m-auto">
+				<div className="px-3 pb-4">
+					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-2.5 py-2.5 sm:max-w-xl m-auto">
 						<div
 							onClick={() => openMensaSelectionFlow()}
 							className="flex justify-center space-x-1 items-center flex-row w-full">
@@ -308,8 +229,8 @@ export default function Mensa(
 						<div className="border-b border-gray/20"></div>
 						<div className="flex justify-between items-center flex-row w-full px-4">
 						<div className="flex space-x-2 items-center">
-							<div className={`w-2 h-2 rounded-full ${openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
-							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
+							<div className={`w-2 h-2 rounded-full ${mensaData.openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
+							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingTimes.text }</p>
 						</div>
 						</div>
 					</div>
@@ -331,7 +252,7 @@ export default function Mensa(
 					) : null
 				}
 
-				<div className="flex flex-col w-full border-y border-gray/20 overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-4 pb-4">
+				<div className="flex flex-col w-full border-y border-gray/20 overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-4">
 					{
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
@@ -344,13 +265,19 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-4 pb-2 safari-padding'>
-					<Link href="/impressum">
+				<div className='grid grid-cols-2 px-3 py-2'>
+					<div className="flex flex-row space-x-2">
+						<Link href="/impressum">
+							<p className='font-sans-semi text-sm opacity-50'>
+								Über Mensa-Radar
+							</p>
+						</Link>
 						<p className='font-sans-semi text-sm opacity-50'>
-							Über Mensa-Radar
+							<a href="https://icons8.com/">icons8</a>
+
 						</p>
-					</Link>
-					<div className='flex gap-2 cursor-pointer' onClick={() => openNutrientsFlow()}>
+					</div>
+					<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
 							Nährwerte vlg.
 						</p>
@@ -363,6 +290,7 @@ export default function Mensa(
 }
 
 export async function getServerSideProps(context) {
+	const currentWeekday = new Date().getDay()-1
 	const { params } = context
 	const { mensa, day } = params
 
@@ -437,18 +365,76 @@ export async function getServerSideProps(context) {
 		.from('current_mensa_data')
 		.select()
 
+	const dateFormated = new Date().toISOString().split('T')[0]
+	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
+			.from('food_offerings')
+			.select('mensa, date')
+			.gte('date', dateFormated)
+
+
+	const openingTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
+			const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
+			const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+	
+			const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
+			const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
+			const currentDate = new Date()
+	
+			// Check if today has food
+			const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+			if (todayHasFood) {
+				// Check if current time is between the opening hours
+				const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
+				const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+				if (open) {
+					return {
+						open: true,
+						text: `offen bis ${toHour}:${toMinute}`
+					};
+				} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
+					return {
+						open: false,
+						text: `Öffnet um ${fromHour}:${fromMinute}`
+					};
+				}
+			}
+	
+			const tomorrow = new Date(currentDate)
+			tomorrow.setDate(tomorrow.getDate() + 1)
+			const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+			if (tomorrowHasFood) {
+				return {
+					open: false,
+					text: `Öffnet morgen um ${fromHour}:${fromMinute}`
+				};
+			}
+	
+			const dayAfterTomorrow = new Date(currentDate)
+			dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+			const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+			if (dayAfterTomorrowHasFood) {
+				return {
+					open: false,
+					text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
+				};
+			}
+	
+			return {
+				open: false,
+				text: "Öffnet nächste Woche"
+			}
+			
+	};
+
 	const thisMensa = mensen.find(m => m.url === mensa)
 	const currentMensa = currentMensaData.find(m => m.mensa === thisMensa.id)
 	const thisMensaData = {
 		...thisMensa,
 		...currentMensa,
+		openingTimes: openingTimes(currentMensa, daysWithFoodUnfiltered.filter(d => d.mensa === thisMensa.id).map(d => d.date)),
 	}
 
-	const dateFormated = new Date().toISOString().split('T')[0]
-	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
-		.from('food_offerings')
-		.select('mensa, date')
-		.gte('date', dateFormated)
+
 
 	const mensaData = mensen.map(async mensa => {
 		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)

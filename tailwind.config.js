@@ -37,10 +37,19 @@ module.exports = {
     },
     extend: {
       colors: {
+        //green
         'light-green': '#E2EEE3',
+        
+        //foto-bg
         'lightshiny-green': '#B9D8C2',
         'main-green': '#88E2A1',
         'dark-green': '#43BC63',
+
+        //vegetarisch, fleisch, fisch
+        'vegeterian-yellow': '#CBE288',
+        'meat-red': '#FFB0A6',
+        'blue-fish': '90D3FA',
+
         'gray': '#1F2132',
         'white': '#fff',
       },
