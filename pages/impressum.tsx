@@ -25,6 +25,7 @@ export default function Impressum () {
 					<p>Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
 					<p>Wir arbeiten noch am Impressum. :D</p>
 					<br></br>
+					<p>Unsere Sticker sind ausschließlich für Privatgebrauch. Zusätzlich bitten wir darum, dass sie NICHT auf dem Gelände des Studentenwerks geklebt werden.</p>
 					<h1 className="text-xl">Impressum</h1>
 					<h2 id="m46">Diensteanbieter</h2>
 					<p>Eric Wätke</p>

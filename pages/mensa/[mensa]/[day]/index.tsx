@@ -272,10 +272,6 @@ export default function Mensa(
 								Über Mensa-Radar
 							</p>
 						</Link>
-						<p className='font-sans-semi text-sm opacity-50'>
-							<a href="https://icons8.com/">icons8</a>
-
-						</p>
 					</div>
 					<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
 						<p className='font-sans-semi text-sm text-right w-full'>
