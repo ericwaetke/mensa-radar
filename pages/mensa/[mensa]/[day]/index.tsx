@@ -11,6 +11,7 @@ import { NutrientOverview } from '../../../../components/nutrients/nutrientOverv
 import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
 import { supabase } from '../../../../lib/getSupabaseClient';
+import { getOpeningTimes } from '../../../../lib/getOpeningString';
 
 export default function Mensa(
 	{
@@ -72,46 +73,10 @@ export default function Mensa(
 
 	const router = useRouter()
 	const { mensa, day } = router.query
-
-
-	const containerAnimation = {
-		hidden: {
-			opacity: 0,
-		},
-		show: {
-			opacity: 1,
-			transition: {
-				staggerChildren: .2,
-				delayChildren: .1
-			}
-		}
-	}
-	const dayVariantAnimation = {
-		hidden: {
-			opacity: 0,
-			y: 20
-		},
-		show: {
-			opacity: 1,
-			y: 0,
-		}
-	}
-
-	const anim01 = {
-		hidden: {
-			opacity: 0,
-		},
-		show: {
-			opacity: 1,
-			transition: {
-				staggerChildren: .1,
-				delayChildren: 1
-			}
-		}
-	}
+	const [openingTimes, setOpeningTimes] = useState<{open: boolean, text: string}>({open: false, text: ""});
 
 	// get current weekday
-	const [currentWeekday, setCurrentWeekday] = useState(new Date().getDay() - 1);
+	const [currentWeekday, setCurrentWeekday] = useState(0);
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
 	const [modalOpen, setModalOpen] = useState(false);
@@ -151,8 +116,17 @@ export default function Mensa(
 		},
 	};
 
-	const visibleOffers = useRef([])
-	// const isOnScreen = visibleOffers.current.map((ref) => useOnScreen(ref, '-100px'));
+	useEffect(() => {
+		setCurrentWeekday(new Date().getDay() - 1)
+		setOpeningTimes(mensaData.openingTimesObject)
+		// Update the Opening Times every minute
+		const interval = setInterval(() => {
+			console.log("Updating opening times");
+			setOpeningTimes(getOpeningTimes(mensaData, mensaData.daysWithFood));
+		}, 60 * 1000);
+
+		return () => clearInterval(interval);
+	}, [])
 
 	return (
 		<>
@@ -229,8 +203,8 @@ export default function Mensa(
 						<div className="border-b border-gray/20"></div>
 						<div className="flex justify-between items-center flex-row w-full px-4">
 						<div className="flex space-x-2 items-center">
-							<div className={`w-2 h-2 rounded-full ${mensaData.openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
-							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : mensaData.openingTimes.text }</p>
+							<div className={`w-2 h-2 rounded-full ${openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
+							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
 						</div>
 						</div>
 					</div>
@@ -258,7 +232,7 @@ export default function Mensa(
 						sortedFoodOffers?.map((offer, i) => {
 							if (!offer.sold_out) {
 								return (
-									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} reff={el => visibleOffers.current[i] = el} />
+									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} />
 								)
 							}
 						})
@@ -300,9 +274,7 @@ export async function getServerSideProps(context) {
 			mensa
 		}),
 	})
-	const {
-		foodOffers,
-	} = await getMensaDataReq.json()
+	const { foodOffers } = await getMensaDataReq.json()
 
 	const windowWidth = 1200
 	// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
@@ -367,70 +339,15 @@ export async function getServerSideProps(context) {
 			.select('mensa, date')
 			.gte('date', dateFormated)
 
-
-	const openingTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
-			const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
-			const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
-	
-			const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
-			const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
-			const currentDate = new Date()
-	
-			// Check if today has food
-			const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
-			if (todayHasFood) {
-				// Check if current time is between the opening hours
-				const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
-				const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
-				if (open) {
-					return {
-						open: true,
-						text: `offen bis ${toHour}:${toMinute}`
-					};
-				} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
-					return {
-						open: false,
-						text: `Öffnet um ${fromHour}:${fromMinute}`
-					};
-				}
-			}
-	
-			const tomorrow = new Date(currentDate)
-			tomorrow.setDate(tomorrow.getDate() + 1)
-			const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-			if (tomorrowHasFood) {
-				return {
-					open: false,
-					text: `Öffnet morgen um ${fromHour}:${fromMinute}`
-				};
-			}
-	
-			const dayAfterTomorrow = new Date(currentDate)
-			dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
-			const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-			if (dayAfterTomorrowHasFood) {
-				return {
-					open: false,
-					text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
-				};
-			}
-	
-			return {
-				open: false,
-				text: "Öffnet nächste Woche"
-			}
-			
-	};
-
 	const thisMensa = mensen.find(m => m.url === mensa)
 	const currentMensa = currentMensaData.find(m => m.mensa === thisMensa.id)
+	const daysWithFoodOfCurrentMensa = daysWithFoodUnfiltered.filter(d => d.mensa === thisMensa.id).map(d => d.date)
 	const thisMensaData = {
 		...thisMensa,
 		...currentMensa,
-		openingTimes: openingTimes(currentMensa, daysWithFoodUnfiltered.filter(d => d.mensa === thisMensa.id).map(d => d.date)),
+		openingTimesObject: getOpeningTimes(currentMensa, daysWithFoodOfCurrentMensa),
+		daysWithFood: daysWithFoodOfCurrentMensa
 	}
-
-
 
 	const mensaData = mensen.map(async mensa => {
 		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
