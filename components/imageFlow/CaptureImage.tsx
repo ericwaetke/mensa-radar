@@ -201,13 +201,13 @@ export const CaptureImage = (
 			<div className="p-7 pt-0 font-sans-reg">
 				{
 					currentStep === "preparation" ? <>
-						<h2 className="font-sans-semi text-xl">
-							Danke, dass du ein Foto schießt!
-						</h2>
 						<p className="text-5xl my-4">
 							🙋
 						</p>
-						<p>
+						<h2 className="font-sans-semi text-xl pb-4">
+							Danke, dass du ein Foto schießt!
+						</h2>
+						<p className="text-gray/70">
 							Fotografiere nur dein Essen. Dein Foto wird im Anschluss automatisch durch Google analysiert.
 						</p>
 					</> : currentStep === "preview" ? <>
@@ -223,7 +223,7 @@ export const CaptureImage = (
 						<label htmlFor="file_input" className=" font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
 							<img src="/icons/camera.svg" className="w-5" />	
 							<p>
-								{"Lieber neues Foto aufnehmen"}
+								{"Foto ersetzen"}
 							</p>
 						</label>
 						<input
@@ -239,7 +239,7 @@ export const CaptureImage = (
 						<p className="text-5xl my-4">
 							😟
 						</p>
-						<p className="uppercase text-black/50 font-sans-bold">
+						<p className="text-black/70 font-sans-med pb-2">
 							Fehler
 						</p>
 						<h2 className="text-2xl font-sans-semi w-10/12 mx-auto">
@@ -258,14 +258,6 @@ export const CaptureImage = (
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
 					</> : currentStep === "preview" ? <>
-						<button 
-						onClick={() => saveImage("rating")}
-						className="font-sans-med h-14 w-full min-w-max border border-black/20 grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
-							<p>
-								{"Foto speichern und Essen bewerten"}
-							</p>
-							<img src="/icons/right-arrw.svg" className="w-5" />	
-						</button>
 
 						<button 
 						onClick={() => saveImage("close")}
@@ -290,7 +282,7 @@ export const CaptureImage = (
 						</button>
 						
 					</> : currentStep === "error"? <>
-						<p className="font-sans-med">Wir werden das überprüfen.</p>
+						<p className="font-sans-med pb-2 text-gray/70">Wir werden das überprüfen.</p>
 						<CaptureImageButton label="Neues Foto aufnehmen" handleUpload={handleUpload} />
 					</> : null
 				}
@@ -302,14 +294,14 @@ export const CaptureImage = (
 export const CaptureImageHeader = ({foodTitle}: {foodTitle: string}) => {
 	return (
 		<div>
-			<div>
+			<div className=" pt-6 inline-flex justify-center items-center text-xl cursor-pointer px-8">
 				<h2 className="font-sans-bold">
-					Foto Aufnehmen
+					Foto aufnehmen
 				</h2>
 				<div className="ml-auto"></div>
 			</div>
-			<div className="px-12 my-6 py-6 border-y border-black/20">
-				<p className="font-serif-reg text-xl">
+			<div className="px-12 my-4 py-4 border-y border-black/20">
+				<p className="font-serif-reg text-base">
 					{foodTitle}
 				</p>
 			</div>

@@ -21,6 +21,10 @@ export default function Impressum () {
 					</a>
 				</Link>
 				<div className="">
+					<p>Icons von icons8 :)</p>
+					<p>Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
+					<p>Wir arbeiten noch am Impressum. :D</p>
+					<br></br>
 					<h1 className="text-xl">Impressum</h1>
 					<h2 id="m46">Diensteanbieter</h2>
 					<p>Eric Wätke</p>

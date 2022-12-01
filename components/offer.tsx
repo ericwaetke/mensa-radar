@@ -101,21 +101,27 @@ export const Offer = (
 		ratings.forEach(rating => {
 			sum += rating.rating;
 		})
-		let i = ((sum / ratings.length) * 100) / 25 + 1;
-		i = Math.round(i * 10)/10;
-		return i || 0;
+		sum = sum / ratings.length;
+		return sum || 0;
 	}
 	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
-	const averageRatingString = averageRating.toString().replace(".", ",");
 
 	const sessionId = useRef(getSessionId())
 
 	const [hasUserRated, setHasUserRated] = useState(false)
-	const [userRating, setUserRating] = useState(0)
+	const [userratingString, setUserRating] = useState("")
 	const updateUserRating = (rating: number) => {
-		setUserRating(rating)
-		setHasUserRated(true)
+		setUserRating(getRatingString(rating))
+		setHasUserRated(true);
 	}
+
+	const getRatingString = (rating: number) => {
+		let calc = Math.round(((rating * 100) / 25 + 1)*10)/10;
+		let calcString = calc.toString().replace(".", ",");
+		return calcString || "";
+	}
+	const averageRatingString = getRatingString(averageRating);
+
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
@@ -146,7 +152,11 @@ export const Offer = (
 
 	useEffect(() => {
 		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
-		setUserRating(offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating * 5 || 0)
+		let userrating = offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating;
+		userrating = Math.round(((userrating * 100) / 25 + 1)*10)/10
+
+		let userratingString = userrating.toString().replace(".", ",");
+		setUserRating(userratingString || "")
 	}, [])
 
 	return (
@@ -260,9 +270,9 @@ export const Offer = (
 							<div className="flex-row flex space-x-1 font-sans-semi whitespace-nowrap">
 								<p>
 									{
-									averageRating < 2 ? emojis[0] :
-									averageRating < 3 ? emojis[1] :
-									averageRating < 4 ? emojis[2] :
+									averageRating < 0.25 ? emojis[0] :
+									averageRating < 0.5 ? emojis[1] :
+									averageRating < 0.75 ? emojis[2] :
 									emojis[3]
 									}
 								</p>
@@ -284,7 +294,7 @@ export const Offer = (
 											<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-light-green whitespace-nowrap"> 
 												<p>Du:</p>
 												<p className="font-sans-semi">
-												{ userRating } / 5</p> 
+												{ userratingString } / 5</p> 
 												<img src="/icons/right-arrw.svg" className="w-4"></img>
 											</div> 
 										</div> 

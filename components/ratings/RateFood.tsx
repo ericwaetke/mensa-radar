@@ -70,6 +70,9 @@ export default function RateFood(
 	const handleDrag = (e, data) => {
 		setOffsetX(data.x);
 		setRatingPercentage(data.x / (handleBar.current.offsetWidth - data.node.clientWidth - 8))
+
+		
+
 		var i = ((Math.round((ratingPercentage/25*100)*10)/10)+1).toString();
 		i = i.replace(".", ",");
 		calcRatingPercentageTwoDigs(i);
@@ -96,7 +99,7 @@ export default function RateFood(
 		// Round to 2 decimals
 		const rating = Math.round(ratingPercentage * 100) / 100;
 		
-		updateUserRating(rating * 5);
+		updateUserRating(rating);
 
 		fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/qualityReview`, {
 			method: "POST",
@@ -169,10 +172,10 @@ export default function RateFood(
 					setModalOpen(false);
 				}}
 				className={`bg-main-green font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
+					<img src="../.././icons/check.png" className="w-4"></img>
 					<p>
-						Bewertung speichern: 
+						Bewertung speichern 
 					</p>
-					<p>{ ratingPercentageTwoDigs} / 5</p>
 				</button>
 			</div>
 		</div>
@@ -189,8 +192,8 @@ export const RateFoodHeader = ({foodTitle}: {foodTitle: string}) => {
 				</h2>
 				<div className="ml-auto"></div>
 			</div>
-			<div className="px-12 my-4 py-6 border-y border-black/20">
-				<p className="font-serif-reg text-xl">
+			<div className="px-12 my-4 py-4 border-y border-black/20">
+				<p className="font-serif-reg text-base">
 					{foodTitle}
 				</p>
 			</div>
