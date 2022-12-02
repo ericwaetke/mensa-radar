@@ -16,7 +16,6 @@ export const Offer = (
 		
 		mensa,
 		day,
-		reff
 	}: {
 		offer: {
 			id: number,
@@ -46,7 +45,6 @@ export const Offer = (
 		},
 		mensa: string | string[],
 		day: string | string[],
-		reff: any
 	}
 ) => {
 	
@@ -62,27 +60,6 @@ export const Offer = (
 			}
 		}
 	}
-	const dayVariantAnimation = {
-		hidden: {
-			opacity: 0,
-			y: 20
-		},
-		show: {
-			opacity: 1,
-			y: 0,
-		}
-	}
-
-	const anim02 = {
-		hidden: {
-			opacity: 0,
-			y: 20
-		},
-		show: {
-			opacity: 1,
-			y: 0,
-		}
-	}
 
 	const formatter = new Intl.NumberFormat('de-DE', {
 		style: 'currency',
@@ -96,6 +73,7 @@ export const Offer = (
 		"😊",
 		"😋"
 	]
+
 	const calculateAverageRating = (ratings: {rating: number, userSessionId: string}[]) => {
 		let sum = 0;
 		ratings.forEach(rating => {
@@ -104,28 +82,17 @@ export const Offer = (
 		sum = sum / ratings.length;
 		return sum || 0;
 	}
-	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
-
-	const sessionId = useRef(getSessionId())
-
-	const [hasUserRated, setHasUserRated] = useState(false)
-	const [userratingString, setUserRating] = useState("")
-	const updateUserRating = (rating: number) => {
-		setUserRating(getRatingString(rating))
-		setHasUserRated(true);
-	}
-
 	const getRatingString = (rating: number) => {
 		let calc = Math.round(((rating * 100) / 25 + 1)*10)/10;
 		let calcString = calc.toString().replace(".", ",");
 		return calcString || "";
 	}
-	const averageRatingString = getRatingString(averageRating);
+	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
 
+	const sessionId = useRef(getSessionId())
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
-
 	const openImageFlow = () => {
 		setCurrentModalContent("image");
 		setModalOpen(true);
@@ -134,29 +101,25 @@ export const Offer = (
 		setCurrentModalContent("rating");
 		setModalOpen(true);
 	}
-
-	const customStyles = {
-		content: {
-			top: 0,
-			left: 0,
-			height: "100%",
-			width: "100%",
-			border: "none",
-			borderRadius: 0,
-			inset: 0,
-			padding: 0
-		},
-	};
 	  
 	const [tempImage, setTempImage] = useState("");
+	const [hasUserRated, setHasUserRated] = useState(false)
+	const [userRatingString, setUserRating] = useState("")
+	const updateUserRating = (rating: number) => {
+		setUserRating(getRatingString(rating))
+		setHasUserRated(true);
+	}
+
+	
+	const [averageRatingString, setAverageRatingString] = useState("");
 
 	useEffect(() => {
 		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
-		let userrating = offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating;
-		userrating = Math.round(((userrating * 100) / 25 + 1)*10)/10
+		let userRating = offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating;
+		userRating = Math.round(((userRating * 100) / 25 + 1)*10)/10
 
-		let userratingString = userrating.toString().replace(".", ",");
-		setUserRating(userratingString || "")
+		setUserRating(userRating.toString())
+		setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
 	return (
@@ -199,7 +162,7 @@ export const Offer = (
 			animate="show"
 			>
 				
-			<div ref={reff} className={`rounded-2xl  bg-white pt-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
+			<div className={`rounded-2xl  bg-white pt-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
 				<div className="flex-col space-y-3  px-3 mb-auto">
 				{
 					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-lightshiny-green rounded-xl">
@@ -286,7 +249,7 @@ export const Offer = (
 							</div>
 				
 							<div className="flex-row flex border-l border-gray/20  space-x-1 font-sans-semi h-full items-center pl-6">
-								<p className="font-sans-med">
+								<div className="font-sans-med">
 									{	
 									hasUserRated ? 
 									<>
@@ -294,7 +257,7 @@ export const Offer = (
 											<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-light-green whitespace-nowrap"> 
 												<p>Du:</p>
 												<p className="font-sans-semi">
-												{ userratingString } / 5</p> 
+												{ userRatingString } / 5</p> 
 												<img src="/icons/right-arrw.svg" className="w-4"></img>
 											</div> 
 										</div> 
@@ -306,7 +269,7 @@ export const Offer = (
 									</>
 									}
 
-								</p>
+								</div>
 								
 							</div>
 						</div>	

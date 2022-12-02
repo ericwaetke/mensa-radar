@@ -1,71 +1,64 @@
+import * as dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
-export const getTempOpeningString = async (currentMensa) => {
+export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
+	const currentWeekday = new Date().getDay() - 1
+
+	const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
+	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+
+	const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
+	const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
 	const currentDate = new Date()
-	let currentWeekday = getDates(currentDate).currentWeekday;
-	const days = getDates(currentDate).days;
-	const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
 
-	const openInDays = (days: number) => currentMensa.daysWithFood.includes(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()+days}`)
+	// Check if today has food
+	const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+	if (todayHasFood) {
+		// Check if current time is between the opening hours
+		const currentTimeObj = dayjs.utc().add(1, 'hour')
+		const currentTime = currentTimeObj.hour() + currentTimeObj.minute()/60;
 
-	const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
-	const willOpenLaterToday = 
-		(currentTime <= currentMensa.openingTimes[currentWeekday].from) && 
-		openInDays(0);
-
-	if(open) {
-		return `offen bis ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].to) }`;
-	} else {
-		//wird heute noch öffnen
-		if(willOpenLaterToday) return `öffnet ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].from) }`;
-		
-		//wird morgen öffnen
-		if(openInDays(1)) return `öffnet morgen ${ floatTimeToString(currentMensa.openingTimes[currentWeekday].from) }`
-
-		//wird an einem anderen Tag öffnen
-		// if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(currentMensa.openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
-
-		//keine weiteren Daten
-		return `öffnet nächste Woche`;
+		const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+		if (open) {
+			return {
+				open: true,
+				text: `offen bis ${toHour}:${toMinute}`
+			};
+		} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
+			return {
+				open: false,
+				text: `Öffnet um ${fromHour}:${fromMinute}`
+			};
+		}
 	}
-}
 
-// export const getOpeningString = async (mensa: string) => {
-// 	const currentDate = new Date()
-// 	let currentWeekday = getDates(currentDate).currentWeekday;
-// 	const days = getDates(currentDate).days;
+	const tomorrow = new Date(currentDate)
+	tomorrow.setDate(tomorrow.getDate() + 1)
+	const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+	if (tomorrowHasFood) {
+		return {
+			open: false,
+			text: `Öffnet morgen um ${fromHour}:${fromMinute}`
+		};
+	}
 
-// 	const currentTime = currentDate.getHours() + currentDate.getMinutes()/60;
-// 	const openingTimes =  findObjectInArrayByKey(mensaData, "url", mensa).openingTimes
-// 	let nextOffer = await nextOffering(mensa)
-// 	if(nextOffer.nextOfferInDays + currentWeekday > 5) nextOffer.nextOfferInDays = -1;
+	const dayAfterTomorrow = new Date(currentDate)
+	dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+	const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+	if (dayAfterTomorrowHasFood) {
+		return {
+			open: false,
+			text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
+		};
+	}
 
-
-// 	const open = currentTime >= openingTimes[currentWeekday].from && currentTime <= openingTimes[currentWeekday].to;
-// 	const willOpenLaterToday = (currentTime <= openingTimes[currentWeekday].from) && nextOffer.offerToday;
-
-// 	let openingString;
-// 	if(open) {
-// 		openingString = `offen bis ${ floatTimeToString(openingTimes[currentWeekday].to) }`;
-// 	} else {
-// 		//wird heute noch öffnen
-// 		if(willOpenLaterToday) openingString = `öffnet ${ floatTimeToString(openingTimes[currentWeekday].from) }`;
-
-// 		//wird morgen öffnen
-// 		if(!willOpenLaterToday && nextOffer.nextOfferInDays === 1) openingString = `öffnet morgen ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
-
-// 		//wird an einem anderen Tag öffnen
-// 		if(!willOpenLaterToday && nextOffer.nextOfferInDays > 1) openingString = `öffnet ${ days[currentWeekday + nextOffer.nextOfferInDays].mainText } ${ floatTimeToString(openingTimes[currentWeekday + nextOffer.nextOfferInDays].from) }`
-
-// 		//keine weiteren Daten
-// 		if(nextOffer.nextOfferInDays < 1) openingString = `öffnet nächste Woche`;
-// 	}
-
-// 	return {
-// 		openingString,
-// 		open,
-// 		currentDate
-// 	}
-// }
+	return {
+		open: false,
+		text: "Öffnet nächste Woche"
+	}
+	
+};
 
 export const getDates = (currentDate) => {
 	try {
