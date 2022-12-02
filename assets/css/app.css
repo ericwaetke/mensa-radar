@@ -14,11 +14,6 @@
 	--app-height: 100%;
 }
 
-body {
-	height: 100vh;
-    height: var(--app-height);
-}
-
 .min-height-96 {
 	min-height: 26rem;
 }
@@ -98,8 +93,9 @@ body {
 
 @supports (-webkit-touch-callout: none) {
 	.h-screen {
-		height: calc(-webkit-fill-available+3vh) !important; 
-		height: var(--app-height) !important;
+		/* height: calc(-webkit-fill-available+3vh) !important; 
+		height: var(--app-height) !important; */
+		height: calc(100vh - env(safe-area-inset-bottom)) !important;
 	}
 	
 	.safari-padding { 
