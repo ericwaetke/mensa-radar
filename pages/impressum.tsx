@@ -20,20 +20,33 @@ export default function Impressum () {
 						<h2 className="text-lg font-bold text-center w-full">Zurück zur Übersicht</h2>
 					</a>
 				</Link>
-				<div className="">
-					<a href="https://icons8.com/">Icons von icons8.</a>
-					<p>Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
-					<p>Wir arbeiten noch am Impressum. :D</p>
-					<br></br>
+				<div className="font-sans-reg">
+					<h1 className="text-3xl mt-8 mb-4">Über Mensa Radar</h1>
+					<h2 className="font-sans-bold mt-4">Wer sind wir?</h2>
+					<p>Mensa Radar ist ein Projekt von Eric Wätke und Carl Linz. Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
+
+
+					<h2 className="font-sans-bold mt-4">Sticker</h2>
 					<p>Unsere Sticker sind ausschließlich für Privatgebrauch. Zusätzlich bitten wir darum, dass sie NICHT auf dem Gelände des Studentenwerks geklebt werden.</p>
-					<h1 className="text-xl">Impressum</h1>
-					<h2 id="m46">Diensteanbieter</h2>
+					
+					<h2 className="font-sans-bold mt-4">Quellen</h2>
+					<p><a href="https://icons8.com/">Icons von icons8.</a></p>
+					<br />
+					<p>Sämtliche Essens-Daten sind ohne Gewähr, da wir sie nicht kuratieren.</p>
+					<p>Wir beziehen unsere Daten (aktuell) ausschließlich von öffentlichen Endpunkten des Studentenwerk Potsdam.</p>
+
+					<h1 className="text-3xl mt-8 mb-4">Impressum</h1>
+					<h2 className="font-sans-bold mt-4">Diensteanbieter</h2>
 					<p>Eric Wätke</p>
 					<p>Benziner Chaussee 2</p>
 					<p>19386 Lübz</p>
-					<h2 id="m56">Kontaktmöglichkeiten</h2>E-Mail-Adresse: <p><a href="mailto:email@ericwaetke.de">email@ericwaetke.de</a></p>
-					Telefon: <p>01719388606</p>
-					<h2 id="m65">Haftungs- und Schutzrechtshinweise</h2><p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich. </p>
+					<h2 className="font-sans-bold mt-4">Kontaktmöglichkeiten</h2>
+					E-Mail-Adresse: 
+					<p><a href="mailto:email@ericwaetke.de">email@ericwaetke.de</a></p>
+					Telefon: 
+					<p>01719388606</p>
+					<h2 className="font-sans-bold mt-4">Haftungs- und Schutzrechtshinweise</h2>
+					<p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich. </p>
 					<p>Hinweise auf Rechtsverstöße: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich entfernen.</p>
 				</div>
 			</main>
