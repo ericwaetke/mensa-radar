@@ -15,9 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
 			await Promise.all(
-				mensaData.map(async mensa => {
+				mensaData.map(mensa => {
 					const dev = process.env.NODE_ENV === "development"
-					await fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
+					return fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
 						method: 'POST',
 						body: JSON.stringify({
 							mensa: mensa.url,
