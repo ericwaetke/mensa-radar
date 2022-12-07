@@ -11,7 +11,7 @@ export const getAllMensaDataFromSTW = async (mensa) => {
 	let foodOffers = [];
 
 	await parseString(xml, async function (err, result) {
-		console.log("parsing string")
+		if (err || !result) console.error(`Error getting mensa Data of ${mensa}`)
 		if(result.hasOwnProperty('p')){
 			console.log('Database is temporary not responding')
 		}

@@ -1,5 +1,4 @@
 function foodTypeChecker(label){
-    console.log(label)
     const foodTypes = {
         SCHWEIN: "Schwein",
         GEFLUEGEL: "Gefluegel",

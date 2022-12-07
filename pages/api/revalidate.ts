@@ -17,16 +17,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			await Promise.all(
 				mensaData.map(async mensa => {
 					const dev = process.env.NODE_ENV === "development"
-					return await fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
+					return fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
 						method: 'POST',
 						body: JSON.stringify({
 							mensa: mensa.url,
 						}),
-					})
+					}).then((res) => res.json())
 				})
 			)
 			.then((data) => {
-				return res.json({ revalidated: true, data: data })
+				return res.status(200).json({ revalidated: true, data: data })
 			})
 		} catch (err) {
 			// If there was an error, Next.js will continue
