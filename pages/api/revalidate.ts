@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 						body: JSON.stringify({
 							mensa: mensa.url,
 						}),
-					})
+					}).then((res) => res.json())
 				})
 			)
 			.then((data) => {

@@ -58,8 +58,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			...getDifference({data: sortedStwData[date], key: "beschreibung"}, {data: dbData, key: "food_title"}),
 			...getDifference({data: dbData, key: "food_title"}, {data: sortedStwData[date], key: "beschreibung"})
 		];
-		returnableChanges = [...returnableChanges, ...changes]
 		await changes.map(async (change) => {
+			returnableChanges.push(change)
+
 			// If the change has _id, it exists in MongoDB but not in STW Data
 			// => It was there once, but is not anymore
 			// => mark as sold out
