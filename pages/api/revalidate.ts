@@ -13,16 +13,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				.from("mensen")
 				.select('url')
 
-
 			await Promise.all(
 				mensaData.map(async mensa => {
+					let changes;
 					const dev = process.env.NODE_ENV === "development"
-					return fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
+					await fetch(`${dev ? "http://localhost:3000/" : "https://mensa-radar.de"}/api/refreshMensaData`, {
 						method: 'POST',
 						body: JSON.stringify({
 							mensa: mensa.url,
 						}),
-					}).then((res) => res.json())
+					}).then((res) => changes = res.json())
+					return changes
 				})
 			)
 			.then((data) => {
