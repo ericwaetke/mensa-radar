@@ -149,7 +149,7 @@ export default function Mensa(
 					</>
 				}
 			</Modal>
-			<div className="mx-auto h-screen flex flex-col py-2">
+			<div className="mx-auto flex flex-col py-2">
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
@@ -239,7 +239,7 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-3 py-2'>
+				<div className='sticky top-full grid grid-cols-2 px-3 py-2'>
 					<div className="flex flex-row space-x-2">
 						<Link href="/impressum">
 							<p className='font-sans-semi text-sm opacity-50'>
