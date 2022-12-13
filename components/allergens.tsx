@@ -14,7 +14,7 @@ export const Allergens = (
 		},
 		"Gluten aus Weizen": {
 			name: "Gluten aus Weizen",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Macadamia": {
 			name: "Macadamia",
@@ -26,11 +26,11 @@ export const Allergens = (
 		},
 		"Gluten aus Roggen": {
 			name: "Gluten Roggen",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Sellerie": {
 			name: "Sellerie",
-			icon: "sellerie"
+			icon: "Sellerie"
 		},
 		"Antioxidationsmittel": {
 			name: "Antioxidationsmittel",
@@ -38,7 +38,7 @@ export const Allergens = (
 		},
 		"Gluten aus Hafer": {
 			name: "Gluten Hafer",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Senf": {
 			name: "Senf",
@@ -50,11 +50,11 @@ export const Allergens = (
 		},
 		"Gluten aus Dinkel": {
 			name: "Gluten Dinkel",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Sesamsamen": {
 			name: "Sesamsamen",
-			icon: "sesamsamen"
+			icon: "Sesamsamen"
 		},
 		"geschwefelt": {
 			name: "geschwefelt",
@@ -62,11 +62,11 @@ export const Allergens = (
 		},
 		"Gluten aus Kamut": {
 			name: "Gluten aus Kamut",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Schwefeldioxid/Sulphite": {
 			name: "Schwefeldioxid/Sulphite",
-			icon: "sulphite"
+			icon: "Sulphite"
 		},
 		"geschwärzt": {
 			name: "geschwärzt",
@@ -74,11 +74,11 @@ export const Allergens = (
 		},
 		"Gluten aus Gerste": {
 			name: "Gluten aus Gerste",
-			icon: "getreide"
+			icon: "Getreide"
 		},
 		"Lupinen": {
 			name: "Lupinen",
-			icon: "erdnüsse" 
+			icon: "Erdnüsse" 
 		},
 		"gewachst": {
 			name: "gewachst",
@@ -86,11 +86,11 @@ export const Allergens = (
 		},
 		"Krebstiere": {
 			name: "Krebstiere",
-			icon: "krebstiere"
+			icon: "Krebstiere"
 		},
 		"Weichtiere": {
 			name: "Weichtiere",
-			icon: "weichtiere"
+			icon: "Weichtiere"
 		},
 		"Phosphat": {
 			name: "Phosphat",
@@ -98,7 +98,7 @@ export const Allergens = (
 		},
 		"Eier": {
 			name: "Eier",
-			icon: "eier"
+			icon: "Eier"
 		},
 		"Süßungsmitteln": {
 			name: "Süßungsmitteln",
@@ -106,7 +106,7 @@ export const Allergens = (
 		},
 		"Fisch": {
 			name: "Fisch",
-			icon: "fisch"
+			icon: "Fisch"
 			
 		},
 		"enthält eine Phenylalaninquelle": {
@@ -115,7 +115,7 @@ export const Allergens = (
 		},
 		"Erdnüsse": {
 			name: "Erdnüsse",
-			icon: "erdnüsse"
+			icon: "Erdnüsse"
 		},
 		"chininhaltig": {
 			name: "chininhaltig",
@@ -123,7 +123,7 @@ export const Allergens = (
 		},
 		"Sojabohnen": {
 			name: "Sojabohnen",
-			icon: "sojabohnen"
+			icon: "Sojabohnen"
 		},
 		"koffeinhaltig": {
 			name: "koffeinhaltig",
@@ -131,7 +131,7 @@ export const Allergens = (
 		},
 		"Milch": {
 			name: "Milch",
-			icon: "milch"
+			icon: "Milch"
 		},
 		"kakaohaltige Fettglasur": {
 			name: "kakaohaltige Fettglasur",
@@ -147,7 +147,7 @@ export const Allergens = (
 		},
 		"Haselnüsse": {
 			name: "Haselnüsse",
-			icon: "haselnüsse" 
+			icon: "Haselnüsse" 
 		},
 		"Alkohol": {
 			name: "Alkohol",
