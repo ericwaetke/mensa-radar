@@ -172,7 +172,7 @@ export const Offer = (
 					</div> : 
 					<div className="w-full h-20 bg-lightshiny-green rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
 						{
-							<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm" >
+							<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer" >
 								<img src="/icons/camera.svg" className="w-4"></img>
 								<p>Foto hochladen</p>
 							</div>
@@ -196,27 +196,27 @@ export const Offer = (
 							</div>
 							{
 								offer.vegan ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-main-green items-center rounded-full">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2.5 bg-main-green items-center rounded-full">
 										<img src="/icons/vegan.svg" className="w-4"></img>
 										<p>vegan</p>
 									</div>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-vegeterian-yellow items-center rounded-full text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2.5  bg-vegeterian-yellow items-center rounded-full text-sm">
 										<img src="/icons/vegeterian.svg" className="w-4"></img>
 										<p>vegetarisch</p>
 									</div>
 								</> : offer.fish ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-blue-fish items-center rounded-full  text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2.5 bg-blue-fish items-center rounded-full  text-sm">
 										<img src="/icons/allergene/Fisch.svg" className="w-4"></img>
 										<p>Fisch</p>
 									</div>
 								</> : offer.meat ? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-meat-red items-center rounded-full  text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2.5  bg-meat-red items-center rounded-full  text-sm">
 										<img src="/icons/meat.svg" className="w-4"></img>
 										<p>Fleisch</p>
 									</div>
 								</> : offer.sold_out? <>
-									<div className="inline-flex flex-row space-x-1 px-3 pl-2 py-1 bg-light-green items-center rounded-full font-sans-semi text-sm">
+									<div className="inline-flex flex-row space-x-1 px-3 pl-2.5  bg-light-green items-center rounded-full font-sans-semi text-sm">
 										<p>😢</p>
 										<p>Ausverkauft</p>
 									</div>
@@ -229,7 +229,7 @@ export const Offer = (
 					</div>
 					{
 					offer.ratings.length !== 0 ? <>
-						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
+						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-12 items-center text-sm cursor-pointer" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex space-x-1 font-sans-semi whitespace-nowrap">
 								<p>
 									{
@@ -262,7 +262,7 @@ export const Offer = (
 											</div> 
 										</div> 
 									</> : <>
-										<div className="flex-row flex space-x-1 font-sans-med h-full items-center">
+										<div className="flex-row flex space-x-1 font-sans-med h-full items-center cursor-pointer">
 											<p>Bewerten</p> 
 											<img src="/icons/right-arrw.svg" className="w-4"></img>
 										</div>

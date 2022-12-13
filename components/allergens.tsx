@@ -10,189 +10,190 @@ export const Allergens = (
 	const allergyHelper = {
 		"Farbstoff": {
 			name: "Farbstoff",
-			icon: ""
+			icon: "" //colorpicker
 		},
 		"Gluten aus Weizen": {
 			name: "Gluten aus Weizen",
-			icon: ""
+			icon: "getreide"
 		},
 		"Macadamia": {
 			name: "Macadamia",
-			icon: ""
+			icon: "" //nut
 		},
 		"Konservierungsstoff": {
 			name: "Konservierungsstoff",
-			icon: ""
+			icon: "" //chemie
 		},
 		"Gluten aus Roggen": {
-			name: "Gluten aus Roggen",
-			icon: ""
+			name: "Gluten Roggen",
+			icon: "getreide"
 		},
 		"Sellerie": {
 			name: "Sellerie",
-			icon: ""
+			icon: "sellerie"
 		},
 		"Antioxidationsmittel": {
 			name: "Antioxidationsmittel",
-			icon: ""
+			icon: "" //test tube
 		},
 		"Gluten aus Hafer": {
-			name: "Gluten aus Hafer",
-			icon: ""
+			name: "Gluten Hafer",
+			icon: "getreide"
 		},
 		"Senf": {
 			name: "Senf",
-			icon: ""
+			icon: "senf"
 		},
 		"Geschmacksverstärker": {
 			name: "Geschmacksverstärker",
-			icon: ""
+			icon: "" //chemie
 		},
 		"Gluten aus Dinkel": {
-			name: "Gluten aus Dinkel",
-			icon: ""
+			name: "Gluten Dinkel",
+			icon: "getreide"
 		},
 		"Sesamsamen": {
 			name: "Sesamsamen",
-			icon: ""
+			icon: "sesamsamen"
 		},
 		"geschwefelt": {
 			name: "geschwefelt",
-			icon: ""
+			icon: "" //chemie
 		},
 		"Gluten aus Kamut": {
 			name: "Gluten aus Kamut",
-			icon: ""
+			icon: "getreide"
 		},
 		"Schwefeldioxid/Sulphite": {
 			name: "Schwefeldioxid/Sulphite",
-			icon: ""
+			icon: "sulphite"
 		},
 		"geschwärzt": {
 			name: "geschwärzt",
-			icon: ""
+			icon: "" //black cat
 		},
 		"Gluten aus Gerste": {
 			name: "Gluten aus Gerste",
-			icon: ""
+			icon: "getreide"
 		},
 		"Lupinen": {
 			name: "Lupinen",
-			icon: ""
+			icon: "erdnüsse" 
 		},
 		"gewachst": {
 			name: "gewachst",
-			icon: ""
+			icon: "" //bee
 		},
 		"Krebstiere": {
 			name: "Krebstiere",
-			icon: ""
+			icon: "krebstiere"
 		},
 		"Weichtiere": {
 			name: "Weichtiere",
-			icon: ""
+			icon: "weichtiere"
 		},
 		"Phosphat": {
 			name: "Phosphat",
-			icon: ""
+			icon: "" //chemieding
 		},
 		"Eier": {
 			name: "Eier",
-			icon: ""
+			icon: "eier"
 		},
 		"Süßungsmitteln": {
 			name: "Süßungsmitteln",
-			icon: ""
+			icon: "" //sweetener
 		},
 		"Fisch": {
 			name: "Fisch",
-			icon: ""
+			icon: "fisch"
+			
 		},
 		"enthält eine Phenylalaninquelle": {
-			name: "Phenylalaninquelle",
-			icon: ""
+			name: "Phenylalanin",
+			icon: "" //protein
 		},
 		"Erdnüsse": {
 			name: "Erdnüsse",
-			icon: ""
+			icon: "erdnüsse"
 		},
 		"chininhaltig": {
 			name: "chininhaltig",
-			icon: ""
+			icon: "" //powder
 		},
 		"Sojabohnen": {
 			name: "Sojabohnen",
-			icon: ""
+			icon: "sojabohnen"
 		},
 		"koffeinhaltig": {
 			name: "koffeinhaltig",
-			icon: ""
+			icon: "" //coffee
 		},
 		"Milch": {
 			name: "Milch",
-			icon: ""
+			icon: "milch"
 		},
 		"kakaohaltige Fettglasur": {
 			name: "kakaohaltige Fettglasur",
-			icon: ""
+			icon: "" //sparkling
 		},
 		"Mandeln": {
 			name: "Mandeln",
-			icon: ""
+			icon: "" //nut
 		},
 		"enthält tierisches Lab": {
 			name: "tierisches Lab",
-			icon: ""
+			icon: "" //ox
 		},
 		"Haselnüsse": {
 			name: "Haselnüsse",
-			icon: ""
+			icon: "haselnüsse" 
 		},
 		"Alkohol": {
 			name: "Alkohol",
-			icon: ""
+			icon: "" //wine
 		},
 		"Walnüsse": {
 			name: "Walnüsse",
-			icon: ""
+			icon: "" //nut
 		},
 		"Gelatine": {
 			name: "Gelatine",
-			icon: ""
+			icon: "" //jelly
 		},
 		"Kaschunüsse": {
-			name: "Kaschunüsse",
-			icon: ""
+			name: "Cashewnüsse",
+			icon: "" //nut
 		},
 		"Knoblauch": {
 			name: "Knoblauch",
-			icon: ""
+			icon: "" //garlic
 		},
 		"Pecannüsse": {
 			name: "Pecannüsse",
-			icon: ""
+			icon: "" //nut
 		},
 		"Paranüsse": {
 			name: "Paranüsse",
-			icon: ""
+			icon: "" //nut
 		},
 		"Pistazien": {
 			name: "Pistazien",
-			icon: ""
+			icon: "" //nut
 		},
 	}
 
 	return (
-		<div className="-mx-1 px-4 pb-4">
+		<div className="-mx-1 px-4 pb-4 flex flex-row flex-wrap gap-y-1">
 			{
 				allergens.map((allergen, index) => {
 					return (
-						<div className="mx-1 inline-flex flex-row space-x-0.5 text-gray/50" key={index}> 
+						<div className="mx-1 flex flex-row space-x-0.5 text-gray/50" key={index}> 
 							{
 								allergyHelper[allergen] ? <>
 									{
 										allergyHelper[allergen].icon !== "" ? (
-											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-4 stroke-gray/50 opacity-70 " />
+											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-3.5 opacity-50 align-bottom" />
 										) : null
 									}
 									<p className="text-sm font-serif-reg">{allergyHelper[allergen].name}</p>

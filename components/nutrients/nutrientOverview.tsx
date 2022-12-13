@@ -19,7 +19,7 @@ export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 	return (
 		<div className="bg-light-green h-screen">
 			<div className="max-w-lg m-auto space-y-6 flex flex-col h-full overflow-scroll">
-				<div className=" border-y border-gray/20">
+				<div className=" border-b border-gray/20">
 					<div 
 						className="flex py-6 justify-center items-center text-xl cursor-pointer px-8"
 						onClick={() => setModalOpen(false)}>
