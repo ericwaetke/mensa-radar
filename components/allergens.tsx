@@ -42,7 +42,7 @@ export const Allergens = (
 		},
 		"Senf": {
 			name: "Senf",
-			icon: "senf"
+			icon: "Senf"
 		},
 		"Geschmacksverstärker": {
 			name: "Geschmacksverstärker",
