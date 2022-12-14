@@ -1,29 +1,29 @@
 import { motion } from "framer-motion"
 
-export const NutrientComponent = ({nutrient}) => {
-
-	const nutrientType = {
-		"Eiweiß (Protein)": {
-			name: "Eiweiß",
-			reference: 72,
-			unit: "g"
-		},
-		"Kohlenhydrate, resorbierbar": {
-			name: "Kohlenhydrate",
-			reference: 264,
-			unit: "g"
-		},
-		"Fett": {
-			name: "Fett",
-			reference: 66,
-			unit: "g"
-		},
-		"Energie (Kilojoule)": {
-			name: "Energie",
-			reference: 2000,
-			unit: "kcal"
-		}
+export const nutrientType = {
+	"Eiweiß (Protein)": {
+		name: "Eiweiß",
+		reference: 72,
+		unit: "g"
+	},
+	"Kohlenhydrate, resorbierbar": {
+		name: "Kohlenhydrate",
+		reference: 264,
+		unit: "g"
+	},
+	"Fett": {
+		name: "Fett",
+		reference: 66,
+		unit: "g"
+	},
+	"Energie (Kilojoule)": {
+		name: "Energie",
+		reference: 2000,
+		unit: "kcal"
 	}
+}
+
+export const NutrientComponent = ({nutrient}) => {
 
 	const kJToKcal = (kj) => {
 		return Math.round((kj / 4.184) * 100) / 100
@@ -41,7 +41,7 @@ export const NutrientComponent = ({nutrient}) => {
 	const barWidth = actualBarWitdh > 100 ? 100 : actualBarWitdh;
 
 	return (
-		<div className="w-5/12 flex flex-col space-y-1">
+		<div className="w-4/12 grow flex flex-col space-y-1">
 
 			<p className="font-sans-med">{nutrientData.value} {nutrientData.unit}</p>
 			<div className='h-2 w-full relative rounded-full'>

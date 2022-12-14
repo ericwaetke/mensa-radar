@@ -138,7 +138,7 @@ export default function Mensa(
 				{
 					currentModalContent === "nutrients" ? <>
 						<NutrientOverview
-							foodOffers={foodOffers}
+							foodOffers={sortedFoodOffers}
 							setModalOpen={setModalOpen} />
 					</> : <>
 						<SelectMensa
@@ -149,7 +149,7 @@ export default function Mensa(
 					</>
 				}
 			</Modal>
-			<div className="mx-auto h-screen flex flex-col py-2">
+			<div className="mx-auto flex flex-col py-2">
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
@@ -176,7 +176,7 @@ export default function Mensa(
 											</p>
 										</a>
 									</Link>
-								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
 
 							}
 							<p className="decoration-2 text-black w-20 text-center font-sans-semi text-sm underline underline-offset-4 capitalize">
@@ -195,7 +195,7 @@ export default function Mensa(
 											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
 										</a>
 									</Link>
-								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto'></div>
+								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
 							}
 						</div>
 
@@ -239,7 +239,7 @@ export default function Mensa(
 					}
 				</div>
 
-				<div className='grid grid-cols-2 px-3 py-2'>
+				<div className='sticky top-full  grid grid-cols-2 px-3 py-2'>
 					<div className="flex flex-row space-x-2">
 						<Link href="/impressum">
 							<p className='font-sans-semi text-sm opacity-50'>
