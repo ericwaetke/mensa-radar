@@ -138,7 +138,7 @@ export default function Mensa(
 				{
 					currentModalContent === "nutrients" ? <>
 						<NutrientOverview
-							foodOffers={foodOffers}
+							foodOffers={sortedFoodOffers}
 							setModalOpen={setModalOpen} />
 					</> : <>
 						<SelectMensa

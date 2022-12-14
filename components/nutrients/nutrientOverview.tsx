@@ -1,10 +1,13 @@
+import { useMemo } from "react";
 import { NutrientComponent, nutrientType } from "./nutrientComponent"
 
 
 export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 
+	const notSoldOutFoodOffers = useMemo(() => foodOffers.filter(foodOffer => foodOffer.sold_out === false), [foodOffers])
+
 	const getShortFoodName = (index: number) => {
-		let foodTitle = foodOffers[index].food_title;
+		let foodTitle = notSoldOutFoodOffers[index].food_title;
 		//cut string to 80  
 		let foodTitleTrim = foodTitle.substr(0, 40);
 		//cut string where last space is
@@ -33,12 +36,12 @@ export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 				
 
 				{
-					foodOffers.map((foodOffer, index) => {
-						const twoAvailable = index < foodOffers.length - 1
+					notSoldOutFoodOffers.map((foodOffer, index) => {
+						const twoAvailable = index < notSoldOutFoodOffers.length - 1
 
 						if (index % 2 === 0) {
 							return (
-								<div className="flex flex-col divide-y divide-gray/20 border-b first:border-0 border-gray/20">
+								<div key={index} className="flex flex-col divide-y divide-gray/20 border-b first:border-0 border-gray/20">
 									<div className="flex space-x-4 flex-row w-full font-serif-med text-sm py-2 px-4">
 										<p className="w-3/12 grow-0"></p>
 										<p className="grow w-3/12">{getShortFoodName(index)}</p>
@@ -50,17 +53,17 @@ export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 										}
 									</div>
 									{
-										foodOffers[index].nutrients.map((nutrient, i) => {
+										notSoldOutFoodOffers[index].nutrients.map((nutrient, i) => {
 
 											return (
 												<div className="flex space-x-4 flex-row w-full items-center justify-between text-sm py-3 px-4">
 													<p className="w-3/12 font-sans-med break-words text-gray/50 grow-0">
-														{ nutrientType[foodOffers[index].nutrients[i].name].name }
+														{ nutrientType[notSoldOutFoodOffers[index].nutrients[i].name].name }
 													</p>
-													<NutrientComponent nutrient={foodOffers[index].nutrients[i]} />
+													<NutrientComponent nutrient={notSoldOutFoodOffers[index].nutrients[i]} />
 													{
 														twoAvailable ? (
-															<NutrientComponent nutrient={foodOffers[index + 1].nutrients[i]} />
+															<NutrientComponent nutrient={notSoldOutFoodOffers[index + 1].nutrients[i]} />
 														) : <div className="grow w-3/12"></div>
 													}
 												</div>

@@ -13,7 +13,6 @@ import { userAgent } from "next/server";
 export const Offer = (
 	{
 		offer,
-		
 		mensa,
 		day,
 	}: {
@@ -87,7 +86,8 @@ export const Offer = (
 		let calcString = calc.toString().replace(".", ",");
 		return calcString || "";
 	}
-	const averageRating = useMemo(() => calculateAverageRating(offer.ratings), [offer.ratings])
+	const [ratings, setRatings] = useState(offer.ratings)
+	const averageRating = useMemo(() => calculateAverageRating(ratings), [ratings])
 
 	const sessionId = useRef(getSessionId())
 
@@ -108,10 +108,11 @@ export const Offer = (
 	const updateUserRating = (rating: number) => {
 		setUserRating(getRatingString(rating))
 		setHasUserRated(true);
+		setRatings([...ratings, {rating, userSessionId: sessionId.current}])
 	}
 
-	
-	const [averageRatingString, setAverageRatingString] = useState("");
+	// const [averageRatingString, setAverageRatingString] = useState("");
+	const averageRatingString = useMemo(() => getRatingString(averageRating), [averageRating]);
 
 	useEffect(() => {
 		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
@@ -119,7 +120,7 @@ export const Offer = (
 		userRating = Math.round(((userRating * 100) / 25 + 1)*10)/10
 
 		setUserRating(userRating.toString())
-		setAverageRatingString(getRatingString(averageRating))
+		// setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
 	return (
@@ -228,7 +229,7 @@ export const Offer = (
 						
 					</div>
 					{
-					offer.ratings.length !== 0 ? <>
+					ratings.length !== 0 ? <>
 						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-12 items-center text-sm cursor-pointer" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex space-x-1 font-sans-semi whitespace-nowrap">
 								<p>
@@ -243,8 +244,8 @@ export const Offer = (
 									averageRatingString
 									} / 5</p>
 								<p className="font-sans-med text-gray/50 hidden xs:block">·</p>
-								<p className="font-sans-med text-gray/50 hidden xs:block">{offer.ratings.length === 1 ? "1 Bew." : `${offer.ratings.length} Bew.`}</p>
-								<p className="font-sans-med text-gray/50 xs:hidden block">{ `(${offer.ratings.length})`}</p>
+								<p className="font-sans-med text-gray/50 hidden xs:block">{ratings.length === 1 ? "1 Bew." : `${ratings.length} Bew.`}</p>
+								<p className="font-sans-med text-gray/50 xs:hidden block">{ `(${ratings.length})`}</p>
 
 							</div>
 				
