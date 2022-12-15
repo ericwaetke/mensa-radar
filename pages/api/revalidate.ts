@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { supabase } from "../../lib/getSupabaseClient";
 
 import { getAllMensaDataFromSTW } from "../../lib/getMensaData";
+import dayjs from "dayjs";
+import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+dayjs.extend(isSameOrAfter.default)
 
 const getMensaId = {
 	'golm': 1,
@@ -50,27 +53,46 @@ const refreshData = async (mensa: string) => {
 			...getDifference({data: sortedStwData[date], key: "beschreibung"}, {data: dbData, key: "food_title"}),
 			...getDifference({data: dbData, key: "food_title"}, {data: sortedStwData[date], key: "beschreibung"})
 		];
-		await changes.map(async (change) => {
+		changes.map(async (change) => {
 			// If the change has _id, it exists in MongoDB but not in STW Data
 			// => It was there once, but is not anymore
 			// => mark as sold out
 			if(change.id){
 				// If change is in the future, delete it
-				const {data, error } = await supabase
-				.from('food_offerings')
-				.update({
-					...change,
-					sold_out: true,
-					changed_at: new Date()
-				})
-				.eq('id', change.id)
+				if (dayjs().isSameOrAfter(change.date, 'day')) {
+					console.log("isSameOrAfter = soldout: " + change.date)
+					const {data, error } = await supabase
+					.from('food_offerings')
+					.update({
+						...change,
+						sold_out: true,
+						changed_at: new Date()
+					})
+					.eq('id', change.id)
+	
+					if(error) {
+						console.log("Error in refreshMensaData.ts updating the sold out offer")
+						console.error(error)
+						return {
+							statusCode: 500,
+							body: { error: error }
+						}
+					}
+				} else {
+					console.log("not same or after = delete: " + change.date)
+					// Change is in the future, delete it
+					const {data, error } = await supabase
+					.from('food_offerings')
+					.delete()
+					.eq('id', change.id)
 
-				if(error) {
-					console.log("Error in refreshMensaData.ts updating the sold out offer")
-					console.error(error)
-					return {
-						statusCode: 500,
-						body: { error: error }
+					if(error) {
+						console.log("Error in refreshMensaData.ts deleting the sold out offer")
+						console.error(error)
+						return {
+							statusCode: 500,
+							body: { error: error }
+						}
 					}
 				}
 
