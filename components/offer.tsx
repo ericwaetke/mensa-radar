@@ -207,7 +207,7 @@ export const Offer = (
 										<p>vegetarisch</p>
 									</div>
 								</> : offer.fish ? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2 bg-blue-fish items-center rounded-full  text-sm">
+									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2 bg-fish-blue items-center rounded-full  text-sm">
 										<img src="/icons/allergene/Fisch.svg" className="w-4"></img>
 										<p>Fisch</p>
 									</div>

@@ -48,7 +48,7 @@ module.exports = {
         //vegetarisch, fleisch, fisch
         'vegeterian-yellow': '#CBE288',
         'meat-red': '#FFB0A6',
-        'blue-fish': '90D3FA',
+        'fish-blue': '#90D3FA',
 
         'gray': '#1F2132',
         'white': '#fff',
