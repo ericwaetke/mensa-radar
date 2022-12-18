@@ -3,7 +3,8 @@ import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
 
 export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
-	const currentWeekday = new Date().getDay() - 1
+	const currentWeekday = new Date().getDay() - 1 < 0 ? 6 : new Date().getDay() - 1
+
 
 	const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
 	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
