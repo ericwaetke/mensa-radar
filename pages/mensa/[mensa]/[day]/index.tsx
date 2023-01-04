@@ -230,11 +230,9 @@ export default function Mensa(
 					{
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
-							if (!offer.sold_out) {
 								return (
 									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} />
 								)
-							}
 						})
 					}
 				</div>
