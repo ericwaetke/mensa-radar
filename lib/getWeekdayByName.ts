@@ -13,6 +13,6 @@ export const getWeekdayByName = (name) => {
 		case "samstag":
 			return 5
 		default:
-            return 0
+            return -1
 	}
 }
