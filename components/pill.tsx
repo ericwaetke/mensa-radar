@@ -14,6 +14,12 @@ export const Pill = ({children, col = "", icon = "", className = ""}) => {
         case "meat":
             colString = "bg-meat-red";
             break;
+        case "transparent":
+            colString = "";
+            break;
+        case "black":
+            colString = "bg-gray/70 text-white";
+            break;
         default: {
             colString = "bg-gray/20";
         }

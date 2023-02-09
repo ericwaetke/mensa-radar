@@ -151,7 +151,7 @@ export default function Mensa(
 	};
 	const resizedModal = {
 		content: {
-			top: '-4px',
+			top: '-8px',
 			left: '50%',
 			right: 'auto',
 			bottom: 'auto',
@@ -197,17 +197,18 @@ export default function Mensa(
 					</>
 				}
 			</Modal>
-			<div className="mx-auto flex flex-col py-2">
+			<div className="mx-auto flex flex-col">
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
-				<div className="px-3">
+				
+				<div className={`p-3 fixed ${modalOpen ? null : "z-10"} w-full bg-light-green border-b border-gray/10`}>
 					<div className="m-auto w-full rounded-xl border border-solid border-gray/20 sm:max-w-xl divide-y divide-gray/20">
 						<div onClick={() => openMensaSelectionFlow()} className="flex justify-center space-x-1 items-center flex-row w-full h-12">
 									<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
 									<img className="w-4 mt-0.5" src="/icons/chev-down.svg"></img>
 						</div>
-						<div className="flex items-center justify-between flex-row w-full px-4 h-12">
+						<div className="flex items-center justify-between flex-row w-full px-4 h-10">
 								{
 									selectedWeekday > 0 ? <>
 										<Link href={`/mensa/${mensa}/${days[selectedWeekday - 1]}`}>
@@ -222,7 +223,7 @@ export default function Mensa(
 									</> : <div className='w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
 
 								}
-								<p className="font-sans-semi">
+								<p className="font-sans-semi text-sm">
 									{
 										currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
 									}
@@ -243,8 +244,9 @@ export default function Mensa(
 						</div>
 						{
 							scrollPosition  ? <>
-								<div className="flex justify-center items-center flex-row w-full px-4 h-12">
-										<Pill col={openingTimes.open ? "vegan" : "meat"}>
+								<div className="flex justify-center items-center flex-row w-full px-4 h-10 text-gray/70">
+										<Pill col={"transparent"}>
+											<div className={`mr-1 w-2 h-2 rounded-full ${openingTimes.open ? `bg-dark-green` : ` bg-red-500`}`}></div>
 											<p className="font-sans-reg text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
 										</Pill>
 								</div>
@@ -268,7 +270,7 @@ export default function Mensa(
 					) : null
 				}
 
-				<div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-4">
+				<div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-16 pt-40">
 					{
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
@@ -278,20 +280,22 @@ export default function Mensa(
 						})
 					}
 				</div>
-
-				<div className='grid grid-cols-2 px-3 py-2 fixed bottom-0 w-full h-10 border-t border-gray/20 bg-light-green'>
-					<div className="flex flex-row space-x-2">
-						<Link href="/impressum">
-							<p className='font-sans-semi text-sm opacity-50'>
-								Über Mensa-Radar
+				
+				<div className='w-full px-3 py-2 fixed bottom-0 h-10 border-t border-gray/10 bg-light-green'>
+					<div className="grid grid-cols-2 max-w-xl m-auto">
+						<div className="flex flex-row space-x-2">
+							<Link href="/impressum">
+								<p className='font-sans-semi text-sm opacity-50'>
+									Über Mensa-Radar
+								</p>
+							</Link>
+						</div>
+						<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
+							<p className='font-sans-semi text-sm text-right w-full'>
+								Nährwerte vgl.
 							</p>
-						</Link>
-					</div>
-					<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
-						<p className='font-sans-semi text-sm text-right w-full'>
-							Nährwerte vgl.
-						</p>
-						<img src="/icons/right-arrw.svg" className="w-4" />
+							<img src="/icons/right-arrw.svg" className="w-4" />
+						</div>
 					</div>
 				</div>
 			</div>

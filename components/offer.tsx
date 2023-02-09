@@ -163,7 +163,7 @@ export const Offer = (
 			animate="show"
 			>
 
-			<div className={`rounded-2xl bg-white flex flex-col space-y-2 ${offer.sold_out ? "opacity-50" : ""}`}>
+			<div className={`rounded-2xl bg-white flex flex-col space-y-2 ${offer.sold_out ? "pb-6" : ""} `}>
 
 					<div className="px-2 pt-2">
 						{ offer.imageUrls.length > 0 || tempImage != "" ?
@@ -173,9 +173,9 @@ export const Offer = (
 								}
 							</div>
 						:
-							<div className="w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
+							<div className={`w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
 								{
-									<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer" >
+									<div onClick={() => openImageFlow()} className={`rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer`} >
 										<img src="/icons/camera.svg" className="w-4"></img>
 										<p>Foto hochladen</p>
 									</div>
@@ -186,16 +186,25 @@ export const Offer = (
 
 				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-6 flex-col space-y-2">
-						<h2 className="text-h2 font-serif-semi pt-2">
+						<h2 className={`text-h2 font-serif-semi pt-2 ${offer.sold_out ? "text-gray/50" : ""}`}>
 							{offer.food_title}
 						</h2>
 
 						<Allergens allergens={offer.allergens}/>
 						<div className="flex flex-row gap-x-2 font-sans-med">
-							<Pill><p id={`price-students-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
-								<p className="text-gray/50">·</p>
-								<p className="text-gray/50" id={`price-others-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p></Pill>
+							{ offer.sold_out ? <>
+							</> : <>
+								<Pill>
+									<p id={`price-students-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
+									<p className="text-gray/50">·</p>
+									<p className="text-gray/50" id={`price-others-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p>
+								</Pill>
+							</>
+							}
 							{
+								offer.sold_out ? <>
+								<Pill col={"black"}><p>😢</p> Ausverkauft</Pill>
+								</> : 
 								offer.vegan ? <>
 									<Pill col={"vegan"} icon={"/icons/vegan.svg"}>Vegan</Pill>
 								</> : offer.vegetarian ? <>
@@ -204,9 +213,7 @@ export const Offer = (
 									<Pill col={"fish"} icon={"/icons/allergene/Fisch.svg"}>Fisch</Pill>
 								</> : offer.meat ? <>
 									<Pill col={"meat"} icon={"/icons/meat.svg"}>Vegetarisch</Pill>
-								</> : offer.sold_out ? <>
-									<Pill><p>😢</p> Ausverkauft</Pill>
-								</> :
+								</> : 
 								null
 							}
 						</div>
@@ -260,7 +267,7 @@ export const Offer = (
 							</div>
 						</div>
 					</> : <>
-						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
+						<div className={`flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm ${offer.sold_out ? "hidden" : ""} `} onClick={() => openRatingFlow()}>
 							<div className="flex-row flex border-gray/20 space-x-1 font-sans-semi h-full items-center">
 								<p className="font-sans-med">Bewerten</p>
 								<img src="/icons/right-arrw.svg" className="w-4"></img>
