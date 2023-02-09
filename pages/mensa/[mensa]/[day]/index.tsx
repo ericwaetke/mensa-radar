@@ -8,10 +8,44 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Modal from "react-modal";
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
 import { supabase } from '../../../../lib/getSupabaseClient';
 import { getOpeningTimes } from '../../../../lib/getOpeningString';
+
+import dynamic from 'next/dynamic'
+
+const DynamicOffer = dynamic<{
+	offer: {
+		id: number,
+		mensa: number,
+		food_title: string,
+		food_desc: string,
+		vegan: boolean,
+		vegetarian: boolean,
+		fish: boolean,
+		meat: boolean,
+		nutrients: {
+			name: string,
+			value: string,
+			unit: string,
+		}[],
+		allergens: string[]
+		date: string,
+		price_students: number,
+		price_other: number,
+		sold_out: boolean,
+
+		imageUrls: string[],
+		ratings: {
+			rating: number,
+			userSessionId: string,
+		}[]
+	},
+	mensa: string | string[],
+	day: string | string[],
+	}>(() => import('../../../../components/offer').then(mod => mod.Offer), {
+	loading: () => <p>'Loading...'</p>,
+})
 
 export default function Mensa(
 	{
@@ -53,8 +87,14 @@ export default function Mensa(
 ) {
 
 	const sortedFoodOffers = useMemo(() => {
-		// Show vegan first, then vegetarian, then everything else
+		// Show vegan first, then vegetarian, then everything else and sold out last
 		return foodOffers.sort((a, b) => {
+			if (a.sold_out && !b.sold_out) {
+				return 1;
+			}
+			if (!a.sold_out && b.sold_out) {
+				return -1;
+			}
 			if (a.vegan && !b.vegan) {
 				return -1;
 			}
@@ -231,7 +271,7 @@ export default function Mensa(
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
 								return (
-									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} />
+									<DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} />
 								)
 						})
 					}
