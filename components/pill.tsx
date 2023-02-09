@@ -1,8 +1,27 @@
-export const Pill = ({children, className = ""}) => {
+export const Pill = ({children, col = "", icon = "", className = ""}) => {
+
+    let colString;
+    switch(col) {
+        case "vegan": 
+            colString = "bg-main-green";
+            break;
+        case "vegeterian": 
+            colString = "bg-vegeterian-yellow";
+            break;
+        case "fish": 
+            colString = "bg-fish-blue";
+            break;
+        case "meat":
+            colString = "bg-meat-red";
+            break;
+        default: {
+            colString = "bg-gray/20";
+        }
+    }
 
     return (
-        <div className={`font-medium text-sm bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max ${className}`}>
-            {children}
+        <div className={`inline-flex flex-row gap-x-1 py-1 px-2.5 ${icon ? "pl-2" : null} ${colString} items-center rounded-full text-sm font-sans-reg ${className}`}>
+            { icon ? <img  width="16" src={icon} /> : null } {children}
         </div>
     )
 }
@@ -10,7 +29,7 @@ export const Pill = ({children, className = ""}) => {
 export const PillOnWhiteBG = ({children}) => {
 
     return (
-        <div className="font-medium text-sm border border-black bg-main-white rounded-full py-0.5 px-3 inline-flex items-center gap-1 min-w-max">
+        <div className="inline-flex flex-row space-x-1 px-2.5 pl-2  bg-vegeterian-yellow items-center rounded-full text-sm">
             {children}
         </div>
     )

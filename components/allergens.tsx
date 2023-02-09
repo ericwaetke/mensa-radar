@@ -184,7 +184,7 @@ export const Allergens = (
 	}
 
 	return (
-		<div className="-mx-1 px-4 pb-4 flex flex-row flex-wrap gap-y-1">
+		<div className="-mx-1 pb-4 flex flex-row flex-wrap gap-y-1">
 			{
 				allergens.map((allergen, index) => {
 					return (

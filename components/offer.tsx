@@ -9,6 +9,7 @@ import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
 import { userAgent } from "next/server";
+import { Pill } from "./pill";
 
 export const Offer = (
 	{
@@ -163,64 +164,49 @@ export const Offer = (
 			animate="show"
 			>
 				
-			<div className={`rounded-2xl  bg-white pt-3 flex flex-col justify-between ${offer.sold_out ? "opacity-50" : ""}`}>
-				<div className="flex-col space-y-3  px-3 mb-auto">
-				{
-					offer.imageUrls.length > 0 || tempImage != "" ? <div className="w-full h-44 bg-lightshiny-green rounded-xl">
-						{
-							tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-						} 
-					</div> : 
-					<div className="w-full h-20 bg-lightshiny-green rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
-						{
-							<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer" >
-								<img src="/icons/camera.svg" className="w-4"></img>
-								<p>Foto hochladen</p>
+			<div className={`rounded-2xl bg-white flex flex-col space-y-2 ${offer.sold_out ? "opacity-50" : ""}`}>
+				
+					<div className="px-2 pt-2">
+						{ offer.imageUrls.length > 0 || tempImage != "" ?
+							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
+								{
+									tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+								} 
+							</div> 
+						: 
+							<div className="w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
+								{
+									<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer" >
+										<img src="/icons/camera.svg" className="w-4"></img>
+										<p>Foto hochladen</p>
+									</div>
+								}
 							</div>
 						}
 					</div>
-				}
 					
-					<h2 className="text-h2 font-serif-semi px-4 pt-2">
-						{offer.food_title}
-					</h2>
-
-					<Allergens allergens={offer.allergens}/>
-				</div>
 				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-6 flex-col space-y-2">
-						<div className="flex flex-row justify-between font-sans-med">
-							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full bg-light-green">
-								<p>{formatter.format(offer.price_students)}</p>
+						<h2 className="text-h2 font-serif-semi pt-2">
+							{offer.food_title}
+						</h2>
+
+						<Allergens allergens={offer.allergens}/>
+						<div className="flex flex-row gap-x-2 font-sans-med">
+							<Pill><p>{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
-								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
-							</div>
+								<p className="text-gray/50">{formatter.format(offer.price_other)}</p></Pill>
 							{
 								offer.vegan ? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2 bg-main-green items-center rounded-full">
-										<img src="/icons/vegan.svg" className="w-4"></img>
-										<p>vegan</p>
-									</div>
+									<Pill col={"vegan"} icon={"/icons/vegan.svg"}>Vegan</Pill>
 								</> : offer.vegetarian ? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2  bg-vegeterian-yellow items-center rounded-full text-sm">
-										<img src="/icons/vegeterian.svg" className="w-4"></img>
-										<p>vegetarisch</p>
-									</div>
+									<Pill col={"vegeterian"} icon={"/icons/vegeterian.svg"}>Vegetarisch</Pill>
 								</> : offer.fish ? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2 bg-fish-blue items-center rounded-full  text-sm">
-										<img src="/icons/allergene/Fisch.svg" className="w-4"></img>
-										<p>Fisch</p>
-									</div>
+									<Pill col={"fish"} icon={"/icons/allergene/Fisch.svg"}>Fisch</Pill>
 								</> : offer.meat ? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2  bg-meat-red items-center rounded-full  text-sm">
-										<img src="/icons/meat.svg" className="w-4"></img>
-										<p>Fleisch</p>
-									</div>
-								</> : offer.sold_out? <>
-									<div className="inline-flex flex-row space-x-1 px-2.5 pl-2  bg-light-green items-center rounded-full font-sans-semi text-sm">
-										<p>😢</p>
-										<p>Ausverkauft</p>
-									</div>
+									<Pill col={"meat"} icon={"/icons/meat.svg"}>Vegetarisch</Pill>
+								</> : offer.sold_out ? <>
+									<Pill><p>😢</p> Ausverkauft</Pill>
 								</> :
 								null
 							}
@@ -276,7 +262,7 @@ export const Offer = (
 						</div>	
 					</> : <>
 						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
-							<div className="flex-row flex border-gray/20  space-x-1 font-sans-semi h-full items-center">
+							<div className="flex-row flex border-gray/20 space-x-1 font-sans-semi h-full items-center">
 								<p className="font-sans-med">Bewerten</p>
 								<img src="/icons/right-arrw.svg" className="w-4"></img>
 							</div>

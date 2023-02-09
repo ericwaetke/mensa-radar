@@ -80,7 +80,7 @@ export default function Home(props) {
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
+		<div className="p-2 pt-8 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen">
 			<Head>
 				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
@@ -90,13 +90,13 @@ export default function Home(props) {
 			</div>
 
 
-			<main className="flex flex-col justify-center h-full">
-				<div className="flex flex-col divide-y divide-gray/20 border border-gray/20 rounded-xl bg-white py-0.5">
+			<main className="flex flex-col h-full">
+				<div className="flex flex-col divide-y  divide-gray/20 rounded-xl bg-white pl-4 py-0.5">
 					{
 						mensen.map(mensa => {
 							return <Link href={'/mensa/' + mensa.url}>
-								<a className="flex p-4 justify-between space-x-2">
-									<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
+								<a className="flex  py-4 pr-4 justify-between space-x-2">
+									<h3 className="text-xl font-normal font-serif-semi"> {mensa.name}</h3>
 									<div className="flex font-sans-reg text-s items-center h-full">
 										<div className={`rounded-full w-2 h-2 mr-2 my-auto ${mensa.openingTimes.open ? "bg-main-green" : "bg-red-500"}`}></div>
 										<span className="opacity-60 whitespace-nowrap"> {mensa.openingTimes.text} </span>
