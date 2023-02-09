@@ -13,6 +13,7 @@ import { supabase } from '../../../../lib/getSupabaseClient';
 import { getOpeningTimes } from '../../../../lib/getOpeningString';
 
 import dynamic from 'next/dynamic'
+import useScrollPosition from '../../../../hooks/useScrollPosition';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -160,6 +161,8 @@ export default function Mensa(
 		},
 	};
 
+	const scrollPosition = useScrollPosition(50);
+
 	useEffect(() => {
 		setModalOpen(false);
 		setCurrentWeekday(new Date().getDay() - 1)
@@ -197,7 +200,7 @@ export default function Mensa(
 				<Head>
 					<title>{mensaData.name} - Mensa Radar</title>
 				</Head>
-				<div className="px-3 pb-4">
+				<div className="px-3 pb-4 fixed">
 					<div className="w-full rounded-xl border-solid border  border-gray/20  flex flex-col space-y-2.5 py-2.5 sm:max-w-xl m-auto">
 						<div
 							onClick={() => openMensaSelectionFlow()}
@@ -243,14 +246,17 @@ export default function Mensa(
 							}
 						</div>
 
-
-						<div className="border-b border-gray/20"></div>
-						<div className="flex justify-between items-center flex-row w-full px-4">
-						<div className="flex space-x-2 items-center">
-							<div className={`w-2 h-2 rounded-full ${openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
-							<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
-						</div>
-						</div>
+						{
+							scrollPosition  ? <>
+							<div className="border-b border-gray/20"></div>
+							<div className="flex justify-between items-center flex-row w-full px-4">
+								<div className="flex space-x-2 items-center">
+									<div className={`w-2 h-2 rounded-full ${openingTimes.open ? "bg-dark-green" : "bg-red-500"}`}></div>
+									<p className="text-gray/70 font-sans-med text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
+								</div>
+							</div>
+							</> : null
+						}
 					</div>
 				</div>
 
