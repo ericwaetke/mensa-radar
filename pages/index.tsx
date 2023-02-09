@@ -104,7 +104,7 @@ export default function Home(props) {
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen">
+		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen box-border flex wrap">
 			<Head>
 				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
