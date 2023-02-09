@@ -9,9 +9,14 @@ const withPWA = require("next-pwa")({
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true',
+	
 })
 
-module.exports = withBundleAnalyzer({ })
+// module.exports = withBundleAnalyzer({
+//     env: {
+//         NEXT_PUBLIC_ENV: 'PRODUCTION', //your next configs goes here
+//     },
+// })
 
 const nextConfig = withPWA({
 	pwa: {
@@ -24,4 +29,4 @@ const nextConfig = withPWA({
 		}
 	}
 });
-// module.exports = nextConfig;
+module.exports = nextConfig;
