@@ -163,11 +163,10 @@ export default function Mensa(
 	useEffect(() => {
 		setModalOpen(false);
 		setCurrentWeekday(new Date().getDay() - 1)
-		setOpeningTimes(mensaData.openingTimesObject)
+		setOpeningTimes(getOpeningTimes(mensaData))
 		// Update the Opening Times every minute
 		const interval = setInterval(() => {
-			console.log("Updating opening times");
-			setOpeningTimes(getOpeningTimes(mensaData, mensaData.daysWithFood));
+			setOpeningTimes(getOpeningTimes(mensaData));
 		}, 60 * 1000);
 
 		return () => clearInterval(interval);
