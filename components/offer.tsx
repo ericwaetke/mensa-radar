@@ -212,7 +212,7 @@ export const Offer = (
 								</> : offer.fish ? <>
 									<Pill col={"fish"} icon={"/icons/allergene/Fisch.svg"}>Fisch</Pill>
 								</> : offer.meat ? <>
-									<Pill col={"meat"} icon={"/icons/meat.svg"}>Vegetarisch</Pill>
+									<Pill col={"meat"} icon={"/icons/meat.svg"}>Fleisch</Pill>
 								</> : 
 								null
 							}
