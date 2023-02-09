@@ -104,7 +104,7 @@ export default function Home(props) {
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen">
+		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen">
 			<Head>
 				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
@@ -115,7 +115,7 @@ export default function Home(props) {
 
 
 			<main className="flex flex-col h-full">
-				<div className="flex flex-col divide-y  divide-gray/20 rounded-xl bg-white pl-4 py-0.5">
+				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white pl-4 py-0.5">
 					{
 						mensen.map(mensa => {
 							return <Link href={'/mensa/' + mensa.url} key={mensa.id}>
