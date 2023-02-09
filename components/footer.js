@@ -3,7 +3,7 @@ import 'tailwindcss/tailwind.css'
 
 const Footer = () => {
     return (
-        <footer className="flex justify-between">
+        <footer className="flex justify-between pb-2 fixed bottom-0 left-0 right-0 h-8 box-border max-w-xl mx-auto px-2">
 			<p className="">
                 <a href="https://ericwaetke.com" target="_blank" className="text-main-black">Eric Wätke</a> · <a href="https://www.instagram.com/carl.qq/" target="_blank" className="text-main-black">Carl Linz</a>
             </p>

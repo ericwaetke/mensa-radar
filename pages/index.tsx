@@ -12,15 +12,21 @@ import { useRouter } from "next/router";
 export default function Home(props) {
 	const router = useRouter()
 
-	const { mensaData } = props;
+	const { mensaData }: {mensaData: MensaData[]} = props;
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes() / 60
 	const currentDay = d.getDay()
 
 	const [mensen, setMensen] = useState(mensaData);
 	const [locationPermission, setLocationPermission] = useState(false)
+	const [locationLoaded, setLocationLoaded] = useState(false)
 
-	const [locationLoaded, setLocationLoaded] = useState(false);
+	const [openingTimes, setOpeningTimes] = useState<{
+		[mensaId: string]: {
+			open: boolean;
+			text: string;
+		}
+	}>();
 
 	const getLocation = () => {
 		const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
@@ -75,12 +81,30 @@ export default function Home(props) {
 		}
 	}
 
+	const updateOpeningTimes = () => {
+		const tempOpeningTimes = {}
+		for (let i = 0; i < mensaData.length; i++) {
+			const mensa = mensaData[i]
+			console.log(mensa)
+			console.log(getOpeningTimes(mensa))
+			tempOpeningTimes[mensa.id] = getOpeningTimes(mensa)
+		}
+		setOpeningTimes(tempOpeningTimes)
+	}
+
 	useEffect(() => {
 		getLocation()
+		updateOpeningTimes()
+		//Update the Opening Times every minute
+		const interval = setInterval(() => {
+			updateOpeningTimes()
+		}, 60 * 1000);
+
+		return () => clearInterval(interval);
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 lg:w-1/2 lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen justify-between">
+		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen box-border flex wrap">
 			<Head>
 				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
@@ -90,16 +114,16 @@ export default function Home(props) {
 			</div>
 
 
-			<main className="flex flex-col justify-center h-full">
-				<div className="flex flex-col divide-y divide-gray/20 border border-gray/20 rounded-xl bg-white py-0.5">
+			<main className="flex flex-col h-full">
+				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white pl-4 py-0.5">
 					{
 						mensen.map(mensa => {
-							return <Link href={'/mensa/' + mensa.url}>
-								<a className="flex p-4 justify-between space-x-2">
-									<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
+							return <Link href={'/mensa/' + mensa.url} key={mensa.id}>
+								<a className="flex  py-4 pr-4 justify-between space-x-2">
+									<h3 className="text-xl font-normal font-serif-semi"> {mensa.name}</h3>
 									<div className="flex font-sans-reg text-s items-center h-full">
-										<div className={`rounded-full w-2 h-2 mr-2 my-auto ${mensa.openingTimes.open ? "bg-main-green" : "bg-red-500"}`}></div>
-										<span className="opacity-60 whitespace-nowrap"> {mensa.openingTimes.text} </span>
+										<div className={`rounded-full w-2 h-2 mr-2 my-auto ${openingTimes?.[mensa.id]?.open ? "bg-main-green" : "bg-red-500"}`}></div>
+										<span className="opacity-60 whitespace-nowrap"> {openingTimes?.[mensa.id]?.text} </span>
 									</div>
 								</a>
 							</Link>
@@ -118,6 +142,7 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function getStaticProps(context) {
+
 	// Get Current Weekday
 	const currentWeekday = new Date().getDay()-1;
 
@@ -145,18 +170,15 @@ export async function getStaticProps(context) {
 		return {
 			...mensa,
 			...currentMensa,
-			openingTimes: getOpeningTimes(currentMensa, daysWithFood),
 			daysWithFood,
 		}
 	})
 
 	const mensaDataResolved = await Promise.all(mensaData)
 
-
-
 	return {
 		props: {
-			mensaData: mensaDataResolved
+			mensaData: mensaDataResolved as MensaData[],
 		},
 		revalidate: 60
 	}

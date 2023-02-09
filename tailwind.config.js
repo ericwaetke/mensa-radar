@@ -1,6 +1,5 @@
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   mode: 'jit',
   theme: {
     container: {
@@ -43,7 +42,7 @@ module.exports = {
         //foto-bg
         'lightshiny-green': '#B9D8C2',
         'main-green': '#88E2A1',
-        'dark-green': '#43BC63',
+        'dark-green': '#008C25',
 
         //vegetarisch, fleisch, fisch
         'vegeterian-yellow': '#CBE288',

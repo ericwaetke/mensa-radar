@@ -54,7 +54,7 @@
 
 @font-face {
 	font-family: "Noto-Medium";
-	src: url("../fonts/NotoSans-Regular.ttf");
+	src: url("../fonts/NotoSans-Medium.ttf");
 }
 
 @font-face {
@@ -92,12 +92,6 @@
 
 
 @supports (-webkit-touch-callout: none) {
-	.h-screen {
-		/* height: calc(-webkit-fill-available+3vh) !important; 
-		height: var(--app-height) !important; */
-		height: calc(100vh - env(safe-area-inset-bottom)) !important;
-	}
-	
 	.safari-padding { 
         padding-bottom: 0px !important;
     }
