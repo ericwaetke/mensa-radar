@@ -387,7 +387,7 @@ export async function getServerSideProps(context) {
 	const thisMensaData = {
 		...thisMensa,
 		...currentMensa,
-		openingTimesObject: getOpeningTimes(currentMensa, daysWithFoodOfCurrentMensa),
+		openingTimesObject: getOpeningTimes({...currentMensa, daysWithFood: daysWithFoodOfCurrentMensa}),
 		daysWithFood: daysWithFoodOfCurrentMensa
 	}
 

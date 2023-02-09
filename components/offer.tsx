@@ -8,7 +8,7 @@ import RateFood, { RateFoodHeader } from "./ratings/RateFood"
 import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { userAgent } from "next/server";
+import { Tooltip } from 'react-tooltip'
 
 export const Offer = (
 	{
@@ -101,7 +101,7 @@ export const Offer = (
 		setCurrentModalContent("rating");
 		setModalOpen(true);
 	}
-	  
+
 	const [tempImage, setTempImage] = useState("");
 	const [hasUserRated, setHasUserRated] = useState(false)
 	const [userRatingString, setUserRating] = useState("")
@@ -191,9 +191,9 @@ export const Offer = (
 					<div className="px-6 flex-col space-y-2">
 						<div className="flex flex-row justify-between font-sans-med">
 							<div className="inline-flex flex-row space-x-1.5 px-3 py-1 rounded-full bg-light-green">
-								<p>{formatter.format(offer.price_students)}</p>
+								<p id={`price-others-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
-								<p className="text-gray/50">{formatter.format(offer.price_other)}</p>
+								<p className="text-gray/50" id={`price-students-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p>
 							</div>
 							{
 								offer.vegan ? <>
@@ -286,6 +286,8 @@ export const Offer = (
 				</div>
 			</div>
 		</motion.div>
+		<Tooltip anchorId={`price-students-${offer.id}`} />
+		<Tooltip anchorId={`price-others-${offer.id}`} />
 		</>
 	)
 }
