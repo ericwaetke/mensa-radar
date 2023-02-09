@@ -280,24 +280,29 @@ export default function Mensa(
 						})
 					}
 				</div>
-				
-				<div className='w-full px-3 py-2 fixed bottom-0 h-10 border-t border-gray/10 bg-light-green'>
-					<div className="grid grid-cols-2 max-w-xl m-auto">
-						<div className="flex flex-row space-x-2">
-							<Link href="/impressum">
-								<p className='font-sans-semi text-sm opacity-50'>
-									Über Mensa-Radar
+
+				{
+				scrollPosition  ? <>
+					<div className='w-full px-3 py-2 fixed bottom-0 h-10 border-t border-gray/10 bg-light-green'>
+						<div className="grid grid-cols-2 max-w-xl m-auto">
+							<div className="flex flex-row space-x-2">
+								<Link href="/impressum">
+									<p className='font-sans-semi text-sm opacity-50'>
+										Über Mensa-Radar
+									</p>
+								</Link>
+							</div>
+							<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
+								<p className='font-sans-semi text-sm text-right w-full'>
+									Nährwerte vgl.
 								</p>
-							</Link>
-						</div>
-						<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
-							<p className='font-sans-semi text-sm text-right w-full'>
-								Nährwerte vgl.
-							</p>
-							<img src="/icons/right-arrw.svg" className="w-4" />
+								<img src="/icons/right-arrw.svg" className="w-4" />
+							</div>
 						</div>
 					</div>
-				</div>
+					</> : null
+				}
+
 			</div>
 		</>
 	)
