@@ -2,9 +2,8 @@ import * as dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
 
-export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, text: string} = (currentMensa, daysWithFood) => {
+export const getOpeningTimes: (currentMensa: MensaData) => {open: boolean, text: string} = (currentMensa: MensaData) => {
 	const currentWeekday = new Date().getDay() - 1 < 0 ? 6 : new Date().getDay() - 1
-
 
 	const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
 	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
@@ -14,7 +13,7 @@ export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, te
 	const currentDate = new Date()
 
 	// Check if today has food
-	const todayHasFood = daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+	const todayHasFood = currentMensa.daysWithFood.includes(currentDate.toISOString().split('T')[0]);
 	if (todayHasFood) {
 		// Check if current time is between the opening hours
 		const currentTimeObj = dayjs.utc().add(1, 'hour')
@@ -36,7 +35,7 @@ export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, te
 
 	const tomorrow = new Date(currentDate)
 	tomorrow.setDate(tomorrow.getDate() + 1)
-	const tomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+	const tomorrowHasFood = currentMensa.daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
 	if (tomorrowHasFood) {
 		return {
 			open: false,
@@ -46,7 +45,7 @@ export const getOpeningTimes: (currentMensa, daysWithFood) => {open: boolean, te
 
 	const dayAfterTomorrow = new Date(currentDate)
 	dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
-	const dayAfterTomorrowHasFood = daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+	const dayAfterTomorrowHasFood = currentMensa.daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
 	if (dayAfterTomorrowHasFood) {
 		return {
 			open: false,

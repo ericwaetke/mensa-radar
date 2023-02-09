@@ -3,17 +3,11 @@ import "../assets/css/app.css"
 import {Toaster} from "react-hot-toast"
 import { Analytics } from '@vercel/analytics/react';
 import NextNProgress from 'nextjs-progressbar';
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
 import '../assets/css/react-spring-bottom-sheet.css'
-
+import 'react-tooltip/dist/react-tooltip.css'
 
 function MyApp({ Component, pageProps }) {
 	if (typeof window !== 'undefined') {
-		LogRocket.init('x4o9cp/mensa-radar');
-		// plugins should also only be initialized when in the browser
-		setupLogRocketReact(LogRocket);
-		
 		const appHeight = () => {
 			const doc = document.documentElement
 			doc.style.setProperty('--app-height', `${window.innerHeight}px`)
@@ -30,7 +24,7 @@ function MyApp({ Component, pageProps }) {
 		</>
 	)
 }
-  
+
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to
   // perform automatic static optimization, causing every page in your app to
@@ -42,6 +36,5 @@ function MyApp({ Component, pageProps }) {
   //
   //   return { ...appProps }
   // }
-  
-  export default MyApp
-  
+
+export default MyApp

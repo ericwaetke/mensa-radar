@@ -27,5 +27,8 @@
 , "pages/mensa/[mensa]/[day]/[offer].ts", "components/ratings/qualityRatingComponent.tsx+"  ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "paths": {
+		"*": ["types/*.d.ts"]
+	},
 }

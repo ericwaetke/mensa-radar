@@ -8,7 +8,7 @@ import RateFood, { RateFoodHeader } from "./ratings/RateFood"
 import { Allergens } from "./allergens"
 import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { userAgent } from "next/server";
+import { Tooltip } from "react-tooltip"
 import { Pill } from "./pill";
 
 export const Offer = (
@@ -47,7 +47,7 @@ export const Offer = (
 		day: string | string[],
 	}
 ) => {
-	
+
 	const containerAnimation = {
 		hidden: {
 			opacity: 0,
@@ -102,7 +102,7 @@ export const Offer = (
 		setCurrentModalContent("rating");
 		setModalOpen(true);
 	}
-	  
+
 	const [tempImage, setTempImage] = useState("");
 	const [hasUserRated, setHasUserRated] = useState(false)
 	const [userRatingString, setUserRating] = useState("")
@@ -124,10 +124,9 @@ export const Offer = (
 		// setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
-	return (
-		<>
-		<BottomSheet 
-			open={modalOpen} 
+	return (<>
+		<BottomSheet
+			open={modalOpen}
 			onDismiss={() => setModalOpen(false)}
 			header={
 				currentModalContent == "image" ? <>
@@ -135,14 +134,14 @@ export const Offer = (
 				</> : <>
 					<RateFoodHeader foodTitle={offer.food_title}/>
 				</>
-			}> 
+			}>
 				{
 					currentModalContent == "image" ? <>
-						<CaptureImage 
-							setModalOpen={setModalOpen} 
+						<CaptureImage
+							setModalOpen={setModalOpen}
 							setCurrentModalContent={setCurrentModalContent}
-							setTempImage={setTempImage} 
-							
+							setTempImage={setTempImage}
+
 							foodTitle={offer.food_title}
 							foodId={offer.id}/>
 					</> : currentModalContent === "rating" ? <>
@@ -154,26 +153,26 @@ export const Offer = (
 							foodId={offer.id}
 							updateUserRating={updateUserRating}
 							/>
-					</> : <></>
+					</> : null
 				}
 		</BottomSheet>
-		<motion.div 
+		<motion.div
 			className={`snap-start w-full flex-row pt-4 sm:max-w-xl mx-auto`}
 			variants={containerAnimation}
 			initial="hidden"
 			animate="show"
 			>
-				
+
 			<div className={`rounded-2xl bg-white flex flex-col space-y-2 ${offer.sold_out ? "opacity-50" : ""}`}>
-				
+
 					<div className="px-2 pt-2">
 						{ offer.imageUrls.length > 0 || tempImage != "" ?
 							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
 								{
 									tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-								} 
-							</div> 
-						: 
+								}
+							</div>
+						:
 							<div className="w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center">
 								{
 									<div onClick={() => openImageFlow()} className="rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer" >
@@ -184,7 +183,7 @@ export const Offer = (
 							</div>
 						}
 					</div>
-					
+
 				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-6 flex-col space-y-2">
 						<h2 className="text-h2 font-serif-semi pt-2">
@@ -193,9 +192,9 @@ export const Offer = (
 
 						<Allergens allergens={offer.allergens}/>
 						<div className="flex flex-row gap-x-2 font-sans-med">
-							<Pill><p>{formatter.format(offer.price_students)}</p>
+							<Pill><p id={`price-students-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
 								<p className="text-gray/50">·</p>
-								<p className="text-gray/50">{formatter.format(offer.price_other)}</p></Pill>
+								<p className="text-gray/50" id={`price-others-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p></Pill>
 							{
 								offer.vegan ? <>
 									<Pill col={"vegan"} icon={"/icons/vegan.svg"}>Vegan</Pill>
@@ -212,7 +211,7 @@ export const Offer = (
 							}
 						</div>
 						{/* TODO: Rating */}
-						
+
 					</div>
 					{
 					ratings.length !== 0 ? <>
@@ -234,32 +233,32 @@ export const Offer = (
 								<p className="font-sans-med text-gray/50 xs:hidden block">{ `(${ratings.length})`}</p>
 
 							</div>
-				
+
 							<div className="flex-row flex border-l border-gray/20  space-x-1 font-sans-semi h-full items-center pl-6">
 								<div className="font-sans-med">
-									{	
-									hasUserRated ? 
+									{
+									hasUserRated ?
 									<>
 										<div className="inline-flex flex-row items-center space-x-2">
-											<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-light-green whitespace-nowrap"> 
+											<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-light-green whitespace-nowrap">
 												<p>Du:</p>
 												<p className="font-sans-semi">
-												{ userRatingString } / 5</p> 
+												{ userRatingString } / 5</p>
 												<img src="/icons/right-arrw.svg" className="w-4"></img>
-											</div> 
-										</div> 
+											</div>
+										</div>
 									</> : <>
 										<div className="flex-row flex space-x-1 font-sans-med h-full items-center cursor-pointer">
-											<p>Bewerten</p> 
+											<p>Bewerten</p>
 											<img src="/icons/right-arrw.svg" className="w-4"></img>
 										</div>
 									</>
 									}
 
 								</div>
-								
+
 							</div>
-						</div>	
+						</div>
 					</> : <>
 						<div className="flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex border-gray/20 space-x-1 font-sans-semi h-full items-center">
@@ -268,10 +267,13 @@ export const Offer = (
 							</div>
 						</div>
 					</>
-					}			
+					}
 				</div>
 			</div>
 		</motion.div>
+		<Tooltip anchorId={`price-students-${offer.id}`} />
+		<Tooltip anchorId={`price-others-${offer.id}`} />
 		</>
+		
 	)
 }

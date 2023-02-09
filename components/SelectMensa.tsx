@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useRouter } from "next/router"
+import Link from "next/link"
 
 export const SelectMensa = (
 	{
@@ -23,12 +23,6 @@ export const SelectMensa = (
 
 	const selectedMensa = mensen.find(m => m.url == currentMensa)
 
-	const router = useRouter()
-	const routeTo = (mensa: string) => {
-		setModalOpen(false)
-		router.push(`/mensa/${mensa}`)
-	}
-
 	return (
 		<>
 		<motion.div 
@@ -50,20 +44,20 @@ export const SelectMensa = (
 			{
 				Object.values(mensen).map((mensa) => {
 					return mensa.url !== currentMensa ? (
-						<div 
-							onClick={() => routeTo(mensa.url)}
-							className={`flex p-4 justify-between space-x-2 items-center`}>
-							<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
-							<div className="flex font-sans-reg text-s items-center h-full">
-								{
-									mensa.open || mensa.openingString === "offen bis 14:30" ? <>
-										<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
-									</> : null
-								}
+						<Link href={`/mensa/${mensa.url}`}>
+							<a className={`flex p-4 justify-between space-x-2 items-center`}>
+								<h3 className="text-xl font-normal font-serif-med"> {mensa.name}</h3>
+								<div className="flex font-sans-reg text-s items-center h-full">
+									{
+										mensa.open || mensa.openingString === "offen bis 14:30" ? <>
+											<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
+										</> : null
+									}
 
-								<span className="opacity-60 whitespace-nowrap"> {mensa.openingString} </span>
-							</div>
-						</div>
+									<span className="opacity-60 whitespace-nowrap"> {mensa.openingString} </span>
+								</div>
+							</a>
+						</Link>
 					) : null
 				})
 			}

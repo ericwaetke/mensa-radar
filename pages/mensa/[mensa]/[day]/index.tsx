@@ -8,11 +8,46 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Modal from "react-modal";
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-import { Offer } from '../../../../components/offer';
 import { SelectMensa } from '../../../../components/SelectMensa';
 import { supabase } from '../../../../lib/getSupabaseClient';
 import { getOpeningTimes } from '../../../../lib/getOpeningString';
 import { Pill } from '../../../../components/pill';
+
+import dynamic from 'next/dynamic'
+import useScrollPosition from '../../../../hooks/useScrollPosition';
+
+const DynamicOffer = dynamic<{
+	offer: {
+		id: number,
+		mensa: number,
+		food_title: string,
+		food_desc: string,
+		vegan: boolean,
+		vegetarian: boolean,
+		fish: boolean,
+		meat: boolean,
+		nutrients: {
+			name: string,
+			value: string,
+			unit: string,
+		}[],
+		allergens: string[]
+		date: string,
+		price_students: number,
+		price_other: number,
+		sold_out: boolean,
+
+		imageUrls: string[],
+		ratings: {
+			rating: number,
+			userSessionId: string,
+		}[]
+	},
+	mensa: string | string[],
+	day: string | string[],
+	}>(() => import('../../../../components/offer').then(mod => mod.Offer), {
+	loading: () => <p>'Loading...'</p>,
+})
 
 export default function Mensa(
 	{
@@ -54,8 +89,14 @@ export default function Mensa(
 ) {
 
 	const sortedFoodOffers = useMemo(() => {
-		// Show vegan first, then vegetarian, then everything else
+		// Show vegan first, then vegetarian, then everything else and sold out last
 		return foodOffers.sort((a, b) => {
+			if (a.sold_out && !b.sold_out) {
+				return 1;
+			}
+			if (!a.sold_out && b.sold_out) {
+				return -1;
+			}
 			if (a.vegan && !b.vegan) {
 				return -1;
 			}
@@ -75,6 +116,10 @@ export default function Mensa(
 	const router = useRouter()
 	const { mensa, day } = router.query
 	const [openingTimes, setOpeningTimes] = useState<{open: boolean, text: string}>({open: false, text: ""});
+
+	useEffect(() => {
+		setModalOpen(false);
+	}, [mensa, day]);
 
 	// get current weekday
 	const [currentWeekday, setCurrentWeekday] = useState(0);
@@ -117,13 +162,15 @@ export default function Mensa(
 		},
 	};
 
+	const scrollPosition = useScrollPosition(50);
+
 	useEffect(() => {
+		setModalOpen(false);
 		setCurrentWeekday(new Date().getDay() - 1)
-		setOpeningTimes(mensaData.openingTimesObject)
+		setOpeningTimes(getOpeningTimes(mensaData))
 		// Update the Opening Times every minute
 		const interval = setInterval(() => {
-			console.log("Updating opening times");
-			setOpeningTimes(getOpeningTimes(mensaData, mensaData.daysWithFood));
+			setOpeningTimes(getOpeningTimes(mensaData));
 		}, 60 * 1000);
 
 		return () => clearInterval(interval);
@@ -194,11 +241,15 @@ export default function Mensa(
 									</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
 								}
 						</div>
-						<div className="flex justify-center items-center flex-row w-full px-4 h-12">
-								<Pill col={openingTimes.open ? "vegan" : "meat"}>
-									<p className="font-sans-reg text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
-								</Pill>
-						</div>
+						{
+							scrollPosition  ? <>
+								<div className="flex justify-center items-center flex-row w-full px-4 h-12">
+										<Pill col={openingTimes.open ? "vegan" : "meat"}>
+											<p className="font-sans-reg text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
+										</Pill>
+								</div>
+							</> : null
+						}
 					</div>
 				</div>
 
@@ -222,7 +273,7 @@ export default function Mensa(
 						// Show rest later
 						sortedFoodOffers?.map((offer, i) => {
 								return (
-									<Offer key={i} offer={offer} mensa={mensa} day={router.query.day} />
+									<DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} />
 								)
 						})
 					}
@@ -334,7 +385,7 @@ export async function getServerSideProps(context) {
 	const thisMensaData = {
 		...thisMensa,
 		...currentMensa,
-		openingTimesObject: getOpeningTimes(currentMensa, daysWithFoodOfCurrentMensa),
+		openingTimesObject: getOpeningTimes({...currentMensa, daysWithFood: daysWithFoodOfCurrentMensa}),
 		daysWithFood: daysWithFoodOfCurrentMensa
 	}
 
