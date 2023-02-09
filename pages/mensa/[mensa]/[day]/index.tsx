@@ -115,6 +115,10 @@ export default function Mensa(
 	const { mensa, day } = router.query
 	const [openingTimes, setOpeningTimes] = useState<{open: boolean, text: string}>({open: false, text: ""});
 
+	useEffect(() => {
+		setModalOpen(false);
+	}, [mensa, day]);
+
 	// get current weekday
 	const [currentWeekday, setCurrentWeekday] = useState(0);
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
@@ -157,6 +161,7 @@ export default function Mensa(
 	};
 
 	useEffect(() => {
+		setModalOpen(false);
 		setCurrentWeekday(new Date().getDay() - 1)
 		setOpeningTimes(mensaData.openingTimesObject)
 		// Update the Opening Times every minute
