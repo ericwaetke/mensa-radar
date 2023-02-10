@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import sharp from "sharp"
 
 import vision from "@google-cloud/vision"
-  
+
 const getJSONCredentials = () => {
 	return {
 		type: "service_account",
@@ -64,8 +64,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 	}
 	else {
-	   res.statusCode = 500
-	   res.setHeader("Content-Type", "text/html")
-	   res.end("<h1>Internal Error</h1><p>Sorry, there was a problem</p>")
-	 }
+		res.statusCode = 500
+		res.setHeader("Content-Type", "text/html")
+		res.end("<h1>Internal Error</h1><p>Sorry, there was a problem</p>")
+	}
 }
