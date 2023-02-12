@@ -103,7 +103,7 @@ export const Offer = (
 
 	const generateUrls = (imageName: string) => {
 		const params = new URLSearchParams({
-			f: imageName,
+			f: imageName+".png",
 			b: "ai-thumbnails",
 			w: "512",
 			h: null,    // set to null to keep image's aspect ratio
@@ -164,7 +164,7 @@ export const Offer = (
 						: offer.has_ai_thumbnail ? <>
 							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
 								{
-									<img src={generateUrls(`thumbnail-${offer.id}`)} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+									<img src={generateUrls(`thumbnail_${offer.id}`)} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 								}
 							</div>
 						</> :
