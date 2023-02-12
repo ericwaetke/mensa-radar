@@ -3,11 +3,22 @@ import { supabase } from '../../lib/getSupabaseClient';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
-
 		// Get start and end date of current week
 		const today = new Date();
 		const first = today.getDate() - ((today.getDay() + 6) % 7); // First day is the day of the month - the day of the week
 		const last = first + 6; // last day is the first day + 6
+
+		// Set all food entries to has_ai_thumbnail = false
+		await supabase
+			.from('food_offerings')
+			.update({
+				has_ai_thumbnail: false
+			})
+			.gte('date', new Date(today.setDate(first)).toISOString().slice(0, 10))
+			.lte('date', new Date(today.setDate(last)).toISOString().slice(0, 10))
+			
+
+
 
 		// Get food entries from current week from supabase
 		const { data: foodEntries, error } = await supabase
@@ -16,6 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			.gte('date', new Date(today.setDate(first)).toISOString().slice(0, 10))
 			.lte('date', new Date(today.setDate(last)).toISOString().slice(0, 10))
 			.order('date', { ascending: true })
+			.eq('has_ai_thumbnail', false)
 
 		if (error) {
 			res.status(500).json({

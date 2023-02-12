@@ -20,11 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			return foodTitle
 		})
 
-		res.status(200).json({
-			message: 'success',
-			data: translatedFoodTitle
-		})
-
 
 		// Fetch Image from Diffuzers API
 		const base64image = await fetch('https://ai.ericwaetke.de/text2img/', {
@@ -45,23 +40,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			})
 		})
 		.then(res => res.json())
-		.then(res => res.images[0])
-		const b64toBlob = (base64, type = 'image/png') => fetch(`data:${type};base64,${base64}`).then(res => res.blob())
-		const blob = await b64toBlob(base64image)
-
-		// upload the image to supabase bucket "ai_thumbnails"
-		await supabase
-			.storage
-			.from('ai-thumbnails')
-			.upload(`thumbnail_${foodId}.png`, blob)
-			.then(_ => {
-				res.status(200).json({
-					message: 'success',
-					data: _
+		.then(async (res) => {
+			const base64image = res.images[0]
+			
+			const b64toBlob = (base64, type = 'image/png') => fetch(`data:${type};base64,${base64}`).then(res => res.blob())
+			const blob = await b64toBlob(base64image)
+	
+			// upload the image to supabase bucket "ai_thumbnails"
+			await supabase
+				.storage
+				.from('ai-thumbnails')
+				.upload(`thumbnail_${foodId}.png`, blob)
+				.then(_ => {
+					res.status(200).json({
+						message: 'success',
+						data: _
+					})
+					return _
 				})
-				return _
-			})
-
+		})
 
 	} catch (e) {
 		res.status(500).json({
