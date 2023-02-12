@@ -10,6 +10,8 @@ import { getSessionId } from "../lib/localStorageHelper"
 import { BottomSheet } from "react-spring-bottom-sheet";
 import { Tooltip } from "react-tooltip"
 import { Pill } from "./pill";
+import Balancer from 'react-wrap-balancer'
+
 
 export const Offer = (
 	{
@@ -17,32 +19,7 @@ export const Offer = (
 		mensa,
 		day,
 	}: {
-		offer: {
-			id: number,
-			mensa: number,
-			food_title: string,
-			food_desc: string,
-			vegan: boolean,
-			vegetarian: boolean,
-			fish: boolean,
-			meat: boolean,
-			nutrients: {
-				name: string,
-				value: string,
-				unit: string,
-			}[],
-			allergens: string[]
-			date: string,
-			price_students: number,
-			price_other: number,
-			sold_out: boolean,
-
-			imageUrls: string[],
-			ratings: {
-				rating: number,
-				userSessionId: string,
-			}[]
-		},
+		offer: FoodOffering
 		mensa: string | string[],
 		day: string | string[],
 	}
@@ -124,6 +101,18 @@ export const Offer = (
 		// setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
+	const generateUrls = (imageName: string) => {
+		const params = new URLSearchParams({
+			f: imageName,
+			b: "ai-thumbnails",
+			w: "512",
+			h: null,    // set to null to keep image's aspect ratio
+			q: "80",
+			token: process.env.NEXT_PUBLIC_SUPABASE_KEY
+		})
+		return `${process.env.NODE_ENV ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
+	}
+
 	return (<>
 		<BottomSheet
 			open={modalOpen}
@@ -172,7 +161,13 @@ export const Offer = (
 									tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 								}
 							</div>
-						:
+						: offer.has_ai_thumbnail ? <>
+							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
+								{
+									<img src={generateUrls(`thumbnail-${offer.id}`)} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+								}
+							</div>
+						</> :
 							<div className={`w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
 								{
 									<div onClick={() => openImageFlow()} className={`rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer`} >
@@ -186,9 +181,11 @@ export const Offer = (
 
 				<div className="flex flex-col space-y-4 text-sm">
 					<div className="px-6 flex-col space-y-2">
-						<h2 className={`text-h2 font-serif-semi pt-2 ${offer.sold_out ? "text-gray/50" : ""}`}>
-							{offer.food_title}
-						</h2>
+						<Balancer>
+							<h2 className={`text-h2 font-serif-semi pt-2 ${offer.sold_out ? "text-gray/50" : ""}`}>
+								{offer.food_title}
+							</h2>
+						</Balancer>
 
 						<Allergens allergens={offer.allergens}/>
 						<div className="flex flex-row gap-x-2 font-sans-med">

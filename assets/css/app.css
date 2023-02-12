@@ -67,6 +67,11 @@
 	src: url("../fonts/NotoSans-Bold.ttf");
 }
 
+@font-face {
+	font-family: "Noto-Black";
+	src: url("../fonts/NotoSans-Black.ttf");
+}
+
 .text-h1 {
 	font-size: 1.4rem;
 	line-height: 1.8rem;

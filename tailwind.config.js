@@ -16,6 +16,7 @@ module.exports = {
       'sans-med': ["Noto-Medium", "sans-med"],
       'sans-semi': ["Noto-Semi", "sans-semibold"],
       'sans-bold': ["Noto-Bold", "sans-bold"],
+      'sans-black': ["Noto-Black", "sans-black"],
     },
     screens: {
       'xs': '400px',

@@ -5,6 +5,8 @@ import { Analytics } from '@vercel/analytics/react';
 import NextNProgress from 'nextjs-progressbar';
 import '../assets/css/react-spring-bottom-sheet.css'
 import 'react-tooltip/dist/react-tooltip.css'
+import { Provider } from 'react-wrap-balancer'
+
 
 function MyApp({ Component, pageProps }) {
 	if (typeof window !== 'undefined') {
@@ -19,7 +21,11 @@ function MyApp({ Component, pageProps }) {
 		<>
 		<NextNProgress color="#88E2A1"/>
 		<Toaster />
-		<Component {...pageProps} />
+
+		<Provider>
+			<Component {...pageProps} />
+		</Provider>
+		
 		<Analytics />
 		</>
 	)
