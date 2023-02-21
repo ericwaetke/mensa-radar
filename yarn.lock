@@ -1395,6 +1395,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@total-typescript/ts-reset@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@total-typescript/ts-reset/-/ts-reset-0.3.7.tgz#66d0d9d3a9d8055b876640b7d0231809e01351b7"
+  integrity sha512-yXt2BRRVCJVvzWaxac5n0nCXzIrQEBE/MeYlNQ8/Iq7UeelNmm/AdnUAu18ilSS893mbEQ4u6whPt/HvOPc4rw==
+
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz"
@@ -3888,11 +3893,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-collapse@^5.1.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/react-collapse/-/react-collapse-5.1.1.tgz#a2fa08ef13f372141b02e6a7d49ef72427bcbc2b"
-  integrity sha512-k6cd7csF1o9LBhQ4AGBIdxB60SUEUMQDAnL2z1YvYNr9KoKr+nDkhN6FK7uGaBd/rYrYfrMpzpmJEIeHRYogBw==
-
 react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
@@ -4742,11 +4742,6 @@ use-sync-external-store@1.2.0, use-sync-external-store@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
-
-use-timeout@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/use-timeout/-/use-timeout-1.1.0.tgz"
-  integrity sha512-1veqpjjjHvjQ7qcMrz72HnL+6WgsehNFnFbdKNsSGWa+GcbjXrPrfFiBj/wtzHBBB8h5WO4B3O7i54NT8RIr6w==
 
 utf-8-validate@^5.0.2:
   version "5.0.10"

@@ -15,6 +15,7 @@ import { Pill } from '../../../../components/pill';
 
 import dynamic from 'next/dynamic'
 import useScrollPosition from '../../../../hooks/useScrollPosition';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -51,67 +52,11 @@ const DynamicOffer = dynamic<{
 
 export default function Mensa(
 	{
-		foodOffers,
-		selectedWeekday,
-		mensaData = {},
-		mensen,
-	}: {
-		foodOffers: {
-			id: number,
-			mensa: number,
-			food_title: string,
-			food_desc: string,
-			vegan: boolean,
-			vegetarian: boolean,
-			fish: boolean,
-			meat: boolean,
-			nutrients: {
-				name: string,
-				value: string,
-				unit: string,
-			}[],
-			allergens: string[]
-			date: string,
-			price_students: number,
-			price_other: number,
-			sold_out: boolean,
-
-			imageUrls: string[],
-			ratings: {
-				rating: number,
-				userSessionId: string,
-			}[]
-		}[],
-		selectedWeekday: number,
-		mensaData: any,
-		mensen: any,
-	}
+		currentMensa,
+		mensaList,
+		foodOffers
+	}: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
-
-	const sortedFoodOffers = useMemo(() => {
-		// Show vegan first, then vegetarian, then everything else and sold out last
-		return foodOffers.sort((a, b) => {
-			if (a.sold_out && !b.sold_out) {
-				return 1;
-			}
-			if (!a.sold_out && b.sold_out) {
-				return -1;
-			}
-			if (a.vegan && !b.vegan) {
-				return -1;
-			}
-			if (!a.vegan && b.vegan) {
-				return 1;
-			}
-			if (a.vegetarian && !b.vegetarian) {
-				return -1;
-			}
-			if (!a.vegetarian && b.vegetarian) {
-				return 1;
-			}
-			return 0;
-		})
-	}, [foodOffers]);
 
 	const router = useRouter()
 	const { mensa, day } = router.query
@@ -122,7 +67,8 @@ export default function Mensa(
 	}, [mensa, day]);
 
 	// get current weekday
-	const [currentWeekday, setCurrentWeekday] = useState(0);
+	const selectedWeekday = getWeekdayByName(day);
+	const currentWeekday = new Date().getDate() - ((new Date().getDay() + 6) % 7);
 	const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
 	const [modalOpen, setModalOpen] = useState(false);
@@ -166,11 +112,10 @@ export default function Mensa(
 
 	useEffect(() => {
 		setModalOpen(false);
-		setCurrentWeekday(new Date().getDay() - 1)
-		setOpeningTimes(getOpeningTimes(mensaData))
+		setOpeningTimes(getOpeningTimes(currentMensa))
 		// Update the Opening Times every minute
 		const interval = setInterval(() => {
-			setOpeningTimes(getOpeningTimes(mensaData));
+			setOpeningTimes(getOpeningTimes(currentMensa));
 		}, 60 * 1000);
 
 		return () => clearInterval(interval);
@@ -186,26 +131,26 @@ export default function Mensa(
 				{
 					currentModalContent === "nutrients" ? <>
 						<NutrientOverview
-							foodOffers={sortedFoodOffers}
+							foodOffers={foodOffers}
 							setModalOpen={setModalOpen} />
 					</> : <>
 						<SelectMensa
 							setModalOpen={setModalOpen}
 
 							currentMensa={mensa}
-							mensen={mensen} />
+							mensen={mensaList} />
 					</>
 				}
 			</Modal>
 			<div className="mx-auto flex flex-col">
 				<Head>
-					<title>{mensaData.name} - Mensa Radar</title>
+					<title>{currentMensa.name} - Mensa Radar</title>
 				</Head>
 				
 				<div className={`p-3 fixed ${modalOpen ? null : "z-10"} w-full bg-light-green border-b border-gray/10`}>
 					<div className="m-auto w-full rounded-xl border border-solid border-gray/20 sm:max-w-xl divide-y divide-gray/20">
 						<div onClick={() => openMensaSelectionFlow()} className="flex justify-center space-x-1 items-center flex-row w-full h-12">
-									<h1 className="block text-h1 font-serif-bold">{mensaData.name}</h1>
+									<h1 className="block text-h1 font-serif-bold">{currentMensa.name}</h1>
 									<img className="w-4 mt-0.5" src="/icons/chev-down.svg"></img>
 						</div>
 						<div className="flex items-center justify-between flex-row w-full px-4 h-10">
@@ -223,7 +168,7 @@ export default function Mensa(
 									</> : <div className='w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
 
 								}
-								<p className="font-sans-semi text-sm">
+								<p className="font-sans-semi text-sm capitalize">
 									{
 										currentWeekday === selectedWeekday ? 'Heute' : selectedWeekday === currentWeekday + 1 ? 'Morgen' : selectedWeekday === currentWeekday - 1 ? 'Gestern' : days[selectedWeekday]
 									}
@@ -247,7 +192,7 @@ export default function Mensa(
 								<div className="flex justify-center items-center flex-row w-full px-4 h-10 text-gray/70">
 										<Pill col={"transparent"}>
 											<div className={`mr-1 w-2 h-2 rounded-full ${openingTimes.open ? `bg-dark-green` : ` bg-red-500`}`}></div>
-											<p className="font-sans-reg text-sm">{ mensaData.url === undefined ? "" : openingTimes.text }</p>
+											<p className="font-sans-reg text-sm">{ currentMensa.url === undefined ? "" : openingTimes.text }</p>
 										</Pill>
 								</div>
 							</> : null
@@ -273,7 +218,7 @@ export default function Mensa(
 				<div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-16 pt-40">
 					{
 						// Show rest later
-						sortedFoodOffers?.map((offer, i) => {
+						foodOffers?.map((offer, i) => {
 								return (
 									<DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} />
 								)
@@ -308,10 +253,35 @@ export default function Mensa(
 	)
 }
 
-export async function getServerSideProps(context) {
-	const currentWeekday = new Date().getDay()-1
-	const { params } = context
-	const { mensa, day } = params
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const { mensa, day } = context.params
+	const { data: mensaData, error: mensenError } = await supabase
+		.from('mensen')
+		.select(`
+			id,
+			name,
+			loc_lat,
+			loc_long,
+			url,
+			current_mensa_data (
+				openingTimes
+				)
+		`)
+		.eq('url', mensa)
+
+	const dateFormated = new Date().toISOString().split('T')[0]
+	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
+			.from('food_offerings')
+			.select('mensa, date')
+			.gte('date', dateFormated)
+			.eq('mensa', mensaData![0].id)
+	
+	const daysWithFood = Array.from(new Set(daysWithFoodUnfiltered!.map((day) => day.date)))
+
+	const currentMensa = {
+		...mensaData![0],
+		daysWithFood,
+	}
 
 	const selectedWeekday = getWeekdayByName(day)
 
@@ -323,20 +293,42 @@ export async function getServerSideProps(context) {
 			mensa
 		}),
 	})
-	const { foodOffers } = await getMensaDataReq.json()
+	const { foodOffers }: {foodOffers: FoodOffering[]} = await getMensaDataReq.json()
+	const sortedFoodOffers = foodOffers?.sort((a, b) => {
+			if (a.sold_out && !b.sold_out) {
+				return 1;
+			}
+			if (!a.sold_out && b.sold_out) {
+				return -1;
+			}
+			if (a.vegan && !b.vegan) {
+				return -1;
+			}
+			if (!a.vegan && b.vegan) {
+				return 1;
+			}
+			if (a.vegetarian && !b.vegetarian) {
+				return -1;
+			}
+			if (!a.vegetarian && b.vegetarian) {
+				return 1;
+			}
+			return 0;
+		})
+	
 
 	const windowWidth = 1200
 	// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
 
 	// Get Images to the food offers
-	const foodOffersWithAdditionalInfo = await Promise.all(foodOffers.map(async (offer) => {
+	const combinedFoodOffers = await Promise.all(sortedFoodOffers.map(async (offer) => {
 		const { data: images } = await supabase
 			.from("food_images")
 			.select('image_name')
 			.eq('food_id', offer.id)
 
 
-		images.map(async image => {
+		images!.map(async image => {
 			const { data, error } = await supabase
 				.storage
 				.from('food-images')
@@ -353,14 +345,14 @@ export async function getServerSideProps(context) {
 				f: imageName,
 				b: "food-images",
 				w: windowWidth.toString(),
-				h: null,    // set to null to keep image's aspect ratio
 				q: "80",
-				token: process.env.NEXT_PUBLIC_SUPABASE_KEY
+				token: process.env.SOLID_APP_PUBLIC_SUPABASE_KEY || ""
 			})
+
 			return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
 		}
 
-		const imageUrls = images.map(image => generateUrls(image.image_name))
+		const imageUrls = images!.map(image => generateUrls(image.image_name))
 
 		const { data: ratings } = await supabase
 			.from("quality_reviews")
@@ -374,50 +366,27 @@ export async function getServerSideProps(context) {
 		}
 	}))
 
-	const { data: mensen, error: mensenError } = await supabase
+	// Get List of all mensa's
+	const { data: mensaList, error: mensaListError } = await supabase
 		.from('mensen')
-		.select()
+		.select(`
+			id,
+			name,
+			loc_lat,
+			loc_long,
+			url,
+			current_mensa_data (
+				openingTimes
+				)
+		`)
+		.order('name', { ascending: true })
 
-	const { data: currentMensaData, error: currentMensaDataError } = await supabase
-		.from('current_mensa_data')
-		.select()
-
-	const dateFormated = new Date().toISOString().split('T')[0]
-	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
-			.from('food_offerings')
-			.select('mensa, date')
-			.gte('date', dateFormated)
-
-	const thisMensa = mensen.find(m => m.url === mensa)
-	const currentMensa = currentMensaData.find(m => m.mensa === thisMensa.id)
-	const daysWithFoodOfCurrentMensa = daysWithFoodUnfiltered.filter(d => d.mensa === thisMensa.id).map(d => d.date)
-	const thisMensaData = {
-		...thisMensa,
-		...currentMensa,
-		openingTimesObject: getOpeningTimes({...currentMensa, daysWithFood: daysWithFoodOfCurrentMensa}),
-		daysWithFood: daysWithFoodOfCurrentMensa
-	}
-
-	const mensaData = mensen.map(async mensa => {
-		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
-
-		// Filter days with food to mensaId and make date unique
-		const daysWithFood = [...new Set(daysWithFoodUnfiltered.filter((day) => day.mensa === mensa.id).map((day) => day.date))]
-		return {
-			...mensa,
-			...currentMensa,
-			daysWithFood,
-		}
-	})
-
-	const mensaDataResolved = await Promise.all(mensaData)
 
 	return {
 		props: {
-			foodOffers: foodOffersWithAdditionalInfo,
-			mensaData: thisMensaData,
-			mensen: mensaDataResolved,
-			selectedWeekday
-		},
+			currentMensa,
+			foodOffers: combinedFoodOffers,
+			mensaList,
+		}
 	}
 }

@@ -7,8 +7,20 @@ type MensaData = {
 	mensa: number,
 	name: string,
 	open: true | false | null,
-	openingTimes: {open: boolean, text: string},
+	current_mensa_data: {
+		openingTimes: MensaOpeningTime[]
+	}[],
 	url: string,
+}
+
+type MensaOpeningTime = {
+	from: number,
+	to: number,
+}
+
+type MensaOpenObject = {
+	open: boolean,
+	text: string,
 }
 
 type FoodOffering = {
@@ -37,4 +49,11 @@ type FoodOffering = {
 		userSessionId: string,
 	}[]
 	has_ai_thumbnail: boolean,
+}
+
+type RedirectPromt = {
+	today: "montag" | "dienstag" | "mittwoch" | "donnerstag" | "freitag" | "samstag" | "sonntag",
+	tomorrow: "montag" | "dienstag" | "mittwoch" | "donnerstag" | "freitag" | "samstag" | "sonntag",
+	recommendedRedirect: "montag" | "dienstag" | "mittwoch" | "donnerstag" | "freitag" | "samstag" | "sonntag",
+	shouldRedirectToTomorrow: boolean,
 }

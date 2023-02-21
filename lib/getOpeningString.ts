@@ -4,12 +4,14 @@ dayjs.extend(utc)
 
 export const getOpeningTimes: (currentMensa: MensaData) => {open: boolean, text: string} = (currentMensa: MensaData) => {
 	const currentWeekday = new Date().getDay() - 1 < 0 ? 6 : new Date().getDay() - 1
+	console.log(currentMensa)
+	const openingTimes = currentMensa.current_mensa_data[0].openingTimes[currentWeekday]
 
-	const toHour = Math.floor(currentMensa.openingTimes[currentWeekday].to)
-	const toMinute = Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].to - toHour) * 60)
+	const toHour = Math.floor(openingTimes.to)
+	const toMinute = Math.round((openingTimes.to - toHour) * 60) === 0 ? "00" : Math.round((openingTimes.to - toHour) * 60)
 
-	const fromHour = Math.floor(currentMensa.openingTimes[currentWeekday].from)
-	const fromMinute = Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60) === 0 ? "00" : Math.round((currentMensa.openingTimes[currentWeekday].from - fromHour) * 60)
+	const fromHour = Math.floor(openingTimes.from)
+	const fromMinute = Math.round((openingTimes.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimes.from - fromHour) * 60)
 	const currentDate = new Date()
 
 	// Check if today has food
@@ -19,13 +21,13 @@ export const getOpeningTimes: (currentMensa: MensaData) => {open: boolean, text:
 		const currentTimeObj = dayjs.utc().add(1, 'hour')
 		const currentTime = currentTimeObj.hour() + currentTimeObj.minute()/60;
 
-		const open = currentTime >= currentMensa.openingTimes[currentWeekday].from && currentTime <= currentMensa.openingTimes[currentWeekday].to;
+		const open = currentTime >= openingTimes.from && currentTime <= openingTimes.to;
 		if (open) {
 			return {
 				open: true,
 				text: `offen bis ${toHour}:${toMinute}`
 			};
-		} else if(currentTime < currentMensa.openingTimes[currentWeekday].from) {
+		} else if(currentTime < openingTimes.from) {
 			return {
 				open: false,
 				text: `Öffnet um ${fromHour}:${fromMinute}`

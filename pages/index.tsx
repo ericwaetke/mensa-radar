@@ -104,7 +104,7 @@ export default function Home(props) {
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen box-border flex wrap">
+		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen box-border wrap">
 			<Head>
 				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
@@ -142,14 +142,9 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function getStaticProps(context) {
-
-	// Get Current Weekday
-	const currentWeekday = new Date().getDay()-1;
-
-
 	const { data: mensen, error: mensenError } = await supabase
-		.from('mensen')
-		.select()
+	.from('mensen')
+	.select()
 
 	const { data: currentMensaData, error: currentMensaDataError } = await supabase
 		.from('current_mensa_data')
@@ -161,25 +156,21 @@ export async function getStaticProps(context) {
 		.select('mensa, date')
 		.gte('date', dateFormated)
 
-
-	const mensaData = mensen.map(async mensa => {
-		const currentMensa = currentMensaData.find((currentMensa) => currentMensa.mensa === mensa.id)
-
-		// Filter days with food to mensaId and make date unique
-		const daysWithFood = [...new Set(daysWithFoodUnfiltered.filter((day) => day.mensa === mensa.id).map((day) => day.date))]
+	const mensaData = mensen?.map(mensa => {
+		const currentMensaDataForMensa = currentMensaData?.find(mensaData => mensaData.mensa === mensa.id);
+		const daysWithFood = [...new Set(daysWithFoodUnfiltered?.filter((day) => day.mensa === mensa.id).map((day) => day.date))];
+		
 		return {
 			...mensa,
-			...currentMensa,
-			daysWithFood,
+			...currentMensaDataForMensa,
+			daysWithFood
 		}
 	})
 
-	const mensaDataResolved = await Promise.all(mensaData)
-
 	return {
 		props: {
-			mensaData: mensaDataResolved as MensaData[],
+			mensaData
 		},
 		revalidate: 60
-	}
+	};
 }
