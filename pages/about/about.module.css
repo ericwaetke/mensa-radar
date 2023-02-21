@@ -10,6 +10,12 @@
 	margin-bottom: -128px;
 	margin-right: -64px;
 }
+/* Media Query for Tablets and Desktops */
+@media (min-width: 768px) {
+	.radar {
+		width: 50%;
+	}
+}
 
 .outer_circle::before{
 
@@ -81,7 +87,7 @@
 	left: 50%;
 	transform: rotate(6deg);
 	opacity: .05;
-	animation: pulse-30 2s ease-out 1.6s infinite;
+	animation: pulse-30 2s ease-out 2s infinite;
 }
 .topf:nth-of-type(4) {
 	top: 10%;

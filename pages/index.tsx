@@ -144,11 +144,15 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export async function getStaticProps(context) {
 	const { data: mensen, error: mensenError } = await supabase
 	.from('mensen')
-	.select()
-
-	const { data: currentMensaData, error: currentMensaDataError } = await supabase
-		.from('current_mensa_data')
-		.select()
+	.select(`
+		id,
+		name,
+		loc_lat,
+		loc_long,
+		url,
+		current_mensa_data (
+			openingTimes
+		)`)
 
 	const dateFormated = new Date().toISOString().split('T')[0]
 	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } = await supabase
@@ -157,12 +161,10 @@ export async function getStaticProps(context) {
 		.gte('date', dateFormated)
 
 	const mensaData = mensen?.map(mensa => {
-		const currentMensaDataForMensa = currentMensaData?.find(mensaData => mensaData.mensa === mensa.id);
 		const daysWithFood = [...new Set(daysWithFoodUnfiltered?.filter((day) => day.mensa === mensa.id).map((day) => day.date))];
 		
 		return {
 			...mensa,
-			...currentMensaDataForMensa,
 			daysWithFood
 		}
 	})
