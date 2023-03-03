@@ -16,6 +16,7 @@ import { Pill } from '../../../../components/pill';
 import dynamic from 'next/dynamic'
 import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { NoFood } from '../../../../components/errors/NoFood';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -199,18 +200,17 @@ export default function Mensa(
 						}
 					</div>
 				</div>
-
+				{
+					day
+				}
 				{
 					day === "samstag" || day === "sonntag" ? (
-						<div>
-							<p>
-								Heute hat die Mensa leider geschlossen. Möchtest du dir das Essen vom vergangenen Freitag anschauen?
-							</p>
-							<Link href={`/mensa/${mensa}/freitag`}>
-								<a className="p-2 px-4 rounded-xl inline-flex items-center gap-4 border">
-									Zu vergangenem Freitag
-								</a>
-							</Link>
+						<div className='h-screen w-full flex items-center justify-center'>
+							<NoFood mainMessage="Ab Montag gibt’s hier wieder Essen!" />
+						</div>
+					) : foodOffers?.length === 0 ? (
+						<div className='h-screen w-full flex items-center justify-center'>
+							<NoFood mainMessage="Bald gibt’s hier wieder Essen!" />
 						</div>
 					) : null
 				}
@@ -237,12 +237,16 @@ export default function Mensa(
 									</p>
 								</Link>
 							</div>
-							<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
-								<p className='font-sans-semi text-sm text-right w-full'>
-									Nährwerte vgl.
-								</p>
-								<img src="/icons/right-arrw.svg" className="w-4" />
-							</div>
+							{
+								day === "samstag" || day === "sonntag" || foodOffers?.length === 0 ? null : (
+									<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
+										<p className='font-sans-semi text-sm text-right w-full'>
+											Nährwerte vgl.
+										</p>
+										<img src="/icons/right-arrw.svg" className="w-4" />
+									</div>
+								)
+							}
 						</div>
 					</div>
 					</> : null

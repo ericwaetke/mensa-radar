@@ -7,7 +7,7 @@ import '../assets/css/react-spring-bottom-sheet.css'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Provider } from 'react-wrap-balancer'
 import "@total-typescript/ts-reset";
-
+import "@total-typescript/ts-reset";
 
 function MyApp({ Component, pageProps }) {
 	if (typeof window !== 'undefined') {
