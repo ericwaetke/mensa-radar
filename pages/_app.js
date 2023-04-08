@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }) {
 		<NextNProgress color="#88E2A1"/>
 		<Toaster />
 
-		<PlausibleProvider domain="mensa-radar.de">
+		<PlausibleProvider domain="mensa-radar.de" customDomain="analytics.ericwaetke.de">
 			<Provider>
 				<Component {...pageProps} />
 			</Provider>
