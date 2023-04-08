@@ -1,7 +1,7 @@
 // import App from 'next/app'
 import "../assets/css/app.css"
 import {Toaster} from "react-hot-toast"
-import { Analytics } from '@vercel/analytics/react';
+import PlausibleProvider from 'next-plausible'
 import NextNProgress from 'nextjs-progressbar';
 import '../assets/css/react-spring-bottom-sheet.css'
 import 'react-tooltip/dist/react-tooltip.css'
@@ -23,11 +23,11 @@ function MyApp({ Component, pageProps }) {
 		<NextNProgress color="#88E2A1"/>
 		<Toaster />
 
-		<Provider>
-			<Component {...pageProps} />
-		</Provider>
-		
-		<Analytics />
+		<PlausibleProvider domain="mensa-radar.de">
+			<Provider>
+				<Component {...pageProps} />
+			</Provider>
+		</PlausibleProvider>
 		</>
 	)
 }
