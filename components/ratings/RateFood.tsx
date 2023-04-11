@@ -2,6 +2,7 @@ import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { getSessionId } from '../../lib/localStorageHelper';
+import { usePlausible } from 'next-plausible';
 
 export default function RateFood(
 	{
@@ -36,7 +37,7 @@ export default function RateFood(
 		// We only want to act when we're going from
 		// not-booped to booped.
 		if (!isVibrating) {
-		  return;
+			return;
 		}
 		const timeoutId = window.setTimeout(() => {
 			setIsVibrating(false);
@@ -48,11 +49,11 @@ export default function RateFood(
 		console.log("Vibrating");
 		if ("vibrate" in navigator) {
 			// vibration API supported
-		  navigator.vibrate(100);
+			navigator.vibrate(100);
 		}
 
 		return () => {
-		  window.clearTimeout(timeoutId);
+			window.clearTimeout(timeoutId);
 		};
 		// Trigger this effect whenever `isBooped`
 		// changes. We also listen for `timing` changes,
@@ -70,8 +71,6 @@ export default function RateFood(
 	const handleDrag = (e, data) => {
 		setOffsetX(data.x);
 		setRatingPercentage(data.x / (handleBar.current.offsetWidth - data.node.clientWidth - 8))
-
-		
 
 		var i = ((Math.round((ratingPercentage/25*100)*10)/10)+1).toString();
 		i = i.replace(".", ",");
@@ -110,6 +109,8 @@ export default function RateFood(
 			})
 		}).then(res => {
 			console.log(res);
+			const plausible = usePlausible()
+			plausible('Rating')
 		}).catch(err => {
 			console.error(err);
 		})

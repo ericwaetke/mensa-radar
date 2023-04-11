@@ -26,7 +26,7 @@ export const Pill = ({children, col = "", icon = "", className = ""}) => {
     }
 
     return (
-        <div className={`inline-flex flex-row gap-x-1 py-1 px-2.5 ${icon ? "pl-2" : null} ${colString} items-center rounded-full text-sm font-sans-reg ${className}`}>
+        <div className={`inline-flex flex-row h-full mt-1 gap-x-1 py-1 px-2.5 ${icon ? "pl-2" : null} ${colString} items-center rounded-full text-sm font-sans-reg ${className}`}>
             { icon ? <img  width="16" src={icon} /> : null } {children}
         </div>
     )

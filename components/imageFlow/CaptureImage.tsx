@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js"
+import { usePlausible } from "next-plausible"
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 
 const CaptureImageButton = ({
@@ -149,10 +150,13 @@ export const CaptureImage = (
 			.upload(fileName, file)
 	}
 
+	const plausible = usePlausible()
+
 	const saveImage = (nextStep: string = "close") => {
 		if(!processing) {
 			if(imageValid) {
 				attachImageToFood()
+				plausible("Upload Image")
 				if(nextStep === "close") {
 					setModalOpen(false)
 				} else if(nextStep === "rating") {

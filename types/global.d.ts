@@ -57,3 +57,8 @@ type RedirectPromt = {
 	recommendedRedirect: "montag" | "dienstag" | "mittwoch" | "donnerstag" | "freitag" | "samstag" | "sonntag",
 	shouldRedirectToTomorrow: boolean,
 }
+
+type PlausibleEvents = {
+	"Start Image Upload": never,
+	"Upload Image": never,
+}

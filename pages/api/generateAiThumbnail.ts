@@ -3,7 +3,7 @@ import { supabase } from '../../lib/getSupabaseClient';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
-        const { foodTitle, foodId } = req.body
+        const { foodTitle, foodId } = JSON.parse(req.body);
 
 		// Translate foodTitle to english using the DeepL API
 		const translatedFoodTitle = await fetch(`https://api-free.deepl.com/v2/translate?text=${foodTitle}&target_lang=en&source_lang=de`, {
@@ -19,16 +19,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			console.log(e)
 			return foodTitle
 		})
-
+		// foodtitle + "one centered plate, real food, high detail, food porn, yummy, professional food photography"
 
 		// Fetch Image from Diffuzers API
-		const base64image = await fetch('https://ai.ericwaetke.de/text2img/', {
+		await fetch('http://ai.ericwaetke.de:10000/text2img/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				prompt: `mdjrny-v4 style, photorealistic, ${foodTitle}, real food, high detail, food porn, yummy, professional food photography`,
+				prompt: `photorealistic, ${translatedFoodTitle}, real food, high detail, food porn, yummy, professional food photography`,
 				negative_prompt: "people",
 				scheduler: "EulerAncestralDiscreteScheduler",
 				image_height: 512,
@@ -51,15 +51,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 				.storage
 				.from('ai-thumbnails')
 				.upload(`thumbnail_${foodId}.png`, blob)
-				.then(_ => {
-					res.status(200).json({
-						message: 'success',
-						data: _
-					})
-					return _
+				.then(async _ => {
+					console.log("uploaded image to supabase")
+					await supabase
+							.from('food_offerings')
+							.update({ has_ai_thumbnail: true })
+							.eq('id', foodId)
+							.then(_ => {
+								console.log('success')
+							})
 				})
-		})
-
+				.catch(e => {
+					console.log(e)
+					throw e
+				})
+			})
+					
+			res.status(200).json({
+				message: 'success',
+			})
 	} catch (e) {
 		res.status(500).json({
 			e

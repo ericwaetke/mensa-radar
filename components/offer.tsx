@@ -11,6 +11,7 @@ import { BottomSheet } from "react-spring-bottom-sheet";
 import { Tooltip } from "react-tooltip"
 import { Pill } from "./pill";
 import Balancer from 'react-wrap-balancer'
+import { usePlausible } from "next-plausible";
 
 
 export const Offer = (
@@ -69,15 +70,19 @@ export const Offer = (
 
 	const sessionId = useRef(getSessionId())
 
+	const plausible = usePlausible()
+	
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
 	const openImageFlow = () => {
 		setCurrentModalContent("image");
 		setModalOpen(true);
+		plausible("Start Image Upload")
 	}
 	const openRatingFlow = () => {
 		setCurrentModalContent("rating");
 		setModalOpen(true);
+		plausible("Start Rating")
 	}
 
 	const [tempImage, setTempImage] = useState("");
@@ -92,6 +97,9 @@ export const Offer = (
 	// const [averageRatingString, setAverageRatingString] = useState("");
 	const averageRatingString = useMemo(() => getRatingString(averageRating), [averageRating]);
 
+
+	const [generatingAiThumbnail, setGeneratingAiThumbnail] = useState(true);
+
 	useEffect(() => {
 		setHasUserRated(offer.ratings.some(rating => rating.userSessionId === sessionId.current))
 		let userRating = offer.ratings.find(rating => rating.userSessionId === sessionId.current)?.rating;
@@ -99,7 +107,33 @@ export const Offer = (
 
 		setUserRating(userRating.toString())
 		// setAverageRatingString(getRatingString(averageRating))
+
+		// Check if Offer already has an image or AI Thumbnail
+		if (offer.imageUrls.length === 0 && !offer.has_ai_thumbnail && !offer.sold_out) {
+			// If not, generate a thumbnail
+			console.log("Generating Thumbnail for", offer.food_title)
+			fetch(`${process.env.NODE_ENV ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/generateAiThumbnail`, {
+				method: "POST",
+				body: JSON.stringify(
+					{
+						foodId: offer.id,
+						foodTitle: offer.food_title
+					}
+				)
+			}).then(res => {
+				console.log(res)
+				setGeneratingAiThumbnail(false)
+				setAiThumbnailUrl(generateUrls(`thumbnail_${offer.id}`))
+			})
+			.catch(err => {
+				console.log(err.json())
+			})
+		}
+		else if (offer.imageUrls.length > 0 && offer.has_ai_thumbnail) {
+			setAiThumbnailUrl(generateUrls(`thumbnail_${offer.id}`))
+		}
 	}, [])
+
 
 	const generateUrls = (imageName: string) => {
 		const params = new URLSearchParams({
@@ -112,6 +146,7 @@ export const Offer = (
 		})
 		return `${process.env.NODE_ENV ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
 	}
+	const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
 
 	return (<>
 		<BottomSheet
@@ -154,70 +189,80 @@ export const Offer = (
 
 			<div className={`rounded-2xl bg-white flex flex-col space-y-2 ${offer.sold_out ? "pb-6" : ""} `}>
 
-					<div className="px-2 pt-2">
+				<div className="flex flex-row">
+					<div className="px-2 pt-2 w-1/3">
 						{ offer.imageUrls.length > 0 || tempImage != "" ?
 							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
 								{
 									tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 								}
 							</div>
-						: offer.has_ai_thumbnail ? <>
-							<div className="w-full h-44 bg-lightshiny-green rounded-xl">
-								{
-									<img src={generateUrls(`thumbnail_${offer.id}`)} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-								}
+						: offer.has_ai_thumbnail || !generatingAiThumbnail ? <>
+							<div className="w-full h-44 bg-lightshiny-green rounded-xl relative">
+									<span className="top-1 left-1 flex gap-1 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med">
+										<svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+											<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+											<path d="M12 9v2m0 4v.01" />
+											<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
+										</svg>	
+										AI-Generiert
+									</span>
+									<img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+								
 							</div>
 						</> :
-							<div className={`w-full h-20 bg-gray/20 rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
-								{
-									<div onClick={() => openImageFlow()} className={`rounded-lg border border-gray/20 py-3 px-4 font-sans-med flex flex-row space-x-2 text-sm cursor-pointer`} >
-										<img src="/icons/camera.svg" className="w-4"></img>
-										<p>Foto hochladen</p>
-									</div>
-								}
+							<div className={`max-w-full w-32 h-2/3 bg-gray/20 rounded-tl-lg rounded-bl-md animate-pulse rounded-br-md rounded-tr-lg flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
+								<svg xmlns="http://www.w3.org/2000/svg" className="opacity-20" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+									<circle cx="12" cy="12" r=".5" fill="currentColor" />
+									<circle cx="12" cy="12" r="9" />
+								</svg>
 							</div>
 						}
 					</div>
 
-				<div className="flex flex-col space-y-4 text-sm">
-					<div className="px-6 flex-col space-y-2">
-						<Balancer>
-							<h2 className={`text-h2 font-serif-semi pt-2 ${offer.sold_out ? "text-gray/50" : ""}`}>
-								{offer.food_title}
-							</h2>
-						</Balancer>
+					<div className="flex flex-col space-y-4 text-sm w-2/3">
+						<div className="flex-col space-y-2">
+							<Balancer>
+								<h2 className={`text-h2 font-serif-semi pt-2 ${offer.sold_out ? "text-gray/50" : ""}`}>
+									{offer.food_title}
+								</h2>
+							</Balancer>
 
-						<Allergens allergens={offer.allergens}/>
-						<div className="flex flex-row gap-x-2 font-sans-med">
-							{ offer.sold_out ? <>
-							</> : <>
-								<Pill>
-									<p id={`price-students-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
-									<p className="text-gray/50">·</p>
-									<p className="text-gray/50" id={`price-others-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p>
-								</Pill>
-							</>
-							}
-							{
-								offer.sold_out ? <>
-								<Pill col={"black"}><p>😢</p> Ausverkauft</Pill>
-								</> : 
-								offer.vegan ? <>
-									<Pill col={"vegan"} icon={"/icons/vegan.svg"}>Vegan</Pill>
-								</> : offer.vegetarian ? <>
-									<Pill col={"vegeterian"} icon={"/icons/vegeterian.svg"}>Vegetarisch</Pill>
-								</> : offer.fish ? <>
-									<Pill col={"fish"} icon={"/icons/allergene/Fisch.svg"}>Fisch</Pill>
-								</> : offer.meat ? <>
-									<Pill col={"meat"} icon={"/icons/meat.svg"}>Fleisch</Pill>
-								</> : 
-								null
-							}
+							<Allergens allergens={offer.allergens}/>
+							<div className="flex flex-row gap-x-2 font-sans-med flex-wrap space-y-1">
+								{ offer.sold_out ? <>
+								</> : <>
+									<Pill>
+										<p id={`price-students-${offer.id}`} data-tooltip-content="Preis für Studierende">{formatter.format(offer.price_students)}</p>
+										<p className="text-gray/50">·</p>
+										<p className="text-gray/50" id={`price-others-${offer.id}`} data-tooltip-content="Preis für andere">{formatter.format(offer.price_other)}</p>
+									</Pill>
+								</>
+								}
+								{
+									offer.sold_out ? <>
+									<Pill col={"black"}><p>😢</p> Ausverkauft</Pill>
+									</> : 
+									offer.vegan ? <>
+										<Pill col={"vegan"} icon={"/icons/vegan.svg"}>Vegan</Pill>
+									</> : offer.vegetarian ? <>
+										<Pill col={"vegeterian"} icon={"/icons/vegeterian.svg"}>Vegetarisch</Pill>
+									</> : offer.fish ? <>
+										<Pill col={"fish"} icon={"/icons/allergene/Fisch.svg"}>Fisch</Pill>
+									</> : offer.meat ? <>
+										<Pill col={"meat"} icon={"/icons/meat.svg"}>Fleisch</Pill>
+									</> : 
+									null
+								}
+							</div>
+							{/* TODO: Rating */}
+
 						</div>
-						{/* TODO: Rating */}
-
 					</div>
-					{
+				</div>
+				<div>
+				{
 					ratings.length !== 0 ? <>
 						<div className="flex-row flex justify-between w-full px-6 border-t border-gray/20 h-12 items-center text-sm cursor-pointer" onClick={() => openRatingFlow()}>
 							<div className="flex-row flex space-x-1 font-sans-semi whitespace-nowrap">
@@ -264,8 +309,12 @@ export const Offer = (
 							</div>
 						</div>
 					</> : <>
-						<div className={`flex-row flex justify-center w-full border-t border-gray/20 h-12 items-center text-sm ${offer.sold_out ? "hidden" : ""} `} onClick={() => openRatingFlow()}>
-							<div className="flex-row flex border-gray/20 space-x-1 font-sans-semi h-full items-center">
+						<div className={`flex-row flex justify-center w-full border-t divide-x border-gray/20 h-12 items-center text-sm ${offer.sold_out ? "hidden" : ""} `}>
+							<div className="flex-row flex space-x-1 font-sans-med h-full justify-center items-center cursor-pointer w-full" onClick={() => openImageFlow()}>
+								<img src="/icons/camera.svg" className="w-4" />
+								<p>Foto</p>
+							</div>
+							<div className="flex-row flex border-gray/20 space-x-1 font-sans-semi h-full justify-center items-center w-full" onClick={() => openRatingFlow()}>
 								<p className="font-sans-med">Bewerten</p>
 								<img src="/icons/right-arrw.svg" className="w-4"></img>
 							</div>

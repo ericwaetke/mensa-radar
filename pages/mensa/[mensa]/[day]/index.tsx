@@ -17,6 +17,7 @@ import dynamic from 'next/dynamic'
 import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { NoFood } from '../../../../components/errors/NoFood';
+import { usePlausible } from 'next-plausible';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -74,10 +75,12 @@ export default function Mensa(
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState("");
+	const plausible = usePlausible()
 
 	const openNutrientsFlow = () => {
 		setCurrentModalContent("nutrients");
 		setModalOpen(true);
+		plausible("View Nutrients")
 	}
 	const openMensaSelectionFlow = () => {
 		setCurrentModalContent("mensaSelection");
