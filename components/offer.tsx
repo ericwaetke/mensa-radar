@@ -144,7 +144,7 @@ export const Offer = (
 			q: "80",
 			token: process.env.NEXT_PUBLIC_SUPABASE_KEY
 		})
-		return `${process.env.NODE_ENV ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
+		return `${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
 	}
 	const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
 
