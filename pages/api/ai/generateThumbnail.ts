@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { supabase } from '../../lib/getSupabaseClient';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
@@ -40,36 +39,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			})
 		})
 		.then(res => res.json())
-		.then(async (res) => {
-			const base64image = res.images[0]
+		.then(async (response) => {
+			const base64image = response.images[0]
 			
-			const b64toBlob = (base64, type = 'image/png') => fetch(`data:${type};base64,${base64}`).then(res => res.blob())
-			const blob = await b64toBlob(base64image)
-	
-			// upload the image to supabase bucket "ai_thumbnails"
-			await supabase
-				.storage
-				.from('ai-thumbnails')
-				.upload(`thumbnail_${foodId}.png`, blob)
-				.then(async _ => {
-					console.log("uploaded image to supabase")
-					await supabase
-							.from('food_offerings')
-							.update({ has_ai_thumbnail: true })
-							.eq('id', foodId)
-							.then(_ => {
-								console.log('success')
-							})
-				})
-				.catch(e => {
-					console.log(e)
-					throw e
-				})
-			})
-					
 			res.status(200).json({
 				message: 'success',
+                base64: base64image
 			})
+        })
+        .catch(e => {
+            console.log(e)
+            res.status(500).json({
+                e
+            });
+        })
 	} catch (e) {
 		res.status(500).json({
 			e

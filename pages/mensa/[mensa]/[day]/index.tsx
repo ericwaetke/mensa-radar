@@ -48,6 +48,7 @@ const DynamicOffer = dynamic<{
 	},
 	mensa: string | string[],
 	day: string | string[],
+	aiThumbnailBase64: string,
 	}>(() => import('../../../../components/offer').then(mod => mod.Offer), {
 	loading: () => <p>'Loading...'</p>,
 })
@@ -114,9 +115,52 @@ export default function Mensa(
 
 	const scrollPosition = useScrollPosition(50);
 
+	function uploadBase64toSupabase(base64: string, foodId: number) {
+		fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/uploadThumbnail/`,
+			{
+				method: "POST",
+				body: JSON.stringify(
+					{
+						foodId: foodId,
+						base64: base64
+					}	
+				)
+			}
+		)
+	}
+	const [generatedThumbnails, setGeneratedThumbnails] = useState(new Map<number, string>());
+	async function queueThumbnailGeneration() {
+		for await (const offer of foodOffers as FoodOffering[]) {
+			if (offer.imageUrls.length === 0 && !offer.has_ai_thumbnail && !offer.sold_out) {
+				console.log("Starting Generation")
+				await fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/generateThumbnail/`,
+					{
+						method: "POST",
+						body: JSON.stringify(
+							{
+								foodId: offer.id,
+								foodTitle: offer.food_title
+							}
+						)
+					}
+				)
+				.then(res => res.json())
+				.then(res => {
+					console.log(res)
+					if (res.message === "success") {
+						uploadBase64toSupabase(res.base64, offer.id);
+						setGeneratedThumbnails(generatedThumbnails.set(offer.id, res.base64));
+					}
+				})
+				.catch(err => console.log(err))
+			}
+		}
+	}
+
 	useEffect(() => {
 		setModalOpen(false);
 		setOpeningTimes(getOpeningTimes(currentMensa))
+		queueThumbnailGeneration();
 		// Update the Opening Times every minute
 		const interval = setInterval(() => {
 			setOpeningTimes(getOpeningTimes(currentMensa));
@@ -223,7 +267,7 @@ export default function Mensa(
 						// Show rest later
 						foodOffers?.map((offer, i) => {
 								return (
-									<DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} />
+									<DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} />
 								)
 						})
 					}
