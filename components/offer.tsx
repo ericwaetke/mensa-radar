@@ -112,7 +112,7 @@ export const Offer = (
 		if (offer.imageUrls.length === 0 && !offer.has_ai_thumbnail && !offer.sold_out) {
 			// If not, generate a thumbnail
 			console.log("Generating Thumbnail for", offer.food_title)
-			fetch(`${process.env.NODE_ENV ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/generateAiThumbnail`, {
+			fetch(`${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/generateAiThumbnail`, {
 				method: "POST",
 				body: JSON.stringify(
 					{
