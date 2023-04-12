@@ -27,8 +27,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
+				//prompt: `photorealistic, ${translatedFoodTitle}, food styling, long shot, lens 85 mm, f 11, studio photograph, ultra detailed, octane render, 8k`,
 				prompt: `photorealistic, ${translatedFoodTitle}, real food, high detail, food porn, yummy, professional food photography`,
-				negative_prompt: "people",
+				negative_prompt: "people, nude, naked",
 				scheduler: "EulerAncestralDiscreteScheduler",
 				image_height: 512,
 				image_width: 512,

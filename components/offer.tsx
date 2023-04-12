@@ -120,7 +120,13 @@ export const Offer = (
 		})
 		return `${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
 	}
+	const [localAiThumbnail, setLocalAiThumbnail] = useState("")
 	const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
+
+	useEffect(() => {
+		setLocalAiThumbnail(aiThumbnailBase64)
+		console.log("aiThumbnailBase64 has changed or router.asPath has changed")
+	}, [aiThumbnailBase64])
 
 	return (<>
 		<BottomSheet
@@ -171,20 +177,20 @@ export const Offer = (
 									tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length-1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 								}
 							</div>
-						: offer.has_ai_thumbnail || aiThumbnailBase64 ? <>
+						: offer.has_ai_thumbnail || localAiThumbnail ? <>
 							<div className="w-full h-44 bg-lightshiny-green rounded-xl relative">
-									<span className="top-1 left-1 flex gap-1 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med">
+									<span className="top-1 left-1 flex gap-1 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med text-white flex-wrap justify-center">
 										<svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
 											<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
 											<path d="M12 9v2m0 4v.01" />
 											<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
 										</svg>	
-										AI-Generiert
+										<span>AI-Generiert</span>
 									</span>
 									{
 										offer.has_ai_thumbnail 
 										? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-										: <img src={`data:image/png;base64,${aiThumbnailBase64}`} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+										: <img src={`data:image/png;base64,${localAiThumbnail}`} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
 									}
 							</div>
 						</> :

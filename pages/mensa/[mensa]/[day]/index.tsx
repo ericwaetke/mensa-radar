@@ -149,7 +149,7 @@ export default function Mensa(
 					console.log(res)
 					if (res.message === "success") {
 						uploadBase64toSupabase(res.base64, offer.id);
-						setGeneratedThumbnails(generatedThumbnails.set(offer.id, res.base64));
+						setGeneratedThumbnails(new Map(generatedThumbnails.set(offer.id, res.base64)));
 					}
 				})
 				.catch(err => console.log(err))
@@ -167,7 +167,7 @@ export default function Mensa(
 		}, 60 * 1000);
 
 		return () => clearInterval(interval);
-	}, [])
+	}, [router.asPath])
 
 	return (
 		<>
