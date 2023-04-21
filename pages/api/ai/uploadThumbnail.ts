@@ -11,8 +11,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			return;
 		}
 
-		// const b64toBlob = (base64, type = 'image/png') => fetch(`data:${type};base64,${base64}`).then(res => res.blob())
-		// const blob = await b64toBlob(base64)
+		const b64toBlob = (base64, type = 'image/png') => fetch(`data:${type};base64,${base64}`).then(res => res.blob())
+		const blob = await b64toBlob(base64)
 
 		// await supabase
 		// 	.storage
@@ -41,6 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json({
 			message: 'success',
 			foodId,
+			blob
 		})
 	} catch (e) {
 		res.status(500).json({
