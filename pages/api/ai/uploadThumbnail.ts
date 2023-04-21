@@ -41,7 +41,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json({
 			message: 'success',
 			foodId,
-			base64,
 		})
 	} catch (e) {
 		res.status(500).json({
