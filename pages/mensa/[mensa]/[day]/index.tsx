@@ -119,7 +119,7 @@ export default function Mensa(
   const scrollPosition = useScrollPosition(50);
 
   function uploadBase64toSupabase(base64: string, foodId: number) {
-    if (base64 !== "" && base64 !== undefined) {
+    if (base64 !== "" && base64 !== undefined && foodId) {
       fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/uploadThumbnail/`,
         {
           method: "POST",
