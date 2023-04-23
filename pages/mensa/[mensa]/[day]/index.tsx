@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 
 import { getWeekdayByName } from '../../../../lib/getWeekdayByName';
@@ -8,16 +8,16 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Modal from "react-modal";
 import { NutrientOverview } from '../../../../components/nutrients/nutrientOverview';
-import { SelectMensa } from '../../../../components/SelectMensa';
-import { supabase } from '../../../../lib/getSupabaseClient';
-import { getOpeningTimes } from '../../../../lib/getOpeningString';
 import { Pill } from '../../../../components/pill';
+import { SelectMensa } from '../../../../components/SelectMensa';
+import { getOpeningTimes } from '../../../../lib/getOpeningString';
+import { supabase } from '../../../../lib/getSupabaseClient';
 
-import dynamic from 'next/dynamic'
-import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { NoFood } from '../../../../components/errors/NoFood';
 import { usePlausible } from 'next-plausible';
+import dynamic from 'next/dynamic';
+import { NoFood } from '../../../../components/errors/NoFood';
+import useScrollPosition from '../../../../hooks/useScrollPosition';
 
 const DynamicOffer = dynamic<{
   offer: {
@@ -48,10 +48,13 @@ const DynamicOffer = dynamic<{
   },
   mensa: string | string[],
   day: string | string[],
+  triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
   aiThumbnailBase64: string,
 }>(() => import('../../../../components/offer').then(mod => mod.Offer), {
   loading: () => <p>'Loading...'</p>,
 })
+
+// export const runtime = "edge"
 
 export default function Mensa(
   {
@@ -59,7 +62,7 @@ export default function Mensa(
     mensaList,
     foodOffers
   }: InferGetServerSidePropsType<typeof getServerSideProps>
-) {
+): JSX.Element {
 
   const router = useRouter()
   const { mensa, day } = router.query
@@ -135,28 +138,32 @@ export default function Mensa(
     for await (const offer of foodOffers as FoodOffering[]) {
       if (offer.imageUrls.length === 0 && !offer.has_ai_thumbnail && !offer.sold_out) {
         console.log("Starting Generation")
-        await fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/generateThumbnail/`,
-          {
-            method: "POST",
-            body: JSON.stringify(
-              {
-                foodId: offer.id,
-                foodTitle: offer.food_title
-              }
-            )
-          }
-        )
-          .then(res => res.json())
-          .then(res => {
-            console.log(res)
-            if (res.message === "success") {
-              uploadBase64toSupabase(res.base64, offer.id);
-              setGeneratedThumbnails(new Map(generatedThumbnails.set(offer.id, res.base64)));
-            }
-          })
-          .catch(err => console.log(err))
+        await aiThumbnailGeneration(offer.id, offer.food_title)
       }
     }
+  }
+  async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
+    console.log("Generating AI Thumbnail")
+    return await fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/generateThumbnail/`,
+      {
+        method: "POST",
+        body: JSON.stringify(
+          {
+            foodId: foodId,
+            foodTitle: foodTitle
+          }
+        )
+      }
+    )
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.message === "success") {
+          uploadBase64toSupabase(res.base64, foodId);
+          setGeneratedThumbnails(new Map(generatedThumbnails.set(foodId, res.base64)));
+        }
+      })
+      .catch(err => console.log(err))
   }
 
   useEffect(() => {
@@ -269,7 +276,7 @@ export default function Mensa(
             // Show rest later
             foodOffers?.map((offer, i) => {
               return (
-                <DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} />
+                <DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} triggerAiThumbnailRegeneration={aiThumbnailGeneration} />
               )
             })
           }

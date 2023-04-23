@@ -37,7 +37,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         num_images: 1,
         guidance_scale: 7,
         steps: 50,
-        seed: generateSeed()
+        seed: generateSeed(16)
       })
     })
       .then(res => res.json())

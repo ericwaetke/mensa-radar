@@ -19,12 +19,14 @@ export const Offer = (
     offer,
     mensa,
     day,
-    aiThumbnailBase64
+    aiThumbnailBase64,
+    triggerAiThumbnailRegeneration
   }: {
     offer: FoodOffering
     mensa: string | string[],
     day: string | string[],
-    aiThumbnailBase64: string
+    aiThumbnailBase64: string,
+    triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
   }
 ) => {
 
@@ -126,12 +128,12 @@ export const Offer = (
   const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
 
   const regenerateAiThumbnail = () => {
-    setLocalAiThumbnail("")
+    setLocalAiThumbnail(null)
+    triggerAiThumbnailRegeneration(offer.id, offer.food_title)
   }
 
   useEffect(() => {
     setLocalAiThumbnail(aiThumbnailBase64)
-    console.log("aiThumbnailBase64 has changed or router.asPath has changed")
   }, [aiThumbnailBase64])
 
   return (<>
@@ -151,6 +153,8 @@ export const Offer = (
             setModalOpen={setModalOpen}
             setCurrentModalContent={setCurrentModalContent}
             setTempImage={setTempImage}
+
+            triggerAiThumbnailRegeneration={regenerateAiThumbnail}
 
             foodTitle={offer.food_title}
             foodId={offer.id} />
@@ -183,7 +187,7 @@ export const Offer = (
                   tempImage !== "" ? <img src={tempImage} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" /> : <img src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
                 }
               </div>
-              : offer.has_ai_thumbnail || localAiThumbnail ? <>
+              : offer.has_ai_thumbnail || (localAiThumbnail && localAiThumbnail !== "") ? <>
                 <div className="w-full h-44 bg-lightshiny-green rounded-xl relative">
                   <span className="top-1 left-1 flex gap-1 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med text-white flex-wrap justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">

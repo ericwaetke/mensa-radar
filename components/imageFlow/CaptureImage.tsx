@@ -4,31 +4,28 @@ import { ChangeEvent, useEffect, useState } from "react"
 
 const CaptureImageButton = ({
   label,
-  handleUpload
+  handleUpload,
 }: {
   label: string,
-  handleUpload: (e) => void
-}) => {
-  return (
-    <>
-      <label htmlFor="file_input" className="bg-main-green font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
-        <img src="/icons/camera.svg" className="w-5" />
-        <p>
-          {label}
-        </p>
-      </label>
-      <input
-        type="file"
-        accept="image/*"
-        className="hidden"
-        id="file_input"
-        onChange={(e) => {
-          handleUpload(e); // 👈 this will trigger when user selects the file.
-        }}
-      />
-    </>
-  )
-}
+  handleUpload: (e) => void,
+}) => (
+  <>
+    <label htmlFor="file_input" className="bg-main-green font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+      <img src="/icons/camera.svg" className="w-5" />
+      <p>
+        {label}
+      </p>
+    </label>
+    <input
+      type="file"
+      accept="image/*"
+      className="hidden"
+      id="file_input"
+      onChange={(e) => {
+        handleUpload(e) // 👈 this will trigger when user selects the file.
+      }} />
+  </>
+)
 
 export const CaptureImage = (
   {
@@ -36,12 +33,16 @@ export const CaptureImage = (
     setTempImage,
     setCurrentModalContent,
 
+    triggerAiThumbnailRegeneration,
+
     foodTitle,
     foodId,
   }: {
     setModalOpen: (open: boolean) => void,
     setTempImage: (image: string) => void,
     setCurrentModalContent: (content: string) => void,
+
+    triggerAiThumbnailRegeneration: () => void
 
     foodTitle: string,
     foodId: number,
@@ -260,7 +261,8 @@ export const CaptureImage = (
         {
           currentStep === "preparation" ? <>
             <CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
-            <button className="border border-gray font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+            <button className="border border-gray font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4"
+              onClick={() => triggerAiThumbnailRegeneration()}>
               ✨ AI Vorschau neu generieren ✨
             </button>
           </> : currentStep === "preview" ? <>
