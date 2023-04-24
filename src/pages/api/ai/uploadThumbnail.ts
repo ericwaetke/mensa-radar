@@ -17,7 +17,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     await supabase
       .storage
       .from('ai-thumbnails')
-      .upload(`thumbnail_${foodId}.png`, buffer)
+      .upload(`thumbnail_${foodId}.png`, buffer, {
+        contentType: 'image/png',
+      })
       .then(async _ => {
         console.log("uploaded image to supabase")
         await supabase

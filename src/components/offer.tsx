@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip"
 import { Pill } from "./pill";
 import Balancer from 'react-wrap-balancer'
 import { usePlausible } from "next-plausible";
+import Image from "next/image";
 
 
 export const Offer = (
@@ -199,7 +200,8 @@ export const Offer = (
                   </span>
                   {
                     offer.has_ai_thumbnail
-                      ? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+                      // ? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+                      ? <Image src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" layout="fill" />
                       : <img src={`data:image/png;base64,${localAiThumbnail}`} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
                   }
                 </div>

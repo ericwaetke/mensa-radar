@@ -8,6 +8,7 @@ import Footer from "../components/footer";
 import { getOpeningTimes } from "../lib/getOpeningString";
 import { useRouter } from "next/router";
 
+export const runtime = "edge"
 
 export default function Home(props) {
 	const router = useRouter()
