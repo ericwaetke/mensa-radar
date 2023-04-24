@@ -200,8 +200,8 @@ export const Offer = (
                   </span>
                   {
                     offer.has_ai_thumbnail
-                      // ? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-                      ? <Image src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" layout="fill" alt={offer.food_title} />
+                      ? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+                      // ? <Image src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" layout="fill" alt={offer.food_title} />
                       : <img src={`data:image/png;base64,${localAiThumbnail}`} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
                   }
                 </div>
