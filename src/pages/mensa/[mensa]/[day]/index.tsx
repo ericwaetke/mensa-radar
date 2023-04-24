@@ -54,7 +54,7 @@ const DynamicOffer = dynamic<{
   loading: () => <p>'Loading...'</p>,
 })
 
-export const runtime = "edge"
+export const runtime = "experimental-edge"
 
 export default function Mensa(
   {

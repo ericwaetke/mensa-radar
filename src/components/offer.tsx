@@ -190,7 +190,7 @@ export const Offer = (
               </div>
               : offer.has_ai_thumbnail || (localAiThumbnail && localAiThumbnail !== "") ? <>
                 <div className="w-full h-44 bg-lightshiny-green rounded-xl relative">
-                  <span className="top-1 left-1 flex gap-1 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med text-white flex-wrap justify-center">
+                  <span className="top-1 left-1 flex gap-1 z-10 absolute text-xs bg-gray/[.06] border-gray/[.17] border rounded-full py-1 px-2 backdrop-blur font-sans-med text-white flex-wrap justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M12 9v2m0 4v.01" />
@@ -201,7 +201,7 @@ export const Offer = (
                   {
                     offer.has_ai_thumbnail
                       // ? <img src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
-                      ? <Image src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" layout="fill" />
+                      ? <Image src={aiThumbnailUrl} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" layout="fill" alt={offer.food_title} />
                       : <img src={`data:image/png;base64,${localAiThumbnail}`} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
                   }
                 </div>
