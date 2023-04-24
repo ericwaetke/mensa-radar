@@ -23,7 +23,6 @@ const nextConfig = withPWA({
 			{
 				protocol: 'https',
 				hostname: '**.mensa-radar.de',
-				pathname: '/api/image/**',
 			}
 		],
 	},
