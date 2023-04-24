@@ -26,8 +26,8 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        "pages/mensa/[mensa]/[day]/[offer].ts",
-        "components/ratings/qualityRatingComponent.tsx+"
+        "src/pages/mensa/[mensa]/[day]/[offer].ts",
+        "src/components/ratings/qualityRatingComponent.tsx+"
     ],
     "exclude": [
         "node_modules"

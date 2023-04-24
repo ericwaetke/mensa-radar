@@ -12,12 +12,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	
 })
 
-// module.exports = withBundleAnalyzer({
-//     env: {
-//         NEXT_PUBLIC_ENV: 'PRODUCTION', //your next configs goes here
-//     },
-// })
-
 const nextConfig = withPWA({
 	pwa: {
 		dest: 'public',
