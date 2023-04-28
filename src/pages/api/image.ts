@@ -1,6 +1,7 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
 import sharp from "sharp"
+import { env } from "../../env"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const {
@@ -9,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	if (f && b) {
 		
-	const url = `${ process.env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/${ b }/${ f }?token=${ token }`
+	const url = `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/${ b }/${ f }?token=${ token }`
 	const buffer = (await axios({ url, responseType: "arraybuffer" })).data as Buffer
 
 	// here we create a new_params object to convert string to number, and also set default value

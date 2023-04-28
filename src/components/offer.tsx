@@ -13,6 +13,7 @@ import { Pill } from "./pill";
 import Balancer from 'react-wrap-balancer'
 import { usePlausible } from "next-plausible";
 import Image from "next/image";
+import { env } from "../env";
 
 
 export const Offer = (
@@ -121,7 +122,7 @@ export const Offer = (
       w: "512",
       h: null,    // set to null to keep image's aspect ratio
       q: "80",
-      token: process.env.NEXT_PUBLIC_SUPABASE_KEY
+      token: env.NEXT_PUBLIC_SUPABASE_KEY
     })
     return `${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
   }

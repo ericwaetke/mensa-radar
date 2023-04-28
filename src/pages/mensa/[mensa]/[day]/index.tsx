@@ -18,6 +18,7 @@ import { usePlausible } from 'next-plausible';
 import dynamic from 'next/dynamic';
 import { NoFood } from '../../../../components/errors/NoFood';
 import useScrollPosition from '../../../../hooks/useScrollPosition';
+import { env } from '../../../../env';
 
 const DynamicOffer = dynamic<{
   offer: {
@@ -406,7 +407,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         b: "food-images",
         w: windowWidth.toString(),
         q: "80",
-        token: process.env.SOLID_APP_PUBLIC_SUPABASE_KEY || ""
+        token: env.NEXT_PUBLIC_SUPABASE_KEY || ""
       })
 
       return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`

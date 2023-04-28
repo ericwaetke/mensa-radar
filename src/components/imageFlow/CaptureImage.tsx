@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { usePlausible } from "next-plausible"
 import { ChangeEvent, useEffect, useState } from "react"
+import { env } from "../../env"
 
 const CaptureImageButton = ({
   label,
@@ -60,8 +61,8 @@ export const CaptureImage = (
   const [errorMessage, setErrorMessage] = useState("")
   const [retryCount, setRetryCount] = useState(0)
 
-  const [supabaseUrl, setSupabaseUrl] = useState(process.env.NEXT_PUBLIC_SUPABASE_URL);
-  const [supabaseKey, setSupabaseKey] = useState(process.env.NEXT_PUBLIC_SUPABASE_KEY);
+  const [supabaseUrl, setSupabaseUrl] = useState(env.NEXT_PUBLIC_SUPABASE_URL);
+  const [supabaseKey, setSupabaseKey] = useState(env.NEXT_PUBLIC_SUPABASE_KEY);
   // const supabase = useRef(createClient(supabaseUrl, supabaseKey)).current
 
   const resetFileName = () => {
@@ -143,7 +144,7 @@ export const CaptureImage = (
 
   const uploadFileToSupabase = (file: File, fileName: string) => {
     console.log(file, fileName)
-    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY)
+    const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_KEY)
 
     return supabase.storage
       .from("food-images")

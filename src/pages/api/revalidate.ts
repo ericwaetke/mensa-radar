@@ -4,6 +4,7 @@ import { supabase } from "../../lib/getSupabaseClient";
 import { getAllMensaDataFromSTW } from "../../lib/getMensaData";
 import dayjs from "dayjs";
 import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import { env } from "../../env";
 dayjs.extend(isSameOrAfter.default)
 
 const getMensaId = {
@@ -151,7 +152,7 @@ const refreshData = async (mensa: string) => {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 		// Check for secret to confirm this is a valid request
 
-		if (req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`) {
+		if (req.headers.authorization !== `Bearer ${env.REVALIDATION_TOKEN}`) {
 			return res.status(401).json({ message: 'Invalid token: ' + req.headers.authorization })
 		}
 	

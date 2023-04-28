@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { generateSeed } from '../../../lib/generateSeed';
+import { env } from '../../../env';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -9,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const translatedFoodTitle = await fetch(`https://api-free.deepl.com/v2/translate?text=${foodTitle}&target_lang=en&source_lang=de`, {
       method: 'POST',
       headers: {
-        'Authorization': `DeepL-Auth-Key ${process.env.DEEPL_API_KEY}`,
+        'Authorization': `DeepL-Auth-Key ${env.DEEPL_API_KEY}`,
       },
 
     })
