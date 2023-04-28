@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { usePlausible } from "next-plausible"
 import { ChangeEvent, useEffect, useState } from "react"
-import { env } from "../../env"
+import { env } from "../../env.mjs"
 
 const CaptureImageButton = ({
   label,

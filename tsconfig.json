@@ -28,7 +28,7 @@
         "**/*.tsx",
         "src/pages/mensa/[mensa]/[day]/[offer].ts",
         "src/components/ratings/qualityRatingComponent.tsx+"
-    ],
+, "src/env.mjs"    ],
     "exclude": [
         "node_modules"
     ],

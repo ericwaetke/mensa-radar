@@ -13,7 +13,7 @@ import { Pill } from "./pill";
 import Balancer from 'react-wrap-balancer'
 import { usePlausible } from "next-plausible";
 import Image from "next/image";
-import { env } from "../env";
+import { env } from "../env.mjs";
 
 
 export const Offer = (

@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import Footer from "../components/footer";
 import { getOpeningTimes } from "../lib/getOpeningString";
 import { useRouter } from "next/router";
-import { env } from "../env";
+import { env } from "../env.mjs";
 
 export const runtime = "experimental-edge"
 

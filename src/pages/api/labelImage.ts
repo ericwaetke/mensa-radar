@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import sharp from "sharp"
 
 import vision from "@google-cloud/vision"
-import { env } from "../../env"
+import { env } from "../../env.mjs"
 
 const getJSONCredentials = () => {
 	return {

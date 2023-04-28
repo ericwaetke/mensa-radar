@@ -2,7 +2,7 @@ import { getAllMensaDataFromSTW } from '../../lib/getMensaData';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDates } from '../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
-import { env } from '../../env';
+import { env } from '../../env.mjs';
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = env.SUPABASE_KEY;

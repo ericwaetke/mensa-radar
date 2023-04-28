@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { generateSeed } from '../../../lib/generateSeed';
-import { env } from '../../../env';
+import { env } from '../../../env.mjs';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {

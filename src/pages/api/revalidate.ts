@@ -4,7 +4,7 @@ import { supabase } from "../../lib/getSupabaseClient";
 import { getAllMensaDataFromSTW } from "../../lib/getMensaData";
 import dayjs from "dayjs";
 import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import { env } from "../../env";
+import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
 const getMensaId = {

@@ -18,7 +18,7 @@ import { usePlausible } from 'next-plausible';
 import dynamic from 'next/dynamic';
 import { NoFood } from '../../../../components/errors/NoFood';
 import useScrollPosition from '../../../../hooks/useScrollPosition';
-import { env } from '../../../../env';
+import { env } from '../../../../env.mjs';
 
 const DynamicOffer = dynamic<{
   offer: {

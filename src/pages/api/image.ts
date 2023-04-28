@@ -1,7 +1,7 @@
 import axios from "axios"
 import { NextApiRequest, NextApiResponse } from "next"
 import sharp from "sharp"
-import { env } from "../../env"
+import { env } from "../../env.mjs"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const {
