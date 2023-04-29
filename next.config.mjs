@@ -1,7 +1,9 @@
-const runtimeCaching = require("next-pwa/cache");
 import "./src/env.mjs";
+/** @type {import('next').NextConfig} */
+// Import next-pwa 
+import * as nextPWA from 'next-pwa';
 
-const withPWA = require("next-pwa")({
+const withPWA = nextPWA({
 	dest: "public",
 	register: true,
 	skipWaiting: true,
@@ -13,7 +15,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true',
 })
 
-/** @type {import("next").NextConfig} */
+
 const nextConfig = withPWA({
 	images: {
 		remotePatterns: [

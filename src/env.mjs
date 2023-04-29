@@ -4,8 +4,8 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		SUPABASE_KEY: z.string().min(200),
-		CLOUD_VISION_KEY_ID: z.string().min(200),
-		CLOUD_VISION_KEY: z.string().min(200),
+		CLOUD_VISION_KEY_ID: z.string().min(30),
+		CLOUD_VISION_KEY: z.string(),
 
 		DEEPL_API_KEY: z.string().min(30),
 
