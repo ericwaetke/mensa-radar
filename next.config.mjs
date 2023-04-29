@@ -7,7 +7,6 @@ const withPWA = nextPWA({
 	dest: "public",
 	register: true,
 	skipWaiting: true,
-	runtimeCaching: nextPWA.runtimeCaching,
 	buildExcludes: [/middleware-manifest.json$/],
 });
 
