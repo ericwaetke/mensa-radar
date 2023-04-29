@@ -1,21 +1,34 @@
 import "./src/env.mjs";
 /** @type {import('next').NextConfig} */
 // Import next-pwa 
-import * as nextPWA from 'next-pwa';
+import nextPWA from "next-pwa";
+import runtimeCaching from "next-pwa/cache.js";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const withPWA = nextPWA({
 	dest: "public",
 	register: true,
 	skipWaiting: true,
+	runtimeCaching,
+	disable: process.env.NODE_ENV === "development",
 	buildExcludes: [/middleware-manifest.json$/],
 });
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+/**
+ * @template {import('next').NextConfig} T
+ * @param {T} config - A generic parameter that flows through the return type
+ * @constraint {{import('next').NextConfig}}
+ */
+function defineNextConfig(config) {
+	return config;
+}
+
+const bundleAnalyzer = withBundleAnalyzer({
 	enabled: process.env.ANALYZE === 'true',
 })
 
 
-const nextConfig = withPWA({
+const nextConfig = defineNextConfig({
 	images: {
 		remotePatterns: [
 			{
@@ -30,14 +43,11 @@ const nextConfig = withPWA({
 			}
 		],
 	},
-	pwa: {
-		dest: 'public',
-		disable: process.env.NODE_ENV === 'production' ? false : true
-	},
 	api: {
 		bodyParser: {
 			sizeLimit: '20mb' // Set desired value here
 		}
 	}
 });
-module.exports = nextConfig;
+
+export default withPWA(nextConfig);
