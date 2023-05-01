@@ -3,7 +3,6 @@ import "./src/env.mjs";
 // Import next-pwa 
 import nextPWA from "next-pwa";
 import runtimeCaching from "next-pwa/cache.js";
-import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const withPWA = nextPWA({
 	dest: "public",
