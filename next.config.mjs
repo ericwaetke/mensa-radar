@@ -42,11 +42,6 @@ const nextConfig = defineNextConfig({
 				pathname: '/storage/**',
 			},
 		],
-	},
-	api: {
-		bodyParser: {
-			sizeLimit: '20mb' // Set desired value here
-		}
 	}
 });
 
