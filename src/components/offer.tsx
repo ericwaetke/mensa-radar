@@ -149,7 +149,8 @@ export const Offer = (
         </> : <>
           <RateFoodHeader foodTitle={offer.food_title} />
         </>
-      }>
+      }
+      blocking={true}>
       {
         currentModalContent == "image" ? <>
           <CaptureImage
