@@ -1,0 +1,179 @@
+.radar {
+	/* background: #000; */
+	/* height: 128px; */
+	aspect-ratio: 1/1;
+	width: 100%;
+	position: relative;
+	grid-row: 1;
+	grid-column: 1;
+	place-self: end;
+	margin-bottom: -128px;
+	margin-right: -64px;
+}
+/* Media Query for Tablets and Desktops */
+@media (min-width: 768px) {
+	.radar {
+		width: 50%;
+	}
+}
+
+.outer_circle::before{
+
+	/* must have! Pseudo-elements don't appear if the content property is not declared */
+	content: "";
+
+	/* set dimensions equal to their parent */
+	width: 100%;
+	height: 100%;
+	border-radius: 50%; /* make it a circle */;
+	border: 3px solid #000000;
+
+	/* perfectly overlap them with their parent */
+	position: absolute;
+}
+
+.outer_circle:before{
+	opacity: 0;
+}
+
+.outer_circle:nth-child(1):before{
+	/* write code so far here */
+	animation: ripple 10s infinite linear;
+	animation-delay: 0s;
+}
+.outer_circle:nth-child(2):before{
+	/* write code so far here */
+	animation: ripple 10s infinite linear;
+	animation-delay: 2s;
+}
+.outer_circle:nth-child(3):before{
+	/* write code so far here */
+	animation: ripple 10s infinite linear;
+	animation-delay: 4s;
+}
+.outer_circle:nth-child(4):before{
+	/* write code so far here */
+	animation: ripple 10s infinite linear;
+	animation-delay: 6s;
+}
+.outer_circle:nth-child(5):before{
+	/* write code so far here */
+	animation: ripple 10s infinite linear;
+	animation-delay: 8s;
+}
+
+.topf {
+	height: 10%;
+	position: absolute;
+	opacity: .0;
+
+}
+.topf:nth-of-type(1) {
+	top: 30%;
+	left: 28%;
+	transform: rotate(-17deg);
+	opacity: .05;
+	animation: pulse-20 2s ease-out 4.5s infinite;
+}
+.topf:nth-of-type(2) {
+	top: 44%;
+	left: 75%;
+	transform: rotate(3deg);
+	opacity: .05;
+	animation: pulse-10 2s ease-out 5.8s infinite;
+}
+.topf:nth-of-type(3) {
+	top: 55%;
+	left: 50%;
+	transform: rotate(6deg);
+	opacity: .05;
+	animation: pulse-30 2s ease-out 2s infinite;
+}
+.topf:nth-of-type(4) {
+	top: 10%;
+	left: 70%;
+	transform: rotate(-8deg);
+	opacity: .05;
+	animation: pulse-10 2s ease-out 8.4s infinite;
+}
+.topf:nth-of-type(5) {
+	top: 64%;
+	left: 30%;
+	transform: rotate(-3deg);
+	opacity: .05;
+	animation: pulse-20 2s ease-out 4.8s infinite;
+}
+
+@keyframes ripple {
+	0% {
+		transform: scale(0);
+		opacity: .15;
+		border: 0px solid #000000;
+	}
+	10% {
+		border: 3px solid #000000;
+
+	}
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+@keyframes pulse-30 {
+	0% {
+		opacity: .3;
+	}
+	
+	100% {
+		opacity: .05;
+	}
+}
+@keyframes pulse-20 {
+	0% {
+		opacity: .20;
+	}
+	
+	100% {
+		opacity: .05;
+	}
+}
+@keyframes pulse-10 {
+	0% {
+		opacity: .1;
+	}
+	
+	100% {
+		opacity: .05;
+	}
+}
+
+
+
+/*  AI Text  */
+
+.ai_text {
+	--bg-size: 400%;
+	--color-one: rgb(255, 230, 112);
+	--color-two: rgb(255, 100, 100);
+	--color-three: rgb(0, 93, 219);
+	background: linear-gradient(
+		90deg,
+		var(--color-one),
+		var(--color-two),
+		var(--color-one)
+	)
+	0 0 / var(--bg-size) 100%;
+	color: transparent;
+	background-clip: text;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.ai_text {
+		animation: move-bg 8s linear infinite;
+	}
+	@keyframes move-bg {
+		to {
+			background-position: var(--bg-size) 0;
+		}
+	}
+}

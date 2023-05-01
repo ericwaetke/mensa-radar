@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  content: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   mode: 'jit',
   theme: {
     container: {
@@ -16,6 +16,7 @@ module.exports = {
       'sans-med': ["Noto-Medium", "sans-med"],
       'sans-semi': ["Noto-Semi", "sans-semibold"],
       'sans-bold': ["Noto-Bold", "sans-bold"],
+      'sans-black': ["Noto-Black", "sans-black"],
     },
     screens: {
       'xs': '400px',
@@ -37,10 +38,10 @@ module.exports = {
     extend: {
       colors: {
         //green
-        'light-green': '#E2EEE3',
+        'light-green': '#CFE0D1',
         
         //foto-bg
-        'lightshiny-green': '#B9D8C2',
+        'lightshiny-green': '#B3C0B5',
         'main-green': '#88E2A1',
         'dark-green': '#008C25',
 
