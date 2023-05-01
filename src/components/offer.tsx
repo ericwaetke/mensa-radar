@@ -183,15 +183,15 @@ export const Offer = (
 
         <div className="flex flex-col">
           <div className="w-full p-4 bg-lightshiny-green border-b border-gray/20 rounded-t-xl">
-            <div className="w-full xs:w-4/6 m-auto h-min-20 rounded-xl">
+            <div className="w-full xs:max-w-sm  max-w-xs m-auto h-min-20 rounded-lg">
               {offer.imageUrls.length > 0 || tempImage != "" ?
                 <>
                  <div onClick={() => openImageFlow()}  className="relative h-52 w-4/6 m-auto cursor-pointer "> 
                   {
                     tempImage !== "" ?
-                      <img src={tempImage} className="h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+                      <img src={tempImage} className="h-full object-cover rounded-lg" />
                       :
-                      <img src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-tl-lg rounded-bl-md rounded-br-md rounded-tr-lg" />
+                      <img src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" />
                   }
                     <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                           <span>Nutzer:innen-Foto</span>
@@ -206,7 +206,7 @@ export const Offer = (
                   {
                     offer.has_ai_thumbnail
                       ? <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
-                        <img className="w-full h-full object-cover rounded-xl" src={aiThumbnailUrl}/>
+                        <img className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl}/>
                         
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -220,7 +220,22 @@ export const Offer = (
                           <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
                         </span>
                       </div>
-                      : <img src={`data:image/png;base64,${localAiThumbnail}`} onClick={() => openImageFlow()}  className="relative h-40 w-full m-auto cursor-pointer " />
+                      : 
+
+                      <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
+                        <img src={`data:image/png;base64,${localAiThumbnail}`} onClick={() => openImageFlow()}  className="relative w-full h-full rounded-lg object-cover" />
+                        <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 9v2m0 4v.01" />
+                            <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
+                          </svg>
+                          <span>AI-Generiert</span>
+                        </span>
+                        <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
+                          <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
+                        </span>
+                      </div>
                   }
                 </> :
                   <div className={`max-w-full h-full bg-gray/20 rounded-lg animate-pulse flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
