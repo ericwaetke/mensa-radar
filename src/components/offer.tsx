@@ -186,13 +186,13 @@ export const Offer = (
             <div className="w-full xs:max-w-sm  max-w-xs m-auto h-min-20 rounded-lg">
               {offer.imageUrls.length > 0 || tempImage != "" ?
                 <>
-                 <div onClick={() => openImageFlow()}  className="relative h-52 w-4/6 m-auto cursor-pointer "> 
-                  {
-                    tempImage !== "" ?
-                      <img src={tempImage} className="h-full object-cover rounded-lg" />
-                      :
-                      <img src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" />
-                  }
+                  <div onClick={() => openImageFlow()}  className="relative h-52 w-4/6 m-auto cursor-pointer "> 
+                    {
+                      tempImage !== "" ?
+                        <img src={tempImage} className="h-full object-cover rounded-lg" />
+                        :
+                        <Image src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" layout="fill"/>
+                    }
                     <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                           <span>Nutzer:innen-Foto</span>
                         </span>
@@ -206,7 +206,7 @@ export const Offer = (
                   {
                     offer.has_ai_thumbnail
                       ? <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
-                        <img className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl}/>
+                        <Image className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl} layout="fill" key={offer.id}/>
                         
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">

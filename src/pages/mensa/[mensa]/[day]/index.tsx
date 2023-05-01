@@ -19,6 +19,7 @@ import dynamic from 'next/dynamic';
 import { NoFood } from '../../../../components/errors/NoFood';
 import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { env } from '../../../../env.mjs';
+import dayjs from 'dayjs';
 
 const DynamicOffer = dynamic<{
   offer: {
@@ -75,7 +76,9 @@ export default function Mensa(
 
   // get current weekday
   const selectedWeekday = getWeekdayByName(day);
-  const currentWeekday = new Date().getDate() - ((new Date().getDay() + 6) % 7);
+
+  // Subtracting one to start with monday
+  const currentWeekday = new Date().getDate() - ((new Date().getDay() + 6) % 7) - 1;
   const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag'];
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -277,7 +280,7 @@ export default function Mensa(
             // Show rest later
             foodOffers?.map((offer, i) => {
               return (
-                <DynamicOffer key={i} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} triggerAiThumbnailRegeneration={aiThumbnailGeneration} />
+                <DynamicOffer key={offer.id} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} triggerAiThumbnailRegeneration={aiThumbnailGeneration} />
               )
             })
           }
