@@ -23,11 +23,6 @@ function defineNextConfig(config) {
 	return config;
 }
 
-const bundleAnalyzer = withBundleAnalyzer({
-	enabled: process.env.ANALYZE === 'true',
-})
-
-
 const nextConfig = defineNextConfig({
 	images: {
 		remotePatterns: [
