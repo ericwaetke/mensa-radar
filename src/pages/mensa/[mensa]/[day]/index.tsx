@@ -412,7 +412,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         q: "80",
         token: env.NEXT_PUBLIC_SUPABASE_KEY || ""
       })
-
+      return `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/food-images/${ imageName }?token=${ env.NEXT_PUBLIC_SUPABASE_KEY }`
       return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
     }
 

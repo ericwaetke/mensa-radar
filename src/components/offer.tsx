@@ -124,6 +124,7 @@ export const Offer = (
       q: "80",
       token: env.NEXT_PUBLIC_SUPABASE_KEY
     })
+    return `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/ai-thumbnails/${ imageName + ".png" }?token=${ env.NEXT_PUBLIC_SUPABASE_KEY }`
     return `${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
   }
   const [localAiThumbnail, setLocalAiThumbnail] = useState("")

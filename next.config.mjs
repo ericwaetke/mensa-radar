@@ -40,7 +40,13 @@ const nextConfig = defineNextConfig({
 			{
 				protocol: 'https',
 				hostname: '**.mensa-radar.de',
-			}
+			},
+			// Supabase Storage
+			{
+				protocol: 'https',
+				hostname: 'bqfzesnwsvziyglfeezk.supabase.co',
+				pathname: '/storage/**',
+			},
 		],
 	},
 	api: {
