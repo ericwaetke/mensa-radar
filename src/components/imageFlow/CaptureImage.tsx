@@ -200,7 +200,7 @@ export const CaptureImage = (
   }, [])
 
   return (
-    <div className="bg-light-green flex flex-col justify-between text-center sm:max-w-md mx-auto">
+    <div className="flex flex-col justify-between text-center sm:max-w-md mx-auto">
 
       {/* Second Row in Flexbox */}
       <div className="p-7 pt-0 font-sans-reg">
@@ -220,8 +220,8 @@ export const CaptureImage = (
               Bist du mit dem Foto zufrieden?
             </h2>
             {/* Image Holder */}
-            <div className="h-56 bg-black rounded-xl my-3">
-              {modalTempImage !== "" ? <img src={modalTempImage} className="h-full w-full object-cover rounded-xl" /> : null}
+            <div className="h-52 w-56 bg-black rounded-xl my-3 m-auto">
+              {modalTempImage !== "" ? <img src={modalTempImage} className="h-full object-cover rounded-xl" /> : null}
 
             </div>
 
@@ -262,9 +262,10 @@ export const CaptureImage = (
         {
           currentStep === "preparation" ? <>
             <CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
-            <button className="border border-gray font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4"
+            <button className="border hidden border-gray font-sans-semi h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-1 cursor-pointer px-4"
               onClick={() => triggerAiThumbnailRegeneration()}>
-              ✨ AI Vorschau neu generieren ✨
+              <img className="w-6" src="/icons/star.svg"></img>
+              AI-Vorschau neu generieren
             </button>
           </> : currentStep === "preview" ? <>
 

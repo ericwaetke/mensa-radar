@@ -117,7 +117,7 @@ export default function RateFood(
 	}
 
 	return (
-		<div className="bg-light-green flex gap-6 flex-col justify-between text-center lg:max-w-lg  mx-auto w-full">
+		<div className="bg-green flex gap-6 flex-col justify-between text-center lg:max-w-lg  mx-auto w-full">
 			{/* Second Row in Flexbox */}
 			<div className="px-4 font-sans-reg w-full space-y-2">
 				<div className={`text-4xl flex flex-start flex-col w-14 space-y-1`} style={{transform: `translate(${offsetX}px)`}}>

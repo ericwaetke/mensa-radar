@@ -272,7 +272,7 @@ export default function Mensa(
           ) : null
         }
 
-        <div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-16 pt-40">
+        <div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-16 pt-32">
           {
             // Show rest later
             foodOffers?.map((offer, i) => {

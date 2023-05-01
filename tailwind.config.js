@@ -38,10 +38,10 @@ module.exports = {
     extend: {
       colors: {
         //green
-        'light-green': '#E2EEE3',
+        'light-green': '#CFE0D1',
         
         //foto-bg
-        'lightshiny-green': '#B9D8C2',
+        'lightshiny-green': '#B3C0B5',
         'main-green': '#88E2A1',
         'dark-green': '#008C25',
 
