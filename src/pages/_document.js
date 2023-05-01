@@ -12,6 +12,8 @@ class MyDocument extends Document {
         <Head>
             <link rel="manifest" href="/manifest.json" />
             <link rel="apple-touch-icon" href="/icon-apple-touch.png" />
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+            <link rel="icon" type="image/png" href="/favicon.png" />
         </Head>
         {/* <body style={{background: '#E5E7E5'}}> */}
         <body className='bg-light-green'>

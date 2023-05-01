@@ -192,7 +192,7 @@ export const Offer = (
                       tempImage !== "" ?
                         <img src={tempImage} className="h-full object-cover rounded-lg" />
                         :
-                        <Image src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" layout="fill"/>
+                        <Image src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" layout="fill" />
                     }
                     <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                           <span>Nutzer:innen-Foto</span>
