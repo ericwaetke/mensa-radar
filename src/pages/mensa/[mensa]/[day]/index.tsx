@@ -70,6 +70,8 @@ export default function Mensa(
   const { mensa, day } = router.query
   const [openingTimes, setOpeningTimes] = useState<{ open: boolean, text: string }>({ open: false, text: "" });
 
+  const [path, setPath] = useState(router.asPath.split("#"))
+
   useEffect(() => {
     setModalOpen(false);
   }, [mensa, day]);
@@ -182,6 +184,10 @@ export default function Mensa(
     return () => clearInterval(interval);
   }, [router.asPath])
 
+  const getFoodDataById = (id: string): FoodOffering => {
+    return foodOffers.find((foodOffer: FoodOffering) => foodOffer.id === parseInt(id))
+  }
+
   return (
     <>
       <Modal
@@ -205,7 +211,17 @@ export default function Mensa(
       </Modal>
       <div className="mx-auto flex flex-col">
         <Head>
-          <title>{currentMensa.name} - Mensa Radar</title>
+          {
+            path[1] ?
+              <>
+                <meta property="og:url" content={`https://mensa-radar.de${path[0]}`} /> :
+                <meta property="og:url" content={`https://mensa-radar.de${path[0]}#${path[1]}`} />
+                <title>{getFoodDataById(path[1]).food_title} - Mensa Radar</title>
+                <meta property="og:image" content={`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://mensa-radar.de/"}api/og/singleMeal?id=${path[1]}`} />
+              </> : <>
+                <title>{currentMensa.name} - Mensa Radar</title>
+              </>
+          }
         </Head>
 
         <div className={`p-3 fixed ${modalOpen ? null : "z-10"} w-full bg-light-green border-b border-gray/10`}>
@@ -405,15 +421,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
 
     const generateUrls = (imageName: string) => {
-      const params = new URLSearchParams({
-        f: imageName,
-        b: "food-images",
-        w: windowWidth.toString(),
-        q: "80",
-        token: env.NEXT_PUBLIC_SUPABASE_KEY || ""
-      })
       return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/food-images/${imageName}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
-      return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
     }
 
     const imageUrls = images!.map(image => generateUrls(image.image_name))
