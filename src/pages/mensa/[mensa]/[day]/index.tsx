@@ -124,7 +124,7 @@ export default function Mensa(
 
   function uploadBase64toSupabase(base64: string, foodId: number) {
     if (base64 !== "" && base64 !== undefined && foodId) {
-      fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/uploadThumbnail/`,
+      fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/ai/uploadThumbnail/`,
         {
           method: "POST",
           body: JSON.stringify(
@@ -148,7 +148,7 @@ export default function Mensa(
   }
   async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
     console.log("Generating AI Thumbnail")
-    return await fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://next.mensa-radar.de"}/api/ai/generateThumbnail/`,
+    return await fetch(`${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://mensa-radar.de"}/api/ai/generateThumbnail/`,
       {
         method: "POST",
         body: JSON.stringify(
@@ -412,7 +412,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         q: "80",
         token: env.NEXT_PUBLIC_SUPABASE_KEY || ""
       })
-      return `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/food-images/${ imageName }?token=${ env.NEXT_PUBLIC_SUPABASE_KEY }`
+      return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/food-images/${imageName}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
       return `${dev ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
     }
 
