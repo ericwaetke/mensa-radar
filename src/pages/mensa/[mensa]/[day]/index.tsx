@@ -63,11 +63,15 @@ export default function Mensa(
     currentMensa,
     mensaList,
     foodOffers
-  }: InferGetServerSidePropsType<typeof getServerSideProps>
+  }: {
+    currentMensa: MensaData,
+    mensaList: MensaList,
+    foodOffers: FoodOffering[]
+  }
 ): JSX.Element {
 
   const router = useRouter()
-  const { mensa, day } = router.query
+  const { mensa, day } = router.query !== undefined ? router.query : { mensa: currentMensa.name, day: "freitag" };
   const [openingTimes, setOpeningTimes] = useState<{ open: boolean, text: string }>({ open: false, text: "" });
 
   const [path, setPath] = useState(router.asPath.split("#"))
