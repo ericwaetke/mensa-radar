@@ -15,6 +15,7 @@ const getMensaId = {
   'filmuniversitaet': 5,
   'griebnitzsee': 6,
   'wildau': 7,
+  'cafeteria-neues-palais': 8,
 }
 
 const refreshData = async (mensa: string) => {
@@ -35,7 +36,7 @@ const refreshData = async (mensa: string) => {
 
   let returnableChanges = [];
   // Cycling through each day of the STW Data and see if there are any changes to the already stored data
-  await Object.keys(sortedStwData).map(async (date) => {
+  Object.keys(sortedStwData).map(async (date) => {
     // Get MongoDB Data by date
     const { data: dbData, error } = await supabase
       .from('food_offerings')
