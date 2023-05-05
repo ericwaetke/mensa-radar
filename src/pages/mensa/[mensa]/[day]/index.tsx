@@ -227,21 +227,10 @@ export default function Mensa(
 				}
 			</Modal>
 			<div className="mx-auto flex flex-col">
-				{
-					path[1] ?
-						<>
-							<Head>
-								<meta property="og:url" content={`https://mensa-radar.de${path[0]}`} /> :
-								<meta property="og:url" content={`https://mensa-radar.de${path[0]}#${path[1]}`} />
-								<meta property="og:image" content={`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://mensa-radar.de/"}api/og/singleMeal?id=${path[1]}`} />
-								<title>{getFoodDataById(path[1]).food_title} - Mensa Radar</title>
-							</Head>
-						</> : <>
+
 							<Head>
 								<title>{currentMensa.name} - Mensa Radar</title>
 							</Head>
-						</>
-				}
 
 				<div className={`fixed p-3 ${modalOpen ? null : "z-10"} w-full border-b border-gray/10 bg-light-green`}>
 					<div className="m-auto w-full divide-y divide-gray/20 rounded-xl border border-solid border-gray/20 sm:max-w-xl">
