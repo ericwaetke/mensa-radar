@@ -34,7 +34,7 @@ export default function AboutBusiness () {
 						<div className="mt-12 inline-flex flex-col items-center space-y-4">
 							{/* CTA Button */}
 							<Link href="mailto:mensaradar@wovenspace.xyz">
-								<a className="text-md rounded-lg border-2 border-black/80 bg-black/80 px-4 py-2 font-sans-semi text-main-green">I've got food to show!</a>
+								<a className="text-md rounded-lg border-2 border-black/80 bg-black/80 px-4 py-2 font-sans-semi text-main-green">I&apos;ve got food to show!</a>
 							</Link>
 							<Link href="/">
 								<a className="flex gap-1 px-4 font-sans-semi">

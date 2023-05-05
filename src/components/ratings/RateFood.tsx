@@ -31,6 +31,8 @@ export default function RateFood(
 		"😋"
 	]
 
+	const plausible = usePlausible()
+
 	const timing = 150
 	const [isVibrating, setIsVibrating] = useState(false);
 	useEffect(() => {
@@ -109,7 +111,6 @@ export default function RateFood(
 			})
 		}).then(res => {
 			console.log(res);
-			const plausible = usePlausible()
 			plausible('Rating')
 		}).catch(err => {
 			console.error(err);

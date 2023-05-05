@@ -54,9 +54,8 @@ export const NutrientOverview = ({foodOffers, setModalOpen}) => {
 									</div>
 									{
 										notSoldOutFoodOffers[index].nutrients.map((nutrient, i) => {
-
 											return (
-												<div className="flex w-full flex-row items-center justify-between space-x-4 px-4 py-3 text-sm">
+												<div className="flex w-full flex-row items-center justify-between space-x-4 px-4 py-3 text-sm" key={`${index}-nutrient-${i}`}>
 													<p className="w-3/12 grow-0 break-words font-sans-med text-gray/50">
 														{ nutrientType[notSoldOutFoodOffers[index].nutrients[i].name].name }
 													</p>

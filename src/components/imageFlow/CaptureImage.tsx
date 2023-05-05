@@ -262,7 +262,7 @@ export const CaptureImage = (
 				{
 					currentStep === "preparation" ? <>
 						<CaptureImageButton label="Foto aufnehmen" handleUpload={handleUpload} />
-						<button className="flex hidden h-14 w-full min-w-max grow cursor-pointer items-center justify-center gap-1 rounded-lg border border-gray px-4 font-sans-semi"
+						<button className="hidden h-14 w-full min-w-max grow cursor-pointer items-center justify-center gap-1 rounded-lg border border-gray px-4 font-sans-semi"
 							onClick={() => triggerAiThumbnailRegeneration()}>
 							<img className="w-6" src="/icons/star.svg"></img>
               AI-Vorschau neu generieren

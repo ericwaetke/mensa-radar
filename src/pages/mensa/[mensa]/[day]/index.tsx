@@ -32,9 +32,9 @@ const DynamicOffer = dynamic<{
     fish: boolean,
     meat: boolean,
     nutrients: {
-      name: string,
-      value: string,
-      unit: string,
+		name: string,
+		value: string,
+		unit: string,
     }[],
     allergens: string[]
     date: string,
@@ -44,8 +44,8 @@ const DynamicOffer = dynamic<{
 
     imageUrls: string[],
     ratings: {
-      rating: number,
-      userSessionId: string,
+		rating: number,
+		userSessionId: string,
     }[]
   },
   mensa: string | string[],
@@ -53,7 +53,7 @@ const DynamicOffer = dynamic<{
   triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
   aiThumbnailBase64: string,
   	}>(() => import('../../../../components/offer/offer').then(mod => mod.Offer), {
-  		loading: () => <p>'Loading...'</p>,
+  		loading: () => <p>Loading...</p>,
   	})
 
 export const runtime = "experimental-edge"
@@ -288,11 +288,11 @@ export default function Mensa(
 				{
 					day === "samstag" || day === "sonntag" ? (
 						<div className='flex h-screen w-full items-center justify-center'>
-							<NoFood mainMessage="Ab Montag gibt’s hier wieder Essen!" />
+							<NoFood mainMessage="Ab Montag gibt&apos;s hier wieder Essen!" />
 						</div>
 					) : foodOffers?.length === 0 ? (
 						<div className='flex h-screen w-full items-center justify-center'>
-							<NoFood mainMessage="Bald gibt’s hier wieder Essen!" />
+							<NoFood mainMessage="Bald gibt&apos;s hier wieder Essen!" />
 						</div>
 					) : null
 				}
