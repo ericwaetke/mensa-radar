@@ -211,12 +211,9 @@ export const Offer = (
                         <Image className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl} layout="fill" key={offer.id}/>
                         
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 9v2m0 4v.01" />
-                            <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
-                          </svg>
-                          <span>AI-Generiert</span>
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" aria-labelledby="boltIconTitle" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000"> <title id="boltIconTitle">Bolt</title> <path d="M5 14l8-11v7h5l-8 11v-7z"/> </svg>
+
+                          <span>AI-generiert</span>
                         </span>
                         <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
                           <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
@@ -227,12 +224,9 @@ export const Offer = (
                       <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
                         <img src={`data:image/png;base64,${localAiThumbnail}`} onClick={() => openImageFlow()}  className="relative w-full h-full rounded-lg object-cover" />
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 9v2m0 4v.01" />
-                            <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" />
-                          </svg>
-                          <span>AI-Generiert</span>
+                        <svg role="img" xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" aria-labelledby="boltIconTitle" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000"> <title id="boltIconTitle">Bolt</title> <path d="M5 14l8-11v7h5l-8 11v-7z"/> </svg>
+
+                          <span>AI-generiert</span>
                         </span>
                         <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
                           <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
