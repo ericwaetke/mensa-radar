@@ -10,5 +10,5 @@ jobs:
       - name: Call Revalidation API
         run: |
           curl --request POST \
-          --url 'https://next.mensa-radar.de/api/revalidate' \
+          --url 'https://mensa-radar.de/api/revalidate' \
           --header "Authorization: Bearer ${{ secrets.REVALIDATION_TOKEN }}"

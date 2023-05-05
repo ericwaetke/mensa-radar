@@ -17,6 +17,7 @@ const getMensaId = {
   'filmuniversitaet': 5,
   'griebnitzsee': 6,
   'wildau': 7,
+  "cafeteria-neues-palais": 8
 }
 
 export const fetchDbData = async (reqDay: number, mensa: string) => {

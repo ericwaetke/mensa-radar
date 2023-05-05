@@ -124,7 +124,7 @@ export const Offer = (
       q: "80",
       token: env.NEXT_PUBLIC_SUPABASE_KEY
     })
-    return `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/ai-thumbnails/${ imageName + ".png" }?token=${ env.NEXT_PUBLIC_SUPABASE_KEY }`
+    return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/${imageName + ".png"}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
     return `${process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://mensa-radar.de'}/api/image/?${params.toString()}`
   }
   const [localAiThumbnail, setLocalAiThumbnail] = useState("")
@@ -179,6 +179,7 @@ export const Offer = (
       variants={containerAnimation}
       initial="hidden"
       animate="show"
+      id={offer.id.toString()}
     >
 
       <div className={`rounded-2xl bg-white flex flex-col ${offer.sold_out ? "pb-6" : ""} `}>
@@ -188,7 +189,7 @@ export const Offer = (
             <div className="w-full xs:max-w-sm  max-w-xs m-auto h-min-20 rounded-lg">
               {offer.imageUrls.length > 0 || tempImage != "" ?
                 <>
-                  <div onClick={() => openImageFlow()}  className="relative h-52 w-4/6 m-auto cursor-pointer "> 
+                  <div onClick={() => openImageFlow()} className="relative h-52 w-4/6 m-auto cursor-pointer ">
                     {
                       tempImage !== "" ?
                         <img src={tempImage} className="h-full object-cover rounded-lg" />
@@ -196,10 +197,10 @@ export const Offer = (
                         <Image src={offer.imageUrls[offer.imageUrls.length - 1]} className="w-full h-full object-cover rounded-lg" layout="fill" />
                     }
                     <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
-                          <span>Nutzer:innen-Foto</span>
-                        </span>
+                      <span>Nutzer:innen-Foto</span>
+                    </span>
                     <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
-                        <img alt="Eigenes Foto" src="/icons/camera.svg" className="w-6"></img>
+                      <img alt="Eigenes Foto" src="/icons/camera.svg" className="w-6"></img>
                     </span>
                   </div>
                 </>
@@ -207,38 +208,38 @@ export const Offer = (
 
                   {
                     offer.has_ai_thumbnail
-                      ? <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
-                        <Image className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl} layout="fill" key={offer.id}/>
-                        
+                      ? <div onClick={() => openImageFlow()} className="relative h-48 w-full m-auto cursor-pointer ">
+                        <Image className="w-full h-full object-cover rounded-lg" src={aiThumbnailUrl} layout="fill" key={offer.id} />
+
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                         <svg role="img" xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" aria-labelledby="boltIconTitle" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000"> <title id="boltIconTitle">Bolt</title> <path d="M5 14l8-11v7h5l-8 11v-7z"/> </svg>
 
                           <span>AI-generiert</span>
                         </span>
                         <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
-                          <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
+                          <img alt="Eigenes Foto aufnehmen" src="/icons/camera.svg" className="w-6"></img>
                         </span>
                       </div>
-                      : 
+                      :
 
-                      <div onClick={() => openImageFlow()}  className="relative h-48 w-full m-auto cursor-pointer "> 
-                        <img src={`data:image/png;base64,${localAiThumbnail}`} onClick={() => openImageFlow()}  className="relative w-full h-full rounded-lg object-cover" />
+                      <div onClick={() => openImageFlow()} className="relative h-48 w-full m-auto cursor-pointer ">
+                        <img src={`data:image/png;base64,${localAiThumbnail}`} onClick={() => openImageFlow()} className="relative w-full h-full rounded-lg object-cover" />
                         <span className="absolute top-2 left-2 text-xs bg-white/60  rounded-full py-1 px-2 backdrop-blur font-sans-med text-black flex space-x-1">
                         <svg role="img" xmlns="http://www.w3.org/2000/svg" className="h-full" width="16" height="16" viewBox="0 0 24 24" strokeWidth="1.5" aria-labelledby="boltIconTitle" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000"> <title id="boltIconTitle">Bolt</title> <path d="M5 14l8-11v7h5l-8 11v-7z"/> </svg>
 
                           <span>AI-generiert</span>
                         </span>
                         <span className="absolute bottom-2 right-2 bg-white rounded-full backdrop-blur font-sans-med text-white flex space-x-1 h-12 w-12 items-center justify-center">
-                          <img alt="Eigenes Foto aufnehmen"  src="/icons/camera.svg" className="w-6"></img>
+                          <img alt="Eigenes Foto aufnehmen" src="/icons/camera.svg" className="w-6"></img>
                         </span>
                       </div>
                   }
                 </> :
                   <div className={`max-w-full h-full bg-gray/20 rounded-lg animate-pulse flex justify-center items-center ${offer.sold_out ? "hidden" : ""}`}>
-                      <span className="h-12 opacity-100 items-center m-2 justify-center rounded-full flex flex-row bg-white gap-2 px-4">
-                          <img alt="Eigenes Foto aufnehmen" src="/icons/camera.svg" className="w-6"></img>
-                          Foto aufnehmen
-                      </span>
+                    <span className="h-12 opacity-100 items-center m-2 justify-center rounded-full flex flex-row bg-white gap-2 px-4">
+                      <img alt="Eigenes Foto aufnehmen" src="/icons/camera.svg" className="w-6"></img>
+                      Foto aufnehmen
+                    </span>
                   </div>
               }
             </div>
@@ -246,7 +247,7 @@ export const Offer = (
 
           <div className="flex flex-col space-y-4 px-6 py-6 text-sm">
             <div className="flex-col space-y-2">
-              <h2  className={`text-h2 font-serif-semi ${offer.sold_out ? "text-gray/50" : ""}`}>
+              <h2 className={`text-h2 font-serif-semi ${offer.sold_out ? "text-gray/50" : ""}`}>
                 <Balancer>
                   {offer.food_title}
                 </Balancer>
