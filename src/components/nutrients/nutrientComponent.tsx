@@ -47,11 +47,11 @@ export const NutrientComponent = ({nutrient}) => {
 			<div className='h-2 w-full relative rounded-full'>
 
 				<motion.div className='h-2 bg-main-green absolute rounded-full' 
-				initial={{width: 0}}
-				animate={{width:
+					initial={{width: 0}}
+					animate={{width:
 					`${barWidth}%`
-				}}
-				transition={{duration: .5}}></motion.div>
+					}}
+					transition={{duration: .5}}></motion.div>
 			</div>
 		</div>
 	)

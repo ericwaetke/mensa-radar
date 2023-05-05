@@ -21,32 +21,32 @@ function MyApp({ Component, pageProps }) {
 	}
 	return (
 		<>
-		<Head>
-			<meta name="theme-color" content="#CFE0D1" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-		</Head>
-		<NextNProgress color="#88E2A1"/>
-		<Toaster />
+			<Head>
+				<meta name="theme-color" content="#CFE0D1" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+			</Head>
+			<NextNProgress color="#88E2A1"/>
+			<Toaster />
 
-		<PlausibleProvider domain="mensa-radar.de" customDomain="https://plausible.wovenspace.xyz" selfHosted="true" enabled="true">
-			<Provider>
-				<Component {...pageProps} />
-			</Provider>
-		</PlausibleProvider>
+			<PlausibleProvider domain="mensa-radar.de" customDomain="https://plausible.wovenspace.xyz" selfHosted="true" enabled="true">
+				<Provider>
+					<Component {...pageProps} />
+				</Provider>
+			</PlausibleProvider>
 		</>
 	)
 }
 
-  // Only uncomment this method if you have blocking data requirements for
-  // every single page in your application. This disables the ability to
-  // perform automatic static optimization, causing every page in your app to
-  // be server-side rendered.
-  //
-  // MyApp.getInitialProps = async (appContext) => {
-  //   // calls page's `getInitialProps` and fills `appProps.pageProps`
-  //   const appProps = await App.getInitialProps(appContext);
-  //
-  //   return { ...appProps }
-  // }
+// Only uncomment this method if you have blocking data requirements for
+// every single page in your application. This disables the ability to
+// perform automatic static optimization, causing every page in your app to
+// be server-side rendered.
+//
+// MyApp.getInitialProps = async (appContext) => {
+//   // calls page's `getInitialProps` and fills `appProps.pageProps`
+//   const appProps = await App.getInitialProps(appContext);
+//
+//   return { ...appProps }
+// }
 
 export default MyApp

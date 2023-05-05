@@ -121,18 +121,18 @@ export default function RateFood(
 			{/* Second Row in Flexbox */}
 			<div className="px-4 font-sans-reg w-full space-y-2">
 				<div className={`text-4xl flex flex-start flex-col w-14 space-y-1`} style={{transform: `translate(${offsetX}px)`}}>
-						<p className="block">
+					<p className="block">
 						<motion.div animate={controls}>
 							{
 								ratingPercentage < 0.25 ? emojis[0] :
-								ratingPercentage < 0.5 ? emojis[1] :
-								ratingPercentage < 0.75 ? emojis[2] :
-								emojis[3]
+									ratingPercentage < 0.5 ? emojis[1] :
+										ratingPercentage < 0.75 ? emojis[2] :
+											emojis[3]
 							}
 						</motion.div></p>
-						<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-white whitespace-nowrap justify-center"> 
-							<p>{ratingPercentageTwoDigs}</p><p>/ 5</p>
-						</div> 
+					<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-white whitespace-nowrap justify-center"> 
+						<p>{ratingPercentageTwoDigs}</p><p>/ 5</p>
+					</div> 
 				</div>
 				<div className='bg-white w-full h-14 rounded-full items-center flex relative px-1' ref={handleBar}>
 					<div className='w-0.5 h-1/2 rounded-full bg-black/20 absolute left-1/4'></div>
@@ -152,9 +152,9 @@ export default function RateFood(
 					</Draggable>
 				</div>
 				{ 
-				<div className="w-full flex justify-between text-xs text-gray/50 px-6">
-				<p>1</p><p>3</p><p>5</p>
-				</div>
+					<div className="w-full flex justify-between text-xs text-gray/50 px-6">
+						<p>1</p><p>3</p><p>5</p>
+					</div>
 				
 				 }			
 				<div className="text-sm inline-flex justify-center pt-2 space-x-2 items-center opacity-50">
@@ -168,11 +168,11 @@ export default function RateFood(
 			{/* Bottom Row in Flexbox */}
 			<div className="px-4 mb-6 flex flex-col gap-2">
 				<button 
-				onClick={() => {
-					saveRating()
-					setModalOpen(false);
-				}}
-				className={`bg-main-green font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
+					onClick={() => {
+						saveRating()
+						setModalOpen(false);
+					}}
+					className={`bg-main-green font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
 					<img src="../.././icons/check.png" className="w-4"></img>
 					<p>
 						Bewertung speichern 

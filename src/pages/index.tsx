@@ -145,8 +145,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function getStaticProps(context) {
 	const { data: mensen, error: mensenError } = await supabase
-	.from('mensen')
-	.select(`
+		.from('mensen')
+		.select(`
 		id,
 		name,
 		loc_lat,
