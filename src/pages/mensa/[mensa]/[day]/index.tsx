@@ -20,6 +20,7 @@ import { NoFood } from '../../../../components/errors/NoFood';
 import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { env } from '../../../../env.mjs';
 import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
 
 const DynamicOffer = dynamic<{
   offer: {
@@ -192,6 +193,18 @@ export default function Mensa(
 		return foodOffers.find((foodOffer: FoodOffering) => foodOffer.id === parseInt(id))
 	}
 
+	const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.3,
+				
+            },
+        },
+    }
+
 	return (
 		<>
 			<Modal
@@ -297,16 +310,15 @@ export default function Mensa(
 					) : null
 				}
 
-				<div className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col overflow-y-scroll px-3 pb-16 pt-32">
+				<motion.div className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col overflow-y-scroll px-3 pb-16 pt-32" variants={container} initial="hidden" animate="show">
 					{
-						// Show rest later
 						foodOffers?.map((offer, i) => {
 							return (
 								<DynamicOffer key={offer.id} offer={offer} mensa={mensa} day={router.query.day} aiThumbnailBase64={generatedThumbnails.get(offer.id)} triggerAiThumbnailRegeneration={aiThumbnailGeneration} />
 							)
 						})
 					}
-				</div>
+				</motion.div>
 
 				{
 					scrollPosition ? <>

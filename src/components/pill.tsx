@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export const Pill = ({children, col = "", icon = "", className = ""}) => {
 
 	let colString;
@@ -25,10 +27,24 @@ export const Pill = ({children, col = "", icon = "", className = ""}) => {
 	}
 	}
 
+	const pillAnimation = {
+		hidden: {
+			opacity: 0,
+			scale: 0.8
+		},
+		show: {
+			opacity: 1,
+			scale: 1,
+			transition: {
+				duration: 0.2
+			}
+		}
+	}
+
 	return (
-		<div className={`mt-1 inline-flex h-full flex-row gap-x-1 px-2.5 py-1 ${icon ? "pl-2" : null} ${colString} items-center rounded-full font-sans-reg text-sm ${className}`}>
+		<motion.div className={`mt-1 inline-flex h-full flex-row gap-x-1 px-2.5 py-1 ${icon ? "pl-2" : null} ${colString} items-center rounded-full font-sans-reg text-sm ${className}`} variants={pillAnimation}>
 			{ icon ? <img  width="16" src={icon} /> : null } {children}
-		</div>
+		</motion.div>
 	)
 }
 

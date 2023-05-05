@@ -36,12 +36,18 @@ export const Offer = (
 	const containerAnimation = {
 		hidden: {
 			opacity: 0,
+			scale: 0.7,
+			bottom: -50
 		},
 		show: {
 			opacity: 1,
+			scale: 1,
+			bottom: 0,
 			transition: {
-				staggerChildren: .2,
-				delayChildren: .1
+				staggerChildren: .5,
+				delayChildren: .1,
+				delay: .2,
+				duration: .5
 			}
 		}
 	}
@@ -140,6 +146,17 @@ export const Offer = (
 		setLocalAiThumbnail(aiThumbnailBase64)
 	}, [aiThumbnailBase64])
 
+	const pillAnimationContainer = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				staggerChildren: 0.1,
+				delayChildren: .5,
+			},
+		},
+	}
+
 	return (<>
 		<BottomSheet
 			open={modalOpen}
@@ -176,13 +193,10 @@ export const Offer = (
 			}
 		</BottomSheet>
 		<motion.div
-			className={`mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl`}
+			className={`mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl relative`}
 			variants={containerAnimation}
-			initial="hidden"
-			animate="show"
 			id={offer.id.toString()}
 		>
-
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
 
 				<div className="flex flex-col">
@@ -197,7 +211,7 @@ export const Offer = (
 							</h2>
 
 							<Allergens allergens={offer.allergens} />
-							<div className="flex flex-row flex-wrap gap-x-2 space-y-1 font-sans-med">
+							<motion.div className="flex flex-row flex-wrap gap-x-2 space-y-1 font-sans-med" variants={pillAnimationContainer} initial="hidden" animate="show">
 								{offer.sold_out ? <>
 								</> : <>
 									<Pill>
@@ -222,7 +236,7 @@ export const Offer = (
 										</> :
 											null
 								}
-							</div>
+							</motion.div>
 							{/* TODO: Rating */}
 
 						</div>
