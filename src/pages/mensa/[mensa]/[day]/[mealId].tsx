@@ -21,12 +21,15 @@ export default function SharedMeal ({meal}: {meal: FoodOffering}) {
 		router.push(`/mensa/${mensa}/${day}`)
 	}, [])
 
+	const foodType = meal.vegetarian ? "Vegetarisch" : meal.vegan ? "Vegan" : meal.fish ? "Fischhaltig" : "Fleischhaltig"
+
 	return <>
 		<Head>
 			<title>{meal.food_title} - Mensa Radar</title>
 			<meta property="og:url" content={`https://mensa-radar.de/${mensa}/${day}`} /> :
 			<meta property="og:image" content={`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://mensa-radar.de/"}api/og/singleMeal?id=${meal.id}`} />
-
+			<meta property="og:title" content={`${meal.food_title} - Mensa Radar`} />
+			<meta property="og:description" content={`${foodType} - Essen vom ${meal.date} in der Mensa ${meal.mensa}!`} />
 		</Head>
 	</>
 }
