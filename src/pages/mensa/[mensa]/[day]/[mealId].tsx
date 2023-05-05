@@ -28,6 +28,10 @@ export default function SharedMeal ({meal}: {meal: FoodOffering}) {
 			<title>{meal.food_title} - Mensa Radar</title>
 			<meta property="og:url" content={`https://mensa-radar.de/${mensa}/${day}`} /> :
 			<meta property="og:image" content={`${process.env.NODE_ENV === "development" ? "http://localhost:3000/" : "https://mensa-radar.de/"}api/og/singleMeal?id=${meal.id}`} />
+			<meta property="og:image:width" content="1200" />
+			<meta property="og:image:height" content="630" />
+			<meta property="og:image:alt" content={`${meal.food_title}`} />
+			<meta property="og:image:type" content="image/png" />
 			<meta property="og:title" content={`${meal.food_title}`} />
 			<meta property="og:site_name" content="Mensa Radar" />
 			<meta property="og:description" content={`${foodType} - Essen vom ${meal.date} in der Mensa ${meal.mensa}!`} />
