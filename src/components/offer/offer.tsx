@@ -192,9 +192,9 @@ export const Offer = (
 				</> : null
 			}
 		</BottomSheet>
-		<motion.div
+		<div
 			className={`relative mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl`}
-			variants={containerAnimation}
+			// variants={containerAnimation}
 			id={offer.id.toString()}
 		>
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
@@ -300,7 +300,7 @@ export const Offer = (
 					}
 				</div>
 			</div>
-		</motion.div>
+		</div>
 		<Tooltip anchorId={`price-students-${offer.id}`} />
 		<Tooltip anchorId={`price-others-${offer.id}`} />
 	</>
