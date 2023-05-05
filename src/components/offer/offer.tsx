@@ -193,7 +193,7 @@ export const Offer = (
 			}
 		</BottomSheet>
 		<motion.div
-			className={`mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl relative`}
+			className={`relative mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl`}
 			variants={containerAnimation}
 			id={offer.id.toString()}
 		>
