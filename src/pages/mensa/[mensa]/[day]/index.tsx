@@ -52,7 +52,7 @@ const DynamicOffer = dynamic<{
   day: string | string[],
   triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
   aiThumbnailBase64: string,
-  	}>(() => import('../../../../components/offer').then(mod => mod.Offer), {
+  	}>(() => import('../../../../components/offer/offer').then(mod => mod.Offer), {
   		loading: () => <p>'Loading...'</p>,
   	})
 
