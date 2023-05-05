@@ -5,7 +5,7 @@ export const DayButton = ({mensa, day, isSelected, router}) => {
 
 	return (
 		<button onClick={() => {router.push(`/mensa/${mensa}/${day.url}`)}} className="inline-flex">
-			<a className={`${activeClass} h-max px-8 py-4 inline-flex min-w-max flex-col items-start justify-center rounded-xl text-green-w7 uppercase`}>
+			<a className={`${activeClass} text-green-w7 inline-flex h-max min-w-max flex-col items-start justify-center rounded-xl px-8 py-4 uppercase`}>
 				<p className={`font-bold ${isSelected ? 'text-black' : null}`}>{day.mainText}</p>
 				{
 					isSelected ? 

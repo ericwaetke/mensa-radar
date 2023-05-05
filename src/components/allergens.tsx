@@ -184,7 +184,7 @@ export const Allergens = (
 	}
 
 	return (
-		<div className="-mx-1 pb-4 flex flex-row flex-wrap gap-y-1">
+		<div className="-mx-1 flex flex-row flex-wrap gap-y-1 pb-4">
 			{
 				allergens.map((allergen, index) => {
 					return (
@@ -193,10 +193,10 @@ export const Allergens = (
 								allergyHelper[allergen] ? <>
 									{
 										allergyHelper[allergen].icon !== "" ? (
-											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-3.5 opacity-50 align-bottom" />
+											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-3.5 align-bottom opacity-50" />
 										) : null
 									}
-									<p className="text-sm font-serif-reg">{allergyHelper[allergen].name}</p>
+									<p className="font-serif-reg text-sm">{allergyHelper[allergen].name}</p>
 								</> : null
 							}
 						</div>

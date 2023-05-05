@@ -41,12 +41,12 @@ export const NutrientComponent = ({nutrient}) => {
 	const barWidth = actualBarWitdh > 100 ? 100 : actualBarWitdh;
 
 	return (
-		<div className="w-4/12 grow flex flex-col space-y-1">
+		<div className="flex w-4/12 grow flex-col space-y-1">
 
 			<p className="font-sans-med">{nutrientData.value} {nutrientData.unit}</p>
-			<div className='h-2 w-full relative rounded-full'>
+			<div className='relative h-2 w-full rounded-full'>
 
-				<motion.div className='h-2 bg-main-green absolute rounded-full' 
+				<motion.div className='absolute h-2 rounded-full bg-main-green' 
 					initial={{width: 0}}
 					animate={{width:
 					`${barWidth}%`

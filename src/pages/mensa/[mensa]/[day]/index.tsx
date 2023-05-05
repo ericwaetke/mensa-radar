@@ -230,25 +230,25 @@ export default function Mensa(
 						</>
 				}
 
-				<div className={`p-3 fixed ${modalOpen ? null : "z-10"} w-full bg-light-green border-b border-gray/10`}>
-					<div className="m-auto w-full rounded-xl border border-solid border-gray/20 sm:max-w-xl divide-y divide-gray/20">
-						<div onClick={() => openMensaSelectionFlow()} className="flex justify-center space-x-1 items-center flex-row w-full h-12">
-							<h1 className="block text-h1 font-serif-bold">{currentMensa.name}</h1>
-							<img className="w-4 mt-0.5" src="/icons/chev-down.svg"></img>
+				<div className={`fixed p-3 ${modalOpen ? null : "z-10"} w-full border-b border-gray/10 bg-light-green`}>
+					<div className="m-auto w-full divide-y divide-gray/20 rounded-xl border border-solid border-gray/20 sm:max-w-xl">
+						<div onClick={() => openMensaSelectionFlow()} className="flex h-12 w-full flex-row items-center justify-center space-x-1">
+							<h1 className="text-h1 block font-serif-bold">{currentMensa.name}</h1>
+							<img className="mt-0.5 w-4" src="/icons/chev-down.svg"></img>
 						</div>
-						<div className="flex items-center justify-between flex-row w-full px-4 h-10">
+						<div className="flex h-10 w-full flex-row items-center justify-between px-4">
 							{
 								selectedWeekday > 0 ? <>
 									<Link href={`/mensa/${mensa}/${days[selectedWeekday - 1]}`}>
-										<a className='font-sans-med text-sm inline-flex items-center flex-row space-x-1 grow basis-0'>
-											<img src="/icons/right-arrw.svg" className="rotate-180 w-4 opacity-50" />
+										<a className='inline-flex grow basis-0 flex-row items-center space-x-1 font-sans-med text-sm'>
+											<img src="/icons/right-arrw.svg" className="w-4 rotate-180 opacity-50" />
 
 											<p className='capitalize'>
 												{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
 											</p>
 										</a>
 									</Link>
-								</> : <div className='w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
+								</> : <div className='mr-auto w-20 grow basis-0 text-left font-sans-bold text-sm'></div>
 
 							}
 							<p className="font-sans-semi text-sm capitalize">
@@ -259,22 +259,22 @@ export default function Mensa(
 							{
 								selectedWeekday < 4 ? <>
 									<Link href={`/mensa/${mensa}/${days[selectedWeekday + 1]}`}>
-										<a className="font-sans-med text-sm inline-flex items-center flex-row space-x-1 grow basis-0 text-right">
-											<p className='capitalize w-full'>
+										<a className="inline-flex grow basis-0 flex-row items-center space-x-1 text-right font-sans-med text-sm">
+											<p className='w-full capitalize'>
 												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
 											</p>
 
 											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
 										</a>
 									</Link>
-								</> : <div className='text-black w-20 text-left font-sans-bold text-sm mr-auto grow basis-0'></div>
+								</> : <div className='mr-auto w-20 grow basis-0 text-left font-sans-bold text-sm text-black'></div>
 							}
 						</div>
 						{
 							scrollPosition ? <>
-								<div className="flex justify-center items-center flex-row w-full px-4 h-10 text-gray/70">
+								<div className="flex h-10 w-full flex-row items-center justify-center px-4 text-gray/70">
 									<Pill col={"transparent"}>
-										<div className={`mr-1 w-2 h-2 rounded-full ${openingTimes.open ? `bg-dark-green` : ` bg-red-500`}`}></div>
+										<div className={`mr-1 h-2 w-2 rounded-full ${openingTimes.open ? `bg-dark-green` : ` bg-red-500`}`}></div>
 										<p className="font-sans-reg text-sm">{currentMensa.url === undefined ? "" : openingTimes.text}</p>
 									</Pill>
 								</div>
@@ -287,17 +287,17 @@ export default function Mensa(
 				}
 				{
 					day === "samstag" || day === "sonntag" ? (
-						<div className='h-screen w-full flex items-center justify-center'>
+						<div className='flex h-screen w-full items-center justify-center'>
 							<NoFood mainMessage="Ab Montag gibt’s hier wieder Essen!" />
 						</div>
 					) : foodOffers?.length === 0 ? (
-						<div className='h-screen w-full flex items-center justify-center'>
+						<div className='flex h-screen w-full items-center justify-center'>
 							<NoFood mainMessage="Bald gibt’s hier wieder Essen!" />
 						</div>
 					) : null
 				}
 
-				<div className="flex flex-col w-full overflow-y-scroll snap-y snap-proximity hide-scroll-bar px-3 pb-16 pt-32">
+				<div className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col overflow-y-scroll px-3 pb-16 pt-32">
 					{
 						// Show rest later
 						foodOffers?.map((offer, i) => {
@@ -310,8 +310,8 @@ export default function Mensa(
 
 				{
 					scrollPosition ? <>
-						<div className='w-full px-3 py-2 fixed bottom-0 h-10 border-t border-gray/10 bg-light-green'>
-							<div className="grid grid-cols-2 max-w-xl m-auto">
+						<div className='fixed bottom-0 h-10 w-full border-t border-gray/10 bg-light-green px-3 py-2'>
+							<div className="m-auto grid max-w-xl grid-cols-2">
 								<div className="flex flex-row space-x-2">
 									<Link href="/impressum">
 										<p className='font-sans-semi text-sm opacity-50'>
@@ -321,8 +321,8 @@ export default function Mensa(
 								</div>
 								{
 									day === "samstag" || day === "sonntag" || foodOffers?.length === 0 ? null : (
-										<div className='flex space-x-1 cursor-pointer items-center' onClick={() => openNutrientsFlow()}>
-											<p className='font-sans-semi text-sm text-right w-full'>
+										<div className='flex cursor-pointer items-center space-x-1' onClick={() => openNutrientsFlow()}>
+											<p className='w-full text-right font-sans-semi text-sm'>
                         Nährwerte vgl.
 											</p>
 											<img src="/icons/right-arrw.svg" className="w-4" />

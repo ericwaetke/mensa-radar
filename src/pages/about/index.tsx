@@ -9,32 +9,32 @@ import Footer from "../../components/footer";
 export default function About () {
 
 	return (
-		<div className="p-4 pb-0 space-y-6 lg:pb-4 lg:mx-auto lg:px-[10%] flex flex-col h-full justify-between bg-[#DAFFE4]">
+		<div className="flex h-full flex-col justify-between space-y-6 bg-[#DAFFE4] p-4 pb-0 lg:mx-auto lg:px-[10%] lg:pb-4">
 			<Head>
 				<title>About Mensa Radar</title>
 			</Head>
 
 			<main>
-				<div className="flex justify-between items-center">
-					<h1 className="text-3xl font-serif-bold">Mensa Radar</h1>
+				<div className="flex items-center justify-between">
+					<h1 className="font-serif-bold text-3xl">Mensa Radar</h1>
 					
 					{/* Contact Us Button with an Email Href */}
 					<Link href="mailto:mensaradar@wovenspace.xyz">
-						<a className="rounded-lg text-md font-sans-semi text-main-green bg-black/80 border-2 border-black/80 px-4 py-2">Contact Us</a>
+						<a className="text-md rounded-lg border-2 border-black/80 bg-black/80 px-4 py-2 font-sans-semi text-main-green">Contact Us</a>
 					</Link>
 				</div>
 
-				<div className="h-full mt-28 relative grid overflow-x-clip overflow-y-visible">
-					<div className="row-start-1 row-end-1 col-start-1 col-end-1 z-10 relative">
-						<h2 className="text-6xl font-sans-black">
+				<div className="relative mt-28 grid h-full overflow-x-clip overflow-y-visible">
+					<div className="relative z-10 col-start-1 col-end-1 row-start-1 row-end-1">
+						<h2 className="font-sans-black text-6xl">
 							Making<br />Food<br />Visible.
 						</h2>
 
 						{/* CTA Area */}
-						<div className="inline-flex flex-col space-y-4 mt-12 items-center">
+						<div className="mt-12 inline-flex flex-col items-center space-y-4">
 							{/* CTA Button */}
 							<Link href="/">
-								<a className="rounded-lg text-md font-sans-semi text-main-green bg-black/80 border-2 border-black/80 px-4 py-2">Show me the food!</a>
+								<a className="text-md rounded-lg border-2 border-black/80 bg-black/80 px-4 py-2 font-sans-semi text-main-green">Show me the food!</a>
 							</Link>
 							{/* <Link href="/">
 								<a className="font-sans-semi px-4 flex gap-1">
@@ -66,11 +66,11 @@ export default function About () {
 
 				<div className="mt-16 flex flex-col gap-4">
 					<Balancer>
-						<h2 className="text-5xl font-sans-black">
+						<h2 className="font-sans-black text-5xl">
 							Harnessing the power of<br /><span className={aboutStyle.ai_text}>AI.</span>
 						</h2>
 					</Balancer>
-					<p className="font-sans w-4/5">
+					<p className="w-4/5 font-sans">
 						We use AI to detect the food in the pictures you send us. This way we can show you the food you want to see.
 						<br /><br />
 						When neither you nor our users have sent us a picture of a certain dish, we will use diffusion models to generate a picture, so you can still see what the dish looks like.
@@ -79,11 +79,11 @@ export default function About () {
 
 				<div className="mt-16 flex flex-col gap-4">
 					<Balancer>
-						<h2 className="text-5xl font-sans-black">
+						<h2 className="font-sans-black text-5xl">
 							Showing you the food you want.
 						</h2>
 					</Balancer>
-					<p className="font-sans w-4/5">
+					<p className="w-4/5 font-sans">
 						Users can rate the food they see, and they can filter out specific groups of food or ingredients.
 						<br /><br />
 						When neither you nor our users have sent us a picture of a certain dish, we will use diffusion models to generate a picture, so you can still see what the dish looks like.

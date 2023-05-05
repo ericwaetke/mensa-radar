@@ -2,16 +2,16 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
 export default function Custom500() {
-	return <div className="flex flex-col h-screen w-screen items-center justify-center">
+	return <div className="flex h-screen w-screen flex-col items-center justify-center">
 		<div className="flex flex-col items-center">
-			<h1 className="block text-h1 font-serif-bold text-center">
+			<h1 className="text-h1 block text-center font-serif-bold">
 				<Balancer>
           Es gab ein Problem dir das Essen zu zeigen...
 				</Balancer>
 			</h1>
-			<h2 className="font-serif-reg text-base text-center">Wahrscheinlich sind wir schon dabei, das Problem zu beseitigen!</h2>
+			<h2 className="text-center font-serif-reg text-base">Wahrscheinlich sind wir schon dabei, das Problem zu beseitigen!</h2>
 			<Link href="/">
-				<a className="mt-4 font-semibold h-14 border min-w-fit grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4">
+				<a className="mt-4 flex h-14 min-w-fit grow cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 font-semibold">
           Zurück zu Mensa Radar
 				</a>
 			</Link>
