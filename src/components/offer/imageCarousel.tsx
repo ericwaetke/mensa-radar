@@ -33,6 +33,16 @@ export const ImageCarousel = (
             localAiThumbnail && localAiThumbnail !== "" && !offer.has_ai_thumbnail ? <ImageComponent type="ai" src={`data:image/png;base64,${localAiThumbnail}`} /> : null
           }
 
+          {
+            imageAmount === 0 ? <>
+              <div className="h-24 w-full border-2 rounded-xl border-dashed border-black/20 relative">
+                <span className="absolute bottom-2 right-2 flex h-12 w-12 items-center justify-center space-x-1 rounded-full bg-white font-sans-med text-white">
+                  <img alt="Eigenes Foto" src="/icons/camera.svg" className="w-6"></img>
+                </span>
+              </div>
+            </> : null
+          }
+
         </div>
       </div>
     </div>
