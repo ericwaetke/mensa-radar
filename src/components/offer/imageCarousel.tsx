@@ -3,8 +3,8 @@ import { useState } from "react"
 import { ImageComponent } from "./imageComponent"
 
 export const ImageCarousel = (
-	{ offer, tempImage, localAiThumbnail, aiThumbnailUrl, openImageFlow }:
-		{ offer: FoodOffering, tempImage: string, localAiThumbnail: string, aiThumbnailUrl: string, openImageFlow: () => void }) => {
+	{ offer, tempImage, localAiThumbnail, aiThumbnailUrl, openImageFlow, soldOut }:
+		{ offer: FoodOffering, tempImage: string, localAiThumbnail: string, aiThumbnailUrl: string, openImageFlow: () => void, soldOut: boolean }) => {
 
 	const [imageAmount, setImageAmount] = useState<number>(
 		//ai images
@@ -14,9 +14,9 @@ export const ImageCarousel = (
 	)
 
 	return (
-		<div className="w-full rounded-t-xl border-b border-gray/20 bg-lightshiny-green p-4">
+		<div className={`w-full rounded-t-xl border-b border-gray/20 bg-lightshiny-green p-4 ${soldOut ? "opacity-50" : ""}`}>
 			<div className="relative m-auto min-h-max rounded-lg">
-				<div onClick={() => openImageFlow()} className={`relative ${imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"} flex snap-x snap-mandatory gap-8 rounded-lg px-[25%]`}>
+				<div onClick={() => !soldOut ? openImageFlow() : null} className={`relative ${imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"} flex snap-x snap-mandatory gap-8 rounded-lg ${imageAmount !== 1 ? "px-[25%]" : ""}`}>
 
 					{
 						tempImage ? <ImageComponent type="user" src={tempImage} /> : null

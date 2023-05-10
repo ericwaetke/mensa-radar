@@ -198,7 +198,7 @@ export const Offer = (
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
 
 				<div className="flex flex-col">
-					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={openImageFlow} tempImage={tempImage} key={offer.id} />
+					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={openImageFlow} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
 
 					<div className="flex flex-col space-y-4 p-6 text-sm">
 						<div className="flex-col space-y-2">
