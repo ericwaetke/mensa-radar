@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
@@ -21,6 +22,7 @@ import useScrollPosition from '../../../../hooks/useScrollPosition';
 import { env } from '../../../../env.mjs';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -53,9 +55,9 @@ const DynamicOffer = dynamic<{
 	day: string | string[],
 	triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
 	aiThumbnailBase64: string,
-}>(() => import('../../../../components/offer/offer').then(mod => mod.Offer), {
-	loading: () => <p>Loading...</p>,
-})
+		}>(() => import('../../../../components/offer/offer').then(mod => mod.Offer), {
+			loading: () => <p>Loading...</p>,
+		})
 
 export const runtime = "experimental-edge"
 
@@ -238,14 +240,14 @@ export default function Mensa(
 					<div className="m-auto w-full divide-y divide-gray/20 rounded-xl border border-solid border-gray/20 sm:max-w-xl">
 						<div onClick={() => openMensaSelectionFlow()} className="flex h-12 w-full flex-row items-center justify-center space-x-1">
 							<h1 className="text-h1 block font-serif-bold">{currentMensa.name}</h1>
-							<img className="mt-0.5 w-4" src="/icons/chev-down.svg"></img>
+							<Image src="/icons/chev-down.svg" width={16} height={16} className="mt-[2px]" alt="Icon pointing downwards"/>
 						</div>
 						<div className="flex h-10 w-full flex-row items-center justify-between px-4">
 							{
 								selectedWeekday > 0 ? <>
 									<Link href={`/mensa/${mensa}/${days[selectedWeekday - 1]}`}>
 										<a className='inline-flex grow basis-0 flex-row items-center space-x-1 font-sans-med text-sm'>
-											<img src="/icons/right-arrw.svg" className="w-4 rotate-180 opacity-50" />
+											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 rotate-180 opacity-50" alt="Icon pointing to the right"/>
 
 											<p className='capitalize'>
 												{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
@@ -268,7 +270,7 @@ export default function Mensa(
 												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
 											</p>
 
-											<img src="/icons/right-arrw.svg" className="w-4 opacity-50" />
+´											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 opacity-50" alt="Icon pointing to the right"/>
 										</a>
 									</Link>
 								</> : <div className='mr-auto w-20 grow basis-0 text-left font-sans-bold text-sm text-black'></div>
@@ -328,7 +330,7 @@ export default function Mensa(
 											<p className='w-full text-right font-sans-semi text-sm'>
 												Nährwerte vgl.
 											</p>
-											<img src="/icons/right-arrw.svg" className="w-4" />
+											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4" alt="Icon pointing to the right"/>
 										</div>
 									)
 								}

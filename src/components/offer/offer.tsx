@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -13,6 +14,7 @@ import Balancer from 'react-wrap-balancer';
 import { usePlausible } from "next-plausible";
 import { env } from "../../env.mjs";
 import { ImageCarousel } from "./imageCarousel";
+import Image from "next/image";
 Modal.setAppElement('#__next');
 
 
@@ -271,14 +273,15 @@ export const Offer = (
 														<div className="inline-flex flex-row space-x-1 whitespace-nowrap rounded-full bg-light-green px-3 py-1 font-sans-reg text-sm">
 															<p>Du:</p>
 															<p className="font-sans-semi">
-																{userRatingString} / 5</p>
-															<img src="/icons/right-arrw.svg" className="w-4"></img>
+																{userRatingString} / 5
+															</p>
+															<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 														</div>
 													</div>
 												</> : <>
 													<div className="flex h-full flex-row items-center space-x-1 font-sans-med">
 														<p>Essen bewerten</p>
-														<img src="/icons/right-arrw.svg" className="w-4"></img>
+														<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 													</div>
 												</>
 										}
@@ -291,7 +294,7 @@ export const Offer = (
 							<div className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x border-t border-gray/20 text-sm ${offer.sold_out ? "hidden" : ""} `}>
 								<div className="flex h-full w-full flex-row  items-center justify-center space-x-1 border-gray/20 font-sans-semi" onClick={() => openRatingFlow()}>
 									<p className="font-sans-med">Essen bewerten</p>
-									<img src="/icons/right-arrw.svg" className="w-4"></img>
+									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 								</div>
 							</div>
 						</>
