@@ -270,7 +270,7 @@ export default function Mensa(
 												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
 											</p>
 
-´											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 opacity-50" alt="Icon pointing to the right"/>
+											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 opacity-50" alt="Icon pointing to the right"/>
 										</a>
 									</Link>
 								</> : <div className='mr-auto w-20 grow basis-0 text-left font-sans-bold text-sm text-black'></div>
