@@ -14,7 +14,7 @@ export const ImageCarousel = (
 	)
 
 	return (
-		<div className={`w-full rounded-t-xl border-b border-gray/20 bg-lightshiny-green p-4 ${soldOut ? "opacity-50" : ""}`}>
+		<div className={`w-full rounded-t-xl border-b border-gray/20 bg-lightshiny-green ${imageAmount > 1 ? "p-4" : ""} ${soldOut ? "opacity-50" : ""}`}>
 			<div className="relative m-auto min-h-max rounded-lg">
 				<div onClick={() => !soldOut ? openImageFlow() : null} className={`relative ${imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"} flex snap-x snap-mandatory gap-8 rounded-lg ${imageAmount !== 1 ? "px-[25%]" : ""}`}>
 
