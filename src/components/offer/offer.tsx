@@ -200,7 +200,7 @@ export const Offer = (
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
 
 				<div className="flex flex-col">
-					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={openImageFlow} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
+					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={() => !modalOpen ? openImageFlow() : null} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
 
 					<div className="flex flex-col space-y-4 p-6 text-sm">
 						<div className="flex-col space-y-2">
@@ -245,7 +245,7 @@ export const Offer = (
 				<div>
 					{
 						ratings.length !== 0 ? <>
-							<div className="flex h-12 w-full cursor-pointer flex-row items-center justify-between border-t border-gray/20 px-6 text-sm" onClick={() => openRatingFlow()}>
+							<div className="flex h-12 w-full cursor-pointer flex-row items-center justify-between border-t border-gray/20 px-6 text-sm" onClick={() => !modalOpen ? openRatingFlow() : null}>
 								<div className="flex flex-row space-x-1 whitespace-nowrap font-sans-semi">
 									<p>
 										{
@@ -292,7 +292,7 @@ export const Offer = (
 							</div>
 						</> : <>
 							<div className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x border-t border-gray/20 text-sm ${offer.sold_out ? "hidden" : ""} `}>
-								<div className="flex h-full w-full flex-row  items-center justify-center space-x-1 border-gray/20 font-sans-semi" onClick={() => openRatingFlow()}>
+								<div className="flex h-full w-full flex-row  items-center justify-center space-x-1 border-gray/20 font-sans-semi" onClick={() => !modalOpen ? openRatingFlow() : null}>
 									<p className="font-sans-med">Essen bewerten</p>
 									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 								</div>
