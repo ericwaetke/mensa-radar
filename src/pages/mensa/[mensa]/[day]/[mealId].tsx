@@ -19,7 +19,7 @@ export default function SharedMeal ({meal}: {meal: FoodOffering}) {
 	const { mensa, day } = router.query !== undefined ? router.query : { mensa: "Mensa not Found", day: "freitag" };
 
 	useEffect(() => {
-		router.push(`/mensa/${mensa}/${day}`)
+		router.push(`/mensa/${mensa}/${day}#${meal.id}`)
 	}, [])
 
 	const foodType = meal.vegetarian ? "Vegetarisch" : meal.vegan ? "Vegan" : meal.fish ? "Fischhaltig" : "Fleischhaltig"
