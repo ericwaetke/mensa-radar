@@ -28,24 +28,24 @@ export default async function handler(req) {
 		.eq('food_id', id)
 
 	let imageUrl: string;
-	if (images) {
-    images!.map(async image => {
-    	const { data, error } = await supabase
-    		.storage
-    		.from('food-images')
-    		.list('', {
-    			limit: 100,
-    			offset: 0,
-    			sortBy: { column: 'name', order: 'asc' },
-    			search: image.image_name
-    		})
-    })
+	if (images && images.length > 0) {
+		images!.map(async image => {
+			const { data, error } = await supabase
+				.storage
+				.from('food-images')
+				.list('', {
+					limit: 100,
+					offset: 0,
+					sortBy: { column: 'name', order: 'asc' },
+					search: image.image_name
+				})
+		})
 
-    const generateUrls = (imageName: string) => {
-    	return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/food-images/${imageName}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
-    }
+		const generateUrls = (imageName: string) => {
+			return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/food-images/${imageName}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
+		}
 
-    imageUrl = generateUrls(images![images.length - 1].image_name)
+		imageUrl = generateUrls(images![images.length - 1].image_name)
 	} else {
 		imageUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/thumbnail_${id}.png?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
 	}
