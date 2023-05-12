@@ -1,12 +1,12 @@
 import Image from "next/image"
 
 export const ImageComponent = (
-	{ type, src }:
-    { type: "user" | "ai", src: string }
+	{ type, src, single = false }:
+    { type: "user" | "ai", src: string, single?: boolean }
 ) => {
 
 	return <div className={`relative m-auto h-52 ${type === "user" ? "w-40" : "w-full"} shrink-0 cursor-pointer snap-center snap-always object-cover`}>
-		<Image src={src} className={`h-full w-full rounded-lg object-cover ${type === "user" ? "contrast-125 saturate-150" : ""}`} layout="fill" alt={`${type} Bild vom Essen`}/>
+		<Image src={src} className={`h-full w-full object-cover ${!single ? "rounded-lg" : ""} ${type === "user" ? "contrast-125 saturate-150" : ""}`} layout="fill" alt={`${type} Bild vom Essen`}/>
 		<span className="absolute left-2 top-2 z-10 flex space-x-1 rounded-full bg-white/60 px-2 py-1 font-sans-med text-xs text-black
     after:absolute after:left-0 after:top-0 after:h-full after:w-full after:rounded-full after:backdrop-blur after:content-['']">
 			{

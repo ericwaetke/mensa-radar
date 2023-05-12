@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export const Pill = ({children, col = "", icon = "", className = ""}) => {
 
@@ -43,7 +44,7 @@ export const Pill = ({children, col = "", icon = "", className = ""}) => {
 
 	return (
 		<motion.div className={`mt-1 inline-flex h-full flex-row gap-x-1 px-2.5 py-1 ${icon ? "pl-2" : null} ${colString} items-center rounded-full font-sans-reg text-sm ${className}`} variants={pillAnimation}>
-			{ icon ? <img  width="16" src={icon} /> : null } {children}
+			{ icon ? <Image width={16} height={16} alt={"Icon"} src={icon} /> : null } {children}
 		</motion.div>
 	)
 }

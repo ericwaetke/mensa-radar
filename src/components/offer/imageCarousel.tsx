@@ -14,23 +14,23 @@ export const ImageCarousel = (
 	)
 
 	return (
-		<div className={`w-full rounded-t-xl border-b border-gray/20 bg-lightshiny-green ${imageAmount > 1 ? "p-4" : ""} ${soldOut ? "opacity-50" : ""}`}>
-			<div className="relative m-auto min-h-max rounded-lg">
-				<div onClick={() => !soldOut ? openImageFlow() : null} className={`relative ${imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"} flex snap-x snap-mandatory gap-8 rounded-lg ${imageAmount !== 1 ? "px-[25%]" : ""}`}>
+		<div className={`w-full rounded-t-xl  overflow-hidden border-b border-gray/20 bg-lightshiny-green ${imageAmount > 1 ? "p-4" : ""} ${soldOut ? "opacity-50" : ""}`}>
+			<div className="relative m-auto min-h-max">
+				<div onClick={() => !soldOut ? openImageFlow() : null} className={`no-scrollbar relative ${imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"} flex snap-x snap-mandatory gap-8 ${imageAmount !== 1 ? "px-[25%] rounded-lg" : ""}`}>
 
 					{
-						tempImage ? <ImageComponent type="user" src={tempImage} /> : null
+						tempImage ? <ImageComponent single={imageAmount === 1} type="user" src={tempImage} /> : null
 					}
 					{
 						offer.imageUrls.map((url, index) => {
-							return <ImageComponent type="user" src={url} key={index} />
+							return <ImageComponent single={imageAmount === 1} type="user" src={url} key={index} />
 						})
 					}
 					{
-						offer.has_ai_thumbnail ? <ImageComponent type="ai" src={aiThumbnailUrl} /> : null
+						offer.has_ai_thumbnail ? <ImageComponent single={imageAmount === 1} type="ai" src={aiThumbnailUrl} /> : null
 					}
 					{
-						localAiThumbnail && localAiThumbnail !== "" && !offer.has_ai_thumbnail ? <ImageComponent type="ai" src={`data:image/png;base64,${localAiThumbnail}`} /> : null
+						localAiThumbnail && localAiThumbnail !== "" && !offer.has_ai_thumbnail ? <ImageComponent single={imageAmount === 1} type="ai" src={`data:image/png;base64,${localAiThumbnail}`} /> : null
 					}
 
 					{
