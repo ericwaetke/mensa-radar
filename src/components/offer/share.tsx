@@ -15,7 +15,7 @@ export const ShareButton = ({title, url} : {title: string, url: string}) => {
 			}).then(() => {
 
 			}).catch((error) => {
-				copyToClipboard();
+
 			})
 		} else {
 			copyToClipboard();
