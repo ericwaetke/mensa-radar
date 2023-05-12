@@ -297,7 +297,7 @@ export const Offer = (
 									<p className="font-sans-med">Essen bewerten</p>
 									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 								</div>
-								<ShareButton url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`} />
+								{/* <ShareButton url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`} /> */}
 							</div>
 						</>
 					}
