@@ -26,7 +26,9 @@ function MyApp({ Component, pageProps }) {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 			</Head>
 			<NextNProgress color="#88E2A1"/>
-			<Toaster />
+			<Toaster 
+				position="bottom-center"
+			/>
 
 			<PlausibleProvider domain="mensa-radar.de" customDomain="https://plausible.wovenspace.xyz" selfHosted="true" enabled="true">
 				<Provider>

@@ -15,6 +15,7 @@ import { usePlausible } from "next-plausible";
 import { env } from "../../env.mjs";
 import { ImageCarousel } from "./imageCarousel";
 import Image from "next/image";
+import { ShareButton } from "./share";
 Modal.setAppElement('#__next');
 
 
@@ -291,11 +292,12 @@ export const Offer = (
 								</div>
 							</div>
 						</> : <>
-							<div className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x border-t border-gray/20 text-sm ${offer.sold_out ? "hidden" : ""} `}>
+							<div className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x divide-gray/20 border-t border-gray/20 text-sm ${offer.sold_out ? "hidden" : ""} `}>
 								<div className="flex h-full w-full flex-row  items-center justify-center space-x-1 border-gray/20 font-sans-semi" onClick={() => !modalOpen ? openRatingFlow() : null}>
 									<p className="font-sans-med">Essen bewerten</p>
 									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
 								</div>
+								<ShareButton url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`} />
 							</div>
 						</>
 					}
