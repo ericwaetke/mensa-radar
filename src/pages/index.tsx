@@ -9,6 +9,7 @@ import Footer from "../components/footer";
 import { getOpeningTimes } from "../lib/getOpeningString";
 import { useRouter } from "next/router";
 import { env } from "../env.mjs";
+import { BugReportButton } from "../components/bugReportButton";
 
 export const runtime = "experimental-edge"
 
@@ -115,7 +116,7 @@ export default function Home(props) {
 			</div>
 
 
-			<main className="flex h-full flex-col">
+			<main className="flex h-full flex-col gap-4">
 				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{
 						mensen.map(mensa => {
@@ -131,6 +132,7 @@ export default function Home(props) {
 						})
 					}
 				</div>
+				<BugReportButton />
 			</main>
 			<Footer />
 		</div>
