@@ -4,23 +4,30 @@ import { useState } from 'react';
 import { isIOS, isMacOs } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 
-export const ShareButton = ({url} : {url: string}) => {
+export const ShareButton = ({title, url} : {title: string, url: string}) => {
 	// Get Device Type to show iOS icons or Android icons
 
 	const share = () => {
 		if(navigator.canShare) {
 			navigator.share({
-				title: "2",
-				text: "3",
+				title: title,
 				url
 			}).then(() => {
 
 			}).catch((error) => {
-
+				copyToClipboard();
 			})
 		} else {
-			toast.error("Your browser doesn't support sharing");
-			toast.error(JSON.stringify(navigator.share));
+			copyToClipboard();
+		}
+	}
+
+	const copyToClipboard = () => {
+		if(typeof navigator.clipboard.writeText !== "undefined") {
+			navigator.clipboard.writeText(url);
+			toast.success("Link zum Essen kopiert!");
+		} else {
+			toast.error("Link konnte nicht geteilt werden!");
 		}
 	}
 
