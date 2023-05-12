@@ -29,12 +29,14 @@ export const NutrientComponent = ({nutrient}) => {
 		return Math.round((kj / 4.184) * 100) / 100
 	}
 
-	const nutrientData = {
+	const nutrientData = nutrient ? {
 		...nutrientType[nutrient.name],
 		value: nutrient.name === "Energie (Kilojoule)" ? kJToKcal(nutrient.value) : parseFloat(nutrient.value),
 		unit: nutrient.name === "Energie (Kilojoule)" ? "kcal" : nutrient.unit,
+	} : {
+		value: "",
+		unit: ""
 	}
-	console.log(nutrientData)
 
 	// In Float Percentage from 0 to 1
 	const actualBarWitdh = nutrientData.value / nutrientData.reference * 100
