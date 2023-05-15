@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { generateSeed } from '../../../lib/generateSeed';
 import { env } from '../../../env.mjs';
 
-export const generateAiThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
+const GenerateThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		const { foodTitle, foodId } = JSON.parse(req.body);
 
@@ -62,3 +62,5 @@ export const generateAiThumbnail = async (req: NextApiRequest, res: NextApiRespo
 		});
 	}
 }
+
+export default GenerateThumbnail;
