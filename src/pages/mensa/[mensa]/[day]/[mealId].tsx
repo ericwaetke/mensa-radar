@@ -43,6 +43,7 @@ export default function SharedMeal ({meal}: {meal: FoodOffering}) {
 			<meta property="og:description" content={`${foodType} - Essen vom ${meal.date} in der Mensa ${meal.mensa}!`} />
 			<meta name="twitter:description" content={`${foodType} - Essen vom ${meal.date} in der Mensa ${meal.mensa}!`} />
 			<meta property="og:type" content="website" />
+			<meta property="og:locale" content="de_DE" />
 
 		</Head>
 	</>
