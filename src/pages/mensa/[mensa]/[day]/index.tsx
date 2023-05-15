@@ -23,6 +23,7 @@ import { env } from '../../../../env.mjs';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { BugReportButton } from '../../../../components/bugReportButton';
 
 const DynamicOffer = dynamic<{
 	offer: {
@@ -278,7 +279,7 @@ export default function Mensa(
 						</div>
 						{
 							scrollPosition ? <>
-								<div className="flex h-10 w-full flex-row items-center justify-center px-4 text-gray/70">
+								<div className="flex h-10 w-full flex-row items-center justify-center px-4 pb-1 text-gray/70">
 									<Pill col={"transparent"}>
 										<div className={`mr-1 h-2 w-2 rounded-full ${openingTimes.open ? `bg-dark-green` : ` bg-red-500`}`}></div>
 										<p className="font-sans-reg text-sm">{currentMensa.url === undefined ? "" : openingTimes.text}</p>
@@ -303,7 +304,7 @@ export default function Mensa(
 					) : null
 				}
 
-				<motion.div className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col overflow-y-scroll px-3 pb-16 pt-32" variants={container} initial="hidden" animate="show">
+				<motion.div className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col gap-4 overflow-y-scroll px-3 pt-32" variants={container} initial="hidden" animate="show">
 					{
 						foodOffers?.map((offer, i) => {
 							return (
@@ -311,7 +312,10 @@ export default function Mensa(
 							)
 						})
 					}
+					<BugReportButton />
 				</motion.div>
+
+				{/* Bug Reporting Button */}
 
 				{
 					scrollPosition ? <>

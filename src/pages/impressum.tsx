@@ -1,6 +1,7 @@
 
 import Head from "next/head";
 import Link from "next/link";
+import { BugReportButton } from "../components/bugReportButton";
 import Footer from "../components/footer";
 
 export default function Impressum () {
@@ -22,6 +23,7 @@ export default function Impressum () {
 				</Link>
 				<div className="font-sans-reg">
 					<h1 className="mb-4 mt-8 text-3xl">Über Mensa Radar</h1>
+					<BugReportButton />
 					<h2 className="mt-4 font-sans-bold">Wer sind wir?</h2>
 					<p>Mensa Radar ist ein Projekt von Eric Wätke und Carl Linz. Wir sind unabhängig und in keinem Verhältnis zum Studentenwerk Potsdam!</p>
 
