@@ -56,7 +56,7 @@ export const fetchDbData = async (reqDay: number, mensa: string) => {
 	}
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const GetMensaData = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	console.log("API Request")
 	console.log(req.body)
@@ -69,3 +69,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	data ? res.status(200).json(data) : res.status(404).json({ error: "No data found" })
 }
+
+export default GetMensaData

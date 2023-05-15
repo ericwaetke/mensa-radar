@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../lib/getSupabaseClient';
 import { decode } from 'base64-arraybuffer';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const UploadThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		const { foodId, base64 } = JSON.parse(req.body) || req.body;
 		if (!foodId || !base64) {
@@ -50,3 +50,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 	}
 }
+
+export default UploadThumbnail

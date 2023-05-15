@@ -8,9 +8,19 @@ type MensaData = {
   name: string,
   open: true | false | null,
   current_mensa_data: {
-    openingTimes: MensaOpeningTime[]
+    openingTimes: MensaOpeningTimeObject
   }[],
   url: string,
+}
+
+type MensaOpeningTimeObject = {
+  mo: MensaOpeningTime,
+  tu: MensaOpeningTime,
+  we: MensaOpeningTime,
+  th: MensaOpeningTime,
+  fr: MensaOpeningTime,
+  sa: MensaOpeningTime,
+  su: MensaOpeningTime,
 }
 
 type MensaOpeningTime = {

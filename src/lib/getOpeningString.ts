@@ -6,8 +6,8 @@ dayjs.extend(tz)
 
 export const getOpeningTimes: (currentMensa: MensaData) => { open: boolean, text: string } = (currentMensa: MensaData) => {
 	const currentWeekday = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
-	console.log(currentMensa)
-	const openingTimes = currentMensa.current_mensa_data[0].openingTimes[currentWeekday]
+	const days = ["mo", "tu", "we", "th", "fr", "sa", "su"]
+	const openingTimes = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday]]
 
 	const toHour = Math.floor(openingTimes.to)
 	const toMinute = Math.round((openingTimes.to - toHour) * 60) === 0 ? "00" : Math.round((openingTimes.to - toHour) * 60)
