@@ -7,12 +7,12 @@ import Footer from "../components/footer";
 export default function Impressum () {
 
 	return (
-		<div className="flex h-screen flex-col justify-between space-y-6 p-4 pb-0 lg:mx-auto lg:w-1/2 lg:px-0 lg:pb-4">
+		<div className="flex min-h-screen flex-col justify-between space-y-6 pb-8 lg:mx-auto lg:w-1/2 lg:px-0">
 			<Head>
 				<title>Mensa Radar — Mensen Potsdam</title>
 			</Head>
 
-			<main>
+			<main className="mx-auto h-full max-w-xl p-4">
 				<Link href="/">
 					<a className="flex items-center gap-4 p-2 pl-0">
 						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">

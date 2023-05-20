@@ -7,65 +7,85 @@ dayjs.extend(tz)
 export const getOpeningTimes: (currentMensa: MensaData) => { open: boolean, text: string } = (currentMensa: MensaData) => {
 	const currentWeekday = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
 	const days = ["mo", "tu", "we", "th", "fr", "sa", "su"]
-	const openingTimes = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday]]
+	const openingTimes: {
+		from: number,
+		to: number
+	} | undefined = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday]]
 
-	const toHour = Math.floor(openingTimes?.to ? openingTimes?.to : 0)
-	const toMinute = Math.round((openingTimes?.to - toHour) * 60) === 0 ? "00" : Math.round((openingTimes?.to - toHour) * 60)
-
-	const fromHour = Math.floor(openingTimes?.from)
-	const fromMinute = Math.round((openingTimes?.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimes?.from - fromHour) * 60)
 	const currentDate = new Date()
 
+	if (openingTimes) {
+		const toHour = Math.floor(openingTimes?.to ? openingTimes?.to : 0)
+		const toMinute = Math.round((openingTimes?.to - toHour) * 60) === 0 ? "00" : Math.round((openingTimes?.to - toHour) * 60)
+
+		const fromHour = Math.floor(openingTimes?.from)
+		const fromMinute = Math.round((openingTimes?.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimes?.from - fromHour) * 60)
+
+		const todayHasFood = currentMensa.daysWithFood.includes(currentDate.toISOString().split('T')[0]);
+		if (todayHasFood) {
+			// Check if current time is between the opening hours
+			const _date = new Date();
+			const stdTimezoneOffset = () => {
+				var jan = new Date(_date.getFullYear(), 0, 1);
+				var jul = new Date(_date.getFullYear(), 6, 1);
+				return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+			}
+
+			const isDstObserved = () => {
+				return _date.getTimezoneOffset() < stdTimezoneOffset();
+			}
+			const currentTimeObj = dayjs.utc().add(isDstObserved ? 2 : 1, 'hour')
+			const currentTime = currentTimeObj.hour() + currentTimeObj.minute() / 60;
+			console.log(openingTimes)
+
+
+			const open = currentTime >= openingTimes.from && currentTime <= openingTimes.to;
+			if (open) {
+				return {
+					open: true,
+					text: `offen bis ${toHour}:${toMinute}`
+				};
+			} else if (currentTime < openingTimes.from) {
+				return {
+					open: false,
+					text: `Öffnet um ${fromHour}:${fromMinute}`
+				};
+			}
+		}
+	}
+
 	// Check if today has food
-	const todayHasFood = currentMensa.daysWithFood.includes(currentDate.toISOString().split('T')[0]);
-	if (todayHasFood) {
-		// Check if current time is between the opening hours
-		const _date = new Date();
-		const stdTimezoneOffset = () => {
-			var jan = new Date(_date.getFullYear(), 0, 1);
-			var jul = new Date(_date.getFullYear(), 6, 1);
-			return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-		}
+	if (currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday+1 > 6 ? 0 : currentWeekday + 1]]) {
+		const openingTimes = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday+1 > 6 ? 0 : currentWeekday + 1]]
+		const fromHour = Math.floor(openingTimes?.from)
+		const fromMinute = Math.round((openingTimes?.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimes?.from - fromHour) * 60)
 
-		const isDstObserved = () => {
-			return _date.getTimezoneOffset() < stdTimezoneOffset();
-		}
-		const currentTimeObj = dayjs.utc().add(isDstObserved ? 2 : 1, 'hour')
-		const currentTime = currentTimeObj.hour() + currentTimeObj.minute() / 60;
-		console.log(currentTimeObj, currentTime)
-
-		const open = currentTime >= openingTimes.from && currentTime <= openingTimes.to;
-		if (open) {
-			return {
-				open: true,
-				text: `offen bis ${toHour}:${toMinute}`
-			};
-		} else if (currentTime < openingTimes.from) {
+		const tomorrow = new Date(currentDate)
+		tomorrow.setDate(tomorrow.getDate() + 1)
+		const tomorrowHasFood = currentMensa.daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
+		if (tomorrowHasFood) {
 			return {
 				open: false,
-				text: `Öffnet um ${fromHour}:${fromMinute}`
+				text: `Öffnet morgen um ${fromHour}:${fromMinute}`
 			};
 		}
 	}
 
-	const tomorrow = new Date(currentDate)
-	tomorrow.setDate(tomorrow.getDate() + 1)
-	const tomorrowHasFood = currentMensa.daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-	if (tomorrowHasFood) {
-		return {
-			open: false,
-			text: `Öffnet morgen um ${fromHour}:${fromMinute}`
-		};
-	}
+	const indexDayAfterTomorow = currentWeekday + 2 > 6 ? currentWeekday + 2 - 7 : currentWeekday + 2
+	const openingTimesDayAfterTomorrow = currentMensa.current_mensa_data[0].openingTimes[days[indexDayAfterTomorow]]
+	if (openingTimesDayAfterTomorrow) {
+		const fromHour = Math.floor(openingTimesDayAfterTomorrow?.from)
+		const fromMinute = Math.round((openingTimesDayAfterTomorrow?.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimesDayAfterTomorrow?.from - fromHour) * 60)
 
-	const dayAfterTomorrow = new Date(currentDate)
-	dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
-	const dayAfterTomorrowHasFood = currentMensa.daysWithFood.includes(tomorrow.toISOString().split('T')[0]);
-	if (dayAfterTomorrowHasFood) {
-		return {
-			open: false,
-			text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
-		};
+		const dayAfterTomorrow = new Date(currentDate)
+		dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
+		const dayAfterTomorrowHasFood = currentMensa.daysWithFood.includes(dayAfterTomorrow.toISOString().split('T')[0]);
+		if (dayAfterTomorrowHasFood) {
+			return {
+				open: false,
+				text: `Öffnet übermorgen um ${fromHour}:${fromMinute}`
+			};
+		}
 	}
 
 	return {
