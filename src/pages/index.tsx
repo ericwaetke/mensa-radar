@@ -121,7 +121,7 @@ export default function Home(props) {
 					{
 						mensen.map(mensa => {
 							return <Link href={'/mensa/' + mensa.url} key={mensa.id}>
-								<a className="flex  justify-between space-x-2 py-4 pr-4">
+								<a className="flex items-center justify-between space-x-2 py-4 pr-4">
 									<h3 className="font-serif-semi text-xl font-normal"> {mensa.name}</h3>
 									<div className="flex h-full items-center font-sans-reg text-sm">
 										<div className={`my-auto mr-2 h-2 w-2 rounded-full ${openingTimes?.[mensa.id]?.open ? "bg-main-green" : "bg-red-500"}`}></div>
