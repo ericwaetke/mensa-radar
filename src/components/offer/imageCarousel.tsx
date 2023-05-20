@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ImageComponent } from "./imageComponent"
 
 export const ImageCarousel = (
@@ -12,6 +12,14 @@ export const ImageCarousel = (
 		// user images
 		(offer.imageUrls.length + (tempImage ? 1 : 0))
 	)
+	useEffect(() => {
+		setImageAmount(
+			//ai images
+			(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+			// user images
+			(offer.imageUrls.length + (tempImage ? 1 : 0))
+		)
+	}, [localAiThumbnail])
 
 	return (
 		<div className={`w-full rounded-t-xl  overflow-hidden border-b border-gray/20 bg-lightshiny-green ${imageAmount > 1 ? "p-4" : ""} ${soldOut ? "opacity-50" : ""}`}>
