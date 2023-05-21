@@ -108,8 +108,26 @@ export default function Home(props) {
 	return (
 		<div className="m-auto box-border flex min-h-screen flex-col items-center space-y-6 p-2 py-4 lg:mx-auto lg:px-0">
 			<Head>
-				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
+			
+				{/* <!-- HTML Meta Tags --> */}
+				<title>Mensa-Radar — Mensen Potsdam</title>
+				<meta name="description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+
+				{/* <!-- Facebook Meta Tags --> */}
+				<meta property="og:url" content="https://mensa-radar.de" />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Mensa-Radar — Mensen Potsdam" />
+				<meta property="og:description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+				<meta property="og:image" content="/share_root.png" />
+
+				{/* <!-- Twitter Meta Tags --> */}
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta property="twitter:domain" content="mensa-radar.de" />
+				<meta property="twitter:url" content="https://mensa-radar.de" />
+				<meta name="twitter:title" content="Mensa-Radar — Mensen Potsdam" />
+				<meta name="twitter:description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+				<meta name="twitter:image" content="/share_root.png" />
 			</Head>
 			<div className="flex w-full justify-center">
 				<h1 className="text-h1 font-serif-bold">Mensa-Radar</h1>
