@@ -6,14 +6,16 @@ export const config = {
 	runtime: 'experimental-edge'
 }
 
-const font = fetch(new URL('../../../assets/NotoSans-Bold.ttf', import.meta.url)).then(
+const ibmblex_bold = fetch(new URL('../../../assets/fonts/ibm-plex-serif-700.ttf', import.meta.url)).then(
+	(res) => res.arrayBuffer(),
+);
+const ibmblex_regular = fetch(new URL('../../../assets/fonts/ibm-plex-serif-500.ttf', import.meta.url)).then(
 	(res) => res.arrayBuffer(),
 );
 
 export default async function handler(req) {
 	const { searchParams } = new URL(req.url)
 	const id = searchParams.get('id') ?? "Default Title"
-	console.log(id)
 
 	const { data: offer }: { data: FoodOffering } = await supabase
 		.from("food_offerings")
@@ -50,7 +52,8 @@ export default async function handler(req) {
 		imageUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/thumbnail_${id}.png?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
 	}
 
-	const fontData = await font
+	const fontData = await ibmblex_bold
+	const fontDataRegular = await ibmblex_regular
 
 	return new ImageResponse(
 		(
@@ -59,7 +62,7 @@ export default async function handler(req) {
 					height: '100%',
 					width: '100%',
 					display: 'flex',
-					flexDirection: 'column',
+					flexDirection: 'row',
 					alignItems: 'center',
 					justifyContent: 'center',
 					backgroundColor: '#fff',
@@ -68,27 +71,31 @@ export default async function handler(req) {
 					fontWeight: 600,
 				}}
 			>
-				<img width="1920" height="2560" src={imageUrl} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+				<img src={imageUrl} style={{ width: "400px", height: "100%", objectFit: "cover" }} />
 
-				{/* Black Gradient from Bottom to Middle */}
+			
 				<div style={{
-					position: "absolute",
-					bottom: 0,
-					width: "100%",
-					height: "75%",
-					background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.60) 100%)"
-
-				}}
-				></div>
-				<div style={{
-					bottom: 48,
-					left: 48,
-					width: "75%",
-					color: "#fff",
-					position: "absolute"
-				}}>{
-						offer.food_title
-					}</div>
+					display: "flex",
+					flexDirection: "column",
+					gap: "32px",
+					width: "800px",
+					height: "100%",
+					color: "#000",
+					background: '#88E2A1',
+					padding: "88px 64px"
+				}}>
+					<p style={{
+						fontSize: "35px",
+						margin: 0,
+					}}>Heute in deiner Mensa</p>
+					<p style={{
+						fontFamily: "ibm-regular",
+						fontSize: "50px",
+						margin: "32px 0 0 0",
+					}}>
+						{offer.food_title}
+					</p>
+				</div>
 			</div>
 		),
 		{
@@ -96,8 +103,12 @@ export default async function handler(req) {
 			height: 630,
 			fonts: [
 				{
-					name: 'Noto',
+					name: 'ibm-bold',
 					data: fontData,
+				},
+				{
+					name: 'ibm-regular',
+					data: fontDataRegular,
 				},
 			]
 		}
