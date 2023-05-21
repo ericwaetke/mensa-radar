@@ -39,6 +39,7 @@ module.exports = {
 			colors: {
 				//green
 				'light-green': '#CFE0D1',
+				'arc-bg': 'var(--arc-pallette-background',
 				
 				//foto-bg
 				'lightshiny-green': '#B3C0B5',

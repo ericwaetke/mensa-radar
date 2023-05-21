@@ -239,7 +239,7 @@ export default function Mensa(
 
 				<div className={`fixed p-3 ${modalOpen ? null : "z-10"} w-full border-b border-gray/10 bg-light-green`}>
 					<div className="m-auto w-full divide-y divide-gray/20 rounded-xl border border-solid border-gray/20 sm:max-w-xl">
-						<div onClick={() => openMensaSelectionFlow()} className="flex h-12 w-full flex-row items-center justify-center space-x-1">
+						<div onClick={() => openMensaSelectionFlow()} className="flex h-12 w-full flex-row items-center justify-center gap-2 space-x-2">
 							<h1 className="text-h1 block font-serif-bold">{currentMensa.name}</h1>
 							<Image src="/icons/chev-down.svg" width={16} height={16} className="mt-[2px]" alt="Icon pointing downwards"/>
 						</div>
@@ -247,8 +247,8 @@ export default function Mensa(
 							{
 								selectedWeekday > 0 ? <>
 									<Link href={`/mensa/${mensa}/${days[selectedWeekday - 1]}`}>
-										<a className='inline-flex grow basis-0 flex-row items-center space-x-1 font-sans-med text-sm'>
-											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 rotate-180 opacity-50" alt="Icon pointing to the right"/>
+										<a className='inline-flex grow basis-0 flex-row items-center gap-1 font-sans-med text-sm'>
+											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 rotate-180" alt="Icon pointing to the right"/>
 
 											<p className='capitalize'>
 												{currentWeekday === selectedWeekday ? 'Gestern' : currentWeekday === selectedWeekday - 1 ? 'Heute' : days[selectedWeekday - 1]}
@@ -266,12 +266,12 @@ export default function Mensa(
 							{
 								selectedWeekday < 4 ? <>
 									<Link href={`/mensa/${mensa}/${days[selectedWeekday + 1]}`}>
-										<a className="inline-flex grow basis-0 flex-row items-center space-x-1 text-right font-sans-med text-sm">
+										<a className="inline-flex grow basis-0 flex-row items-center gap-1 text-right font-sans-med text-sm">
 											<p className='w-full capitalize'>
 												{currentWeekday === selectedWeekday ? 'Morgen' : currentWeekday === selectedWeekday + 1 ? "Heute" : days[selectedWeekday + 1]}
 											</p>
 
-											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4 opacity-50" alt="Icon pointing to the right"/>
+											<Image src="/icons/right-arrw.svg" width={16} height={16} className="w-4" alt="Icon pointing to the right"/>
 										</a>
 									</Link>
 								</> : <div className='mr-auto w-20 grow basis-0 text-left font-sans-bold text-sm text-black'></div>
