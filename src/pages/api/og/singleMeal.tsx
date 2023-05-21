@@ -30,6 +30,7 @@ export default async function handler(req) {
 		.eq('food_id', id)
 
 	let imageUrl: string;
+	let userImage: bool = false;
 	if (images && images.length > 0) {
 		images!.map(async image => {
 			const { data, error } = await supabase
@@ -48,6 +49,7 @@ export default async function handler(req) {
 		}
 
 		imageUrl = generateUrls(images![images.length - 1].image_name)
+		userImage = true
 	} else {
 		imageUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/thumbnail_${id}.png?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
 	}
@@ -72,27 +74,33 @@ export default async function handler(req) {
 					position: 'relative',
 				}}
 			>
-				<img src={imageUrl} style={{ width: "400px", height: "100%", objectFit: "cover" }} />
+				<img src={imageUrl} style={{ 
+					width: "400px", 
+					height: "100%", 
+					objectFit: "cover" ,
+					filter: userImage ? "saturate(1.25) contrast(1.25)" : "none",
+				}} />
 				
 			
 				<div style={{
 					display: "flex",
 					flexDirection: "column",
+					justifyContent: "center",
 					gap: "32px",
 					width: "800px",
 					height: "100%",
 					color: "#000",
 					background: '#88E2A1',
-					padding: "88px 64px"
+					padding: "88px 16px 88px 64px"
 				}}>
 					<p style={{
 						fontSize: "35px",
-						margin: 0,
+						margin: "0px",
 					}}>Heute in deiner Mensa</p>
 					<p style={{
 						fontFamily: "ibm-regular",
 						fontSize: "50px",
-						margin: "32px 0 0 0",
+						margin: "0",
 					}}>
 						{offer.food_title}
 					</p>
