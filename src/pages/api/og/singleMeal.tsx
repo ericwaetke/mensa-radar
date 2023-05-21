@@ -30,7 +30,7 @@ export default async function handler(req) {
 		.eq('food_id', id)
 
 	let imageUrl: string;
-	let userImage: bool = false;
+	let userImage: boolean = false;
 	if (images && images.length > 0) {
 		images!.map(async image => {
 			const { data, error } = await supabase
