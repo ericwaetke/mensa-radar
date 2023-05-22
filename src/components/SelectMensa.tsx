@@ -25,39 +25,39 @@ export const SelectMensa = (
 
 	return (
 		<>
-		<motion.div 
-		initial={{height: "62px"}}
-		animate={{height: "auto"}}
-		// transition={{duration: .5}}
-		className="w-96 flex flex-col divide-y divide-gray/20 border border-gray/20 rounded-xl bg-white overflow-hidden">
-			{/* Showing current Mensa */}
-			<div 
-				onClick={() => setModalOpen(false)}
-				className="flex h-12 space-x-1 justify-center bg-light-green items-center cursor-pointer">
-				<h1 className="block text-h1 font-serif-bold">{selectedMensa.name}</h1>
-				<img className="w-4 rotate-180" src="/icons/chev-down.svg"></img>
-			</div>
-			{
-				Object.values(mensen).map((mensa) => {
-					return mensa.url !== currentMensa ? (
-						<Link href={`/mensa/${mensa.url}`}>
-							<a className={`flex h-12 justify-center space-x-2 items-center`}>
-								<h3 className="text-lg font-normal font-serif-med"> {mensa.name}</h3>
-								<div className="flex font-sans-reg text-s items-center h-full">
-									{
-										mensa.open || mensa.openingString === "offen bis 14:30" ? <>
-											<div className="rounded-full w-2 h-2 bg-main-green mr-2 my-auto"></div>
-										</> : null
-									}
+			<motion.div 
+				initial={{height: "62px"}}
+				animate={{height: "auto"}}
+				// transition={{duration: .5}}
+				className="flex w-96 flex-col divide-y divide-gray/20 overflow-hidden rounded-xl border border-gray/20 bg-white">
+				{/* Showing current Mensa */}
+				<div 
+					onClick={() => setModalOpen(false)}
+					className="flex h-12 cursor-pointer items-center justify-center space-x-1 bg-light-green">
+					<h1 className="text-h1 block font-serif-bold">{selectedMensa.name}</h1>
+					<img className="w-4 rotate-180" src="/icons/chev-down.svg"></img>
+				</div>
+				{
+					Object.values(mensen).map((mensa) => {
+						return mensa.url !== currentMensa ? (
+							<Link href={`/mensa/${mensa.url}`}>
+								<a className={`flex h-12 items-center justify-center space-x-2`}>
+									<h3 className="font-serif-med text-lg font-normal"> {mensa.name}</h3>
+									<div className="text-s flex h-full items-center font-sans-reg">
+										{
+											mensa.open || mensa.openingString === "offen bis 14:30" ? <>
+												<div className="my-auto mr-2 h-2 w-2 rounded-full bg-main-green"></div>
+											</> : null
+										}
 
-									<span className="opacity-60 whitespace-nowrap"> {mensa.openingString} </span>
-								</div>
-							</a>
-						</Link>
-					) : null
-				})
-			}
-		</motion.div>
+										<span className="whitespace-nowrap opacity-60"> {mensa.openingString} </span>
+									</div>
+								</a>
+							</Link>
+						) : null
+					})
+				}
+			</motion.div>
 		</>
 	)
 }

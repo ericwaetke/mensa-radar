@@ -5,8 +5,7 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
 	const mensa = (request.nextUrl.pathname).split('/')[2]
 	const currentDate = new Date()
-	let currentWeekday = currentDate.getDay()
-	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
+	const currentWeekday = currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1
 	const weekday = [
 		"montag",
 		"dienstag",

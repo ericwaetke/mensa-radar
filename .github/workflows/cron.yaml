@@ -1,7 +1,8 @@
 name: Revalidate Mensa Data Cron Job
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '*/5 7,8,9,10,11,12,13,14 * * *'
+    - cron: '*/5 7-14 * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
@@ -9,5 +10,5 @@ jobs:
       - name: Call Revalidation API
         run: |
           curl --request POST \
-          --url 'https://next.mensa-radar.de/api/revalidate' \
-          --header 'Authorization: Bearer ${{ secrets.REVALIDATION_TOKEN }}'
+          --url 'https://mensa-radar.de/api/revalidate' \
+          --header "Authorization: Bearer ${{ secrets.REVALIDATION_TOKEN }}"

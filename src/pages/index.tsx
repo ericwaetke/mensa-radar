@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
 import Head from "next/head";
@@ -8,13 +9,14 @@ import Footer from "../components/footer";
 import { getOpeningTimes } from "../lib/getOpeningString";
 import { useRouter } from "next/router";
 import { env } from "../env.mjs";
+import { BugReportButton } from "../components/bugReportButton";
 
 export const runtime = "experimental-edge"
 
 export default function Home(props) {
 	const router = useRouter()
 
-	const { mensaData }: {mensaData: MensaData[]} = props;
+	const { mensaData }: { mensaData: MensaData[] } = props;
 	const d = new Date();
 	const currentTime = d.getHours() + d.getMinutes() / 60
 	const currentDay = d.getDay()
@@ -78,7 +80,7 @@ export default function Home(props) {
 			console.error('Geolocation is not supported by your browser');
 
 		} else {
-			navigator.geolocation.getCurrentPosition(success, (e) => console.log("error getting location: ",e));
+			navigator.geolocation.getCurrentPosition(success, (e) => console.log("error getting location: ", e));
 			setLocationLoaded(true);
 		}
 	}
@@ -87,8 +89,6 @@ export default function Home(props) {
 		const tempOpeningTimes = {}
 		for (let i = 0; i < mensaData.length; i++) {
 			const mensa = mensaData[i]
-			console.log(mensa)
-			console.log(getOpeningTimes(mensa))
 			tempOpeningTimes[mensa.id] = getOpeningTimes(mensa)
 		}
 		setOpeningTimes(tempOpeningTimes)
@@ -106,32 +106,51 @@ export default function Home(props) {
 	}, [])
 
 	return (
-		<div className="p-2 pt-8 pb-0 space-y-6 max-w-xl m-auto lg:px-0 lg:pb-4 lg:mx-auto flex flex-col h-screen box-border wrap">
+		<div className="m-auto box-border flex min-h-screen flex-col items-center space-y-6 p-2 py-4 lg:mx-auto lg:px-0">
 			<Head>
-				<title>Mensa-Radar — Mensen Potsdam</title>
 				<link rel="icon" href="/favicon.ico" />
+			
+				{/* <!-- HTML Meta Tags --> */}
+				<title>Mensa-Radar — Mensen Potsdam</title>
+				<meta name="description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+
+				{/* <!-- Facebook Meta Tags --> */}
+				<meta property="og:url" content="https://mensa-radar.de" />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Mensa-Radar — Mensen Potsdam" />
+				<meta property="og:description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+				<meta property="og:image" content="/share_root.png" />
+
+				{/* <!-- Twitter Meta Tags --> */}
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta property="twitter:domain" content="mensa-radar.de" />
+				<meta property="twitter:url" content="https://mensa-radar.de" />
+				<meta name="twitter:title" content="Mensa-Radar — Mensen Potsdam" />
+				<meta name="twitter:description" content="Alle Essen der Potsdamer Mensen. Mit Bildern und ✨AI✨" />
+				<meta name="twitter:image" content="/share_root.png" />
 			</Head>
-			<div className="w-full flex justify-center">
+			<div className="flex w-full justify-center">
 				<h1 className="text-h1 font-serif-bold">Mensa-Radar</h1>
 			</div>
 
 
-			<main className="flex flex-col h-full">
-				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white pl-4 py-0.5">
+			<main className="flex h-full max-w-xl flex-col gap-4 lg:mx-auto">
+				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{
 						mensen.map(mensa => {
 							return <Link href={'/mensa/' + mensa.url} key={mensa.id}>
-								<a className="flex  py-4 pr-4 justify-between space-x-2">
-									<h3 className="text-xl font-normal font-serif-semi"> {mensa.name}</h3>
-									<div className="flex font-sans-reg text-s items-center h-full">
-										<div className={`rounded-full w-2 h-2 mr-2 my-auto ${openingTimes?.[mensa.id]?.open ? "bg-main-green" : "bg-red-500"}`}></div>
-										<span className="opacity-60 whitespace-nowrap"> {openingTimes?.[mensa.id]?.text} </span>
+								<a className="flex items-center justify-between space-x-2 py-4 pr-4">
+									<h3 className="font-serif-semi text-xl font-normal"> {mensa.name}</h3>
+									<div className="flex h-full items-center font-sans-reg text-sm">
+										<div className={`my-auto mr-2 h-2 w-2 rounded-full ${openingTimes?.[mensa.id]?.open ? "bg-main-green" : "bg-red-500"}`}></div>
+										<span className="whitespace-nowrap opacity-60"> {openingTimes?.[mensa.id]?.text} </span>
 									</div>
 								</a>
 							</Link>
 						})
 					}
 				</div>
+				<BugReportButton />
 			</main>
 			<Footer />
 		</div>
@@ -145,8 +164,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function getStaticProps(context) {
 	const { data: mensen, error: mensenError } = await supabase
-	.from('mensen')
-	.select(`
+		.from('mensen')
+		.select(`
 		id,
 		name,
 		loc_lat,
@@ -164,7 +183,7 @@ export async function getStaticProps(context) {
 
 	const mensaData = mensen?.map(mensa => {
 		const daysWithFood = [...new Set(daysWithFoodUnfiltered?.filter((day) => day.mensa === mensa.id).map((day) => day.date))];
-		
+
 		return {
 			...mensa,
 			daysWithFood

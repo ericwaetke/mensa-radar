@@ -1,17 +1,15 @@
 import "./src/env.mjs";
 /** @type {import('next').NextConfig} */
-// Import next-pwa 
+// Import next-pwa
 import nextPWA from "next-pwa";
 import runtimeCaching from "next-pwa/cache.js";
-import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const withPWA = nextPWA({
-	dest: "public",
-	register: true,
-	skipWaiting: true,
-	runtimeCaching,
-	disable: process.env.NODE_ENV === "development",
-	buildExcludes: [/middleware-manifest.json$/],
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  runtimeCaching,
+  disable: process.env.NODE_ENV === "development",
 });
 
 /**
@@ -20,40 +18,30 @@ const withPWA = nextPWA({
  * @constraint {{import('next').NextConfig}}
  */
 function defineNextConfig(config) {
-	return config;
+  return config;
 }
 
-const bundleAnalyzer = withBundleAnalyzer({
-	enabled: process.env.ANALYZE === 'true',
-})
-
-
 const nextConfig = defineNextConfig({
-	images: {
-		remotePatterns: [
-			{
-				protocol: 'http',
-				hostname: 'localhost',
-				port: '3000',
-				pathname: '/api/image/**',
-			},
-			{
-				protocol: 'https',
-				hostname: '**.mensa-radar.de',
-			},
-			// Supabase Storage
-			{
-				protocol: 'https',
-				hostname: 'bqfzesnwsvziyglfeezk.supabase.co',
-				pathname: '/storage/**',
-			},
-		],
-	},
-	api: {
-		bodyParser: {
-			sizeLimit: '20mb' // Set desired value here
-		}
-	}
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/api/image/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.mensa-radar.de',
+      },
+      // Supabase Storage
+      {
+        protocol: 'https',
+        hostname: 'bqfzesnwsvziyglfeezk.supabase.co',
+        pathname: '/storage/**',
+      },
+    ],
+  }
 });
 
 export default withPWA(nextConfig);

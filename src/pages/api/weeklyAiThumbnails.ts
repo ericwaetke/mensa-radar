@@ -49,19 +49,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 						foodId: foodEntry.id
 					})
 				})
-				.then(res => res.json())
-				.then(async (res) => {
-					if (res.message === 'success') {
+					.then(res => res.json())
+					.then(async (res) => {
+						if (res.message === 'success') {
 						// Update has_ai_thumbnail column in supabase
-						await supabase
-							.from('food_offerings')
-							.update({ has_ai_thumbnail: true })
-							.eq('id', foodEntry.id)
-							.then(_ => {
-								console.log('success')
-							})
-					}
-				})
+							await supabase
+								.from('food_offerings')
+								.update({ has_ai_thumbnail: true })
+								.eq('id', foodEntry.id)
+								.then(_ => {
+									console.log('success')
+								})
+						}
+					})
 			}
 		})).then(_ => {
 			res.status(200).json({

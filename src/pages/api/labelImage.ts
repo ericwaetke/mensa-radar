@@ -37,26 +37,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// Performs label detection on the image file
 	
 	return client
-	.labelDetection(buffer)
-	.then(results => {
-		const labels = results[0].labelAnnotations;
+		.labelDetection(buffer)
+		.then(results => {
+			const labels = results[0].labelAnnotations;
 
-		// Check if labels contains label.description === 'Food'
-		if (labels.some(label => label.description === 'Food')) {
-			console.log('Food detected');
-			res.status(200).json({
-				isFood: true
+			// Check if labels contains label.description === 'Food'
+			if (labels.some(label => label.description === 'Food')) {
+				console.log('Food detected');
+				res.status(200).json({
+					isFood: true
+				});
+			} else {
+				res.status(200).json({
+					isFood: false
+				});
+			}
+		})
+		.catch(err => {
+			console.error('ERROR:', err);
+			res.status(500).json({
+				error: err
 			});
-		} else {
-			res.status(200).json({
-				isFood: false
-			});
-		}
-	})
-	.catch(err => {
-		console.error('ERROR:', err);
-		res.status(500).json({
-			error: err
 		});
-	});
 }

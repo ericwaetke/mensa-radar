@@ -31,6 +31,8 @@ export default function RateFood(
 		"😋"
 	]
 
+	const plausible = usePlausible()
+
 	const timing = 150
 	const [isVibrating, setIsVibrating] = useState(false);
 	useEffect(() => {
@@ -109,7 +111,6 @@ export default function RateFood(
 			})
 		}).then(res => {
 			console.log(res);
-			const plausible = usePlausible()
 			plausible('Rating')
 		}).catch(err => {
 			console.error(err);
@@ -117,27 +118,27 @@ export default function RateFood(
 	}
 
 	return (
-		<div className="bg-green flex gap-6 flex-col justify-between text-center lg:max-w-lg  mx-auto w-full">
+		<div className="bg-green mx-auto flex w-full flex-col justify-between gap-6  text-center lg:max-w-lg">
 			{/* Second Row in Flexbox */}
-			<div className="px-4 font-sans-reg w-full space-y-2">
-				<div className={`text-4xl flex flex-start flex-col w-14 space-y-1`} style={{transform: `translate(${offsetX}px)`}}>
-						<p className="block">
+			<div className="w-full space-y-2 px-4 font-sans-reg">
+				<div className={`flex-start flex w-14 flex-col space-y-1 text-4xl`} style={{transform: `translate(${offsetX}px)`}}>
+					<p className="block">
 						<motion.div animate={controls}>
 							{
 								ratingPercentage < 0.25 ? emojis[0] :
-								ratingPercentage < 0.5 ? emojis[1] :
-								ratingPercentage < 0.75 ? emojis[2] :
-								emojis[3]
+									ratingPercentage < 0.5 ? emojis[1] :
+										ratingPercentage < 0.75 ? emojis[2] :
+											emojis[3]
 							}
 						</motion.div></p>
-						<div className="inline-flex flex-row space-x-1 px-3 py-1 rounded-full font-sans-reg text-sm bg-white whitespace-nowrap justify-center"> 
-							<p>{ratingPercentageTwoDigs}</p><p>/ 5</p>
-						</div> 
+					<div className="inline-flex flex-row justify-center space-x-1 whitespace-nowrap rounded-full bg-white px-3 py-1 font-sans-reg text-sm"> 
+						<p>{ratingPercentageTwoDigs}</p><p>/ 5</p>
+					</div> 
 				</div>
-				<div className='bg-white w-full h-14 rounded-full items-center flex relative px-1' ref={handleBar}>
-					<div className='w-0.5 h-1/2 rounded-full bg-black/20 absolute left-1/4'></div>
-					<div className='w-0.5 h-1/2 rounded-full bg-black/20 absolute left-1/2'></div>
-					<div className='w-0.5 h-1/2 rounded-full bg-black/20 absolute left-3/4'></div>
+				<div className='relative flex h-14 w-full items-center rounded-full bg-white px-1' ref={handleBar}>
+					<div className='absolute left-1/4 h-1/2 w-0.5 rounded-full bg-black/20'></div>
+					<div className='absolute left-1/2 h-1/2 w-0.5 rounded-full bg-black/20'></div>
+					<div className='absolute left-3/4 h-1/2 w-0.5 rounded-full bg-black/20'></div>
 					<Draggable
 						axis="x"
 						defaultPosition={{x: 0, y: 0}}
@@ -146,18 +147,18 @@ export default function RateFood(
 						scale={1}
 						onDrag={handleDrag}>
 						<div className='h-12 w-12'>
-							<motion.div className='bg-main-green rounded-full h-full w-full' animate={{scale: isVibrating ? 1.1 : 1}}>
+							<motion.div className='h-full w-full rounded-full bg-main-green' animate={{scale: isVibrating ? 1.1 : 1}}>
 							</motion.div>
 						</div>
 					</Draggable>
 				</div>
 				{ 
-				<div className="w-full flex justify-between text-xs text-gray/50 px-6">
-				<p>1</p><p>3</p><p>5</p>
-				</div>
+					<div className="flex w-full justify-between px-6 text-xs text-gray/50">
+						<p>1</p><p>3</p><p>5</p>
+					</div>
 				
 				 }			
-				<div className="text-sm inline-flex justify-center pt-2 space-x-2 items-center opacity-50">
+				<div className="inline-flex items-center justify-center space-x-2 pt-2 text-sm opacity-50">
 					<img src="../.././icons/right-arrw.svg" className="w-4 rotate-180"></img>
 					<p>Beweg den Kreis</p>
 					<img src="../.././icons/right-arrw.svg" className="w-4"></img>
@@ -166,13 +167,13 @@ export default function RateFood(
 
 
 			{/* Bottom Row in Flexbox */}
-			<div className="px-4 mb-6 flex flex-col gap-2">
+			<div className="mb-6 flex flex-col gap-2 px-4">
 				<button 
-				onClick={() => {
-					saveRating()
-					setModalOpen(false);
-				}}
-				className={`bg-main-green font-semibold h-14 w-full min-w-max grow rounded-lg flex justify-center items-center gap-2 cursor-pointer px-4`}>
+					onClick={() => {
+						saveRating()
+						setModalOpen(false);
+					}}
+					className={`flex h-14 w-full min-w-max grow cursor-pointer items-center justify-center gap-2 rounded-lg bg-main-green px-4 font-semibold`}>
 					<img src="../.././icons/check.png" className="w-4"></img>
 					<p>
 						Bewertung speichern 
@@ -187,13 +188,13 @@ export const RateFoodHeader = ({foodTitle}: {foodTitle: string}) => {
 
 	return (
 		<div>
-			<div className=" pt-6 inline-flex justify-center items-center text-xl cursor-pointer px-8">
+			<div className=" inline-flex cursor-pointer items-center justify-center px-8 pt-6 text-xl">
 				<h2 className="font-sans-bold">
 					Bewerten
 				</h2>
 				<div className="ml-auto"></div>
 			</div>
-			<div className="px-12 my-4 py-4 border-y border-black/20">
+			<div className="my-4 border-y border-black/20 px-12 py-4">
 				<p className="font-serif-reg text-base">
 					{foodTitle}
 				</p>

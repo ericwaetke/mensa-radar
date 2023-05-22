@@ -1,0 +1,6 @@
+{
+  "extends": ["plugin:tailwindcss/recommended", "next/core-web-vitals"],
+  "rules": {
+    "indent": ["warn", "tab"]
+  }
+}
