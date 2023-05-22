@@ -2,13 +2,15 @@ import { createClient } from "@supabase/supabase-js"
 import { usePlausible } from "next-plausible"
 import { ChangeEvent, useEffect, useState } from "react"
 import { env } from "../../env.mjs"
+import type { OurFileRouter } from "../../server/uploadthing.js"
+import { generateReactHelpers } from "@uploadthing/react/hooks";
 
 const CaptureImageButton = ({
 	label,
 	handleUpload,
 }: {
-  label: string,
-  handleUpload: (e) => void,
+	label: string,
+	handleUpload: (e) => void,
 }) => (
 	<>
 		<label htmlFor="file_input" className="flex h-14 w-full min-w-max grow cursor-pointer items-center justify-center gap-2 rounded-lg bg-main-green px-4 font-sans-semi">
@@ -28,6 +30,8 @@ const CaptureImageButton = ({
 	</>
 )
 
+const { useUploadThing } = generateReactHelpers<OurFileRouter>()
+
 export const CaptureImage = (
 	{
 		setModalOpen,
@@ -39,15 +43,15 @@ export const CaptureImage = (
 		foodTitle,
 		foodId,
 	}: {
-    setModalOpen: (open: boolean) => void,
-    setTempImage: (image: string) => void,
-    setCurrentModalContent: (content: string) => void,
+		setModalOpen: (open: boolean) => void,
+		setTempImage: (image: string) => void,
+		setCurrentModalContent: (content: string) => void,
 
-    triggerAiThumbnailRegeneration: () => void
+		triggerAiThumbnailRegeneration: () => void
 
-    foodTitle: string,
-    foodId: number,
-  }
+		foodTitle: string,
+		foodId: number,
+	}
 ) => {
 
 	const [fileName, setFileName] = useState("")
@@ -69,7 +73,22 @@ export const CaptureImage = (
 		setFileName(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
 	}
 
-	const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+
+	const {startUpload} = useUploadThing({
+		endpoint: "userImage",
+		onClientUploadComplete(res) {
+			console.log(res)
+		},
+		onUploadError(e) {
+			console.log(e)
+		},
+	})
+	const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
+		const file: File = e.target.files[0]
+		// startUpload([file]);
+	}
+
+	const _handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
 		let file: File;
 
 		if (e.target.files) {
