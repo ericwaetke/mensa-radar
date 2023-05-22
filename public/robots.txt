@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://mensa-radar.de
+
+# Sitemaps
+Sitemap: https://mensa-radar.de/sitemap.xml
