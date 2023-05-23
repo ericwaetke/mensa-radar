@@ -37,7 +37,7 @@ export const fetchDbData = async (reqDay: number, mensa: string) => {
 	try {
 		const { data: foodOfferingsOfSelectedDay, error } = await supabase
 			.from('food_offerings')
-			.select()
+			.select(`*, food_images ( image_url )`)
 			.eq('date', dateFormated)
 			.eq('mensa', getMensaId[mensa])
 

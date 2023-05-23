@@ -8,16 +8,16 @@ export const ImageCarousel = (
 
 	const [imageAmount, setImageAmount] = useState<number>(
 		//ai images
-		(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+		(offer.ai_thumbnail_url || localAiThumbnail ? 1 : 0) +
 		// user images
-		(offer.imageUrls.length + (tempImage ? 1 : 0))
+		(offer.food_images? offer.food_images.length + (tempImage ? 1 : 0) : 0)
 	)
 	useEffect(() => {
 		setImageAmount(
 			//ai images
-			(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+			(offer.ai_thumbnail_url || localAiThumbnail ? 1 : 0) +
 			// user images
-			(offer.imageUrls.length + (tempImage ? 1 : 0))
+			(offer.food_images? offer.food_images.length + (tempImage ? 1 : 0) : 0)
 		)
 	}, [localAiThumbnail])
 
@@ -30,15 +30,15 @@ export const ImageCarousel = (
 						tempImage ? <ImageComponent single={imageAmount === 1} type="user" src={tempImage} /> : null
 					}
 					{
-						offer.imageUrls.map((url, index) => {
-							return <ImageComponent single={imageAmount === 1} type="user" src={url} key={index} />
+						offer.food_images?.map((food_image, index) => {
+							return <ImageComponent single={imageAmount === 1} type="user" src={food_image.image_url} key={index} />
 						})
 					}
 					{
-						offer.has_ai_thumbnail ? <ImageComponent single={imageAmount === 1} type="ai" src={aiThumbnailUrl} /> : null
+						offer.ai_thumbnail_url ? <ImageComponent single={imageAmount === 1} type="ai" src={aiThumbnailUrl} /> : null
 					}
 					{
-						localAiThumbnail && localAiThumbnail !== "" && !offer.has_ai_thumbnail ? <ImageComponent single={imageAmount === 1} type="ai" src={`data:image/png;base64,${localAiThumbnail}`} /> : null
+						localAiThumbnail && localAiThumbnail !== "" && !offer.ai_thumbnail_url ? <ImageComponent single={imageAmount === 1} type="ai" src={`data:image/png;base64,${localAiThumbnail}`} /> : null
 					}
 
 					{

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import sharp from "sharp"
 
 import vision from "@google-cloud/vision"
-import { env } from "../../env.mjs"
+import { env } from "../../../env.mjs"
 
 const getJSONCredentials = () => {
 	return {
@@ -20,23 +20,27 @@ const getJSONCredentials = () => {
 	}    
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-	const {
-		query: { f, b },
-	} = req
-
-	//Get the image from the request body
-	const url = `${ env.NEXT_PUBLIC_SUPABASE_URL }/storage/v1/object/public/${ b }/${ f }`
-	const buffer = (await axios({ url, responseType: "arraybuffer" })).data as Buffer
+const labelImage = async (req: NextApiRequest, res: NextApiResponse) => {
+	let body;
+	try {
+		body = JSON.parse(req.body)
+	} catch (e) {
+		res.status(400).json({
+			error: "Invalid JSON"
+		})
+		body = req.body || {}
+	}
 
 	// Creates a client
-	const client = new vision.ImageAnnotatorClient({
+	const visionClient = new vision.ImageAnnotatorClient({
 		credentials: getJSONCredentials(),
 	});
 
+	const url = body.imageUrl
+	const buffer = (await axios({ url, responseType: "arraybuffer" })).data as Buffer
+
 	// Performs label detection on the image file
-	
-	return client
+	return visionClient
 		.labelDetection(buffer)
 		.then(results => {
 			const labels = results[0].labelAnnotations;
@@ -48,6 +52,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 					isFood: true
 				});
 			} else {
+				console.log("No food detected, found: ", JSON.stringify(labels))
 				res.status(200).json({
 					isFood: false
 				});
@@ -60,3 +65,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			});
 		});
 }
+export default labelImage

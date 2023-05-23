@@ -26,32 +26,7 @@ import Image from 'next/image';
 import { BugReportButton } from '../../../../components/bugReportButton';
 
 const DynamicOffer = dynamic<{
-	offer: {
-		id: number,
-		mensa: number,
-		food_title: string,
-		food_desc: string,
-		vegan: boolean,
-		vegetarian: boolean,
-		fish: boolean,
-		meat: boolean,
-		nutrients: {
-			name: string,
-			value: string,
-			unit: string,
-		}[],
-		allergens: string[]
-		date: string,
-		price_students: number,
-		price_other: number,
-		sold_out: boolean,
-
-		imageUrls: string[],
-		ratings: {
-			rating: number,
-			userSessionId: string,
-		}[]
-	},
+	offer: FoodOffering
 	mensa: string | string[],
 	day: string | string[],
 	triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
@@ -73,7 +48,6 @@ export default function Mensa(
 		foodOffers: FoodOffering[]
 	}
 ): JSX.Element {
-
 	const router = useRouter()
 	const { mensa, day } = router.query !== undefined ? router.query : { mensa: currentMensa.name, day: "freitag" };
 	const [openingTimes, setOpeningTimes] = useState<{ open: boolean, text: string }>({ open: false, text: "" });
@@ -152,7 +126,7 @@ export default function Mensa(
 	const [generatedThumbnails, setGeneratedThumbnails] = useState(new Map<number, string>());
 	async function queueThumbnailGeneration() {
 		for await (const offer of foodOffers as FoodOffering[]) {
-			if (offer.imageUrls.length === 0 && !offer.has_ai_thumbnail && !offer.sold_out) {
+			if (offer.food_images.length === 0 && !offer.ai_thumbnail_url && !offer.sold_out) {
 				console.log("Starting Generation")
 				await aiThumbnailGeneration(offer.id, offer.food_title)
 			}
@@ -236,7 +210,7 @@ export default function Mensa(
 			<div className="mx-auto flex flex-col">
 
 				<Head>
-					<title>headTitle</title>
+					<title>{headTitle}</title>
 				</Head>
 
 				<div className={`fixed p-3 ${modalOpen ? null : "z-10"} w-full border-b border-gray/10 bg-light-green`}>
@@ -360,9 +334,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			loc_lat,
 			loc_long,
 			url,
-			current_mensa_data (
-				openingTimes
-				)
+			current_mensa_data ( openingTimes )
 		`)
 		.eq('url', mensa)
 
@@ -419,29 +391,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	// Get Images to the food offers
 	const combinedFoodOffers = await Promise.all(sortedFoodOffers.map(async (offer) => {
-		const { data: images } = await supabase
-			.from("food_images")
-			.select('image_name')
-			.eq('food_id', offer.id)
-
-
-		images!.map(async image => {
-			const { data, error } = await supabase
-				.storage
-				.from('food-images')
-				.list('', {
-					limit: 100,
-					offset: 0,
-					sortBy: { column: 'name', order: 'asc' },
-					search: image.image_name
-				})
-		})
-
-		const generateUrls = (imageName: string) => {
-			return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/food-images/${imageName}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
-		}
-
-		const imageUrls = images!.map(image => generateUrls(image.image_name))
 
 		const { data: ratings } = await supabase
 			.from("quality_reviews")
@@ -451,7 +400,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		return {
 			...offer,
 			ratings,
-			imageUrls
 		}
 	}))
 

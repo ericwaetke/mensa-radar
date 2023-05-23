@@ -10,14 +10,23 @@ export const ourFileRouter = {
 		.fileTypes(["image"])
 		.maxSize("8MB")
 		.middleware(async (req, res) => {
-
 			// Whatever is returned here is accessible in onUploadComplete as `metadata`
 			return {  };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
 			// This code RUNS ON YOUR SERVER after upload
-			console.log("Upload complete for userId:");
-
+			console.log("file url", file.url);
+		}),
+	aiThumbnail: f
+		// Set permissions and file types for this FileRoute
+		.fileTypes(["image"])
+		.maxSize("8MB")
+		.middleware(async (req, res) => {
+			// Whatever is returned here is accessible in onUploadComplete as `metadata`
+			return {  };
+		})
+		.onUploadComplete(async ({ metadata, file }) => {
+			// This code RUNS ON YOUR SERVER after upload
 			console.log("file url", file.url);
 		}),
 } as FileRouter;

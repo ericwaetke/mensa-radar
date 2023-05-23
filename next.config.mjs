@@ -40,6 +40,10 @@ const nextConfig = defineNextConfig({
 				hostname: 'bqfzesnwsvziyglfeezk.supabase.co',
 				pathname: '/storage/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'uploadthing.com',
+			}
 		],
 	},
 	experimental: {

@@ -123,20 +123,7 @@ export const Offer = (
 		// setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
-
-	const generateUrls = (imageName: string) => {
-		const params = new URLSearchParams({
-			f: imageName + ".png",
-			b: "ai-thumbnails",
-			w: "512",
-			h: null,    // set to null to keep image's aspect ratio
-			q: "80",
-			token: env.NEXT_PUBLIC_SUPABASE_KEY
-		})
-		return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/${imageName + ".png"}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
-	}
 	const [localAiThumbnail, setLocalAiThumbnail] = useState("")
-	const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
 
 	const regenerateAiThumbnail = () => {
 		setLocalAiThumbnail(null)
@@ -201,7 +188,7 @@ export const Offer = (
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
 
 				<div className="flex flex-col">
-					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={() => !modalOpen ? openImageFlow() : null} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
+					<ImageCarousel offer={offer} aiThumbnailUrl={""} localAiThumbnail={localAiThumbnail} openImageFlow={() => !modalOpen ? openImageFlow() : null} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
 
 					<div className="flex flex-col space-y-4 p-6 text-sm">
 						<div className="flex-col space-y-2">
