@@ -210,6 +210,8 @@ export default function Mensa(
 		},
 	}
 
+	const headTitle = `${currentMensa.name} - Mensa Radar`
+
 	return (
 		<>
 			<Modal
@@ -234,7 +236,7 @@ export default function Mensa(
 			<div className="mx-auto flex flex-col">
 
 				<Head>
-					<title>{currentMensa.name} - Mensa Radar</title>
+					<title>headTitle</title>
 				</Head>
 
 				<div className={`fixed p-3 ${modalOpen ? null : "z-10"} w-full border-b border-gray/10 bg-light-green`}>

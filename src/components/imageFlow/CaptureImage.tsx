@@ -85,7 +85,7 @@ export const CaptureImage = (
 	})
 	const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
 		const file: File = e.target.files[0]
-		// startUpload([file]);
+		startUpload([file]);
 	}
 
 	const _handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
