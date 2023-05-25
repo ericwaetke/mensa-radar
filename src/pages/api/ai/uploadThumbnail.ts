@@ -4,40 +4,47 @@ import { decode } from 'base64-arraybuffer';
 import { DANGEROUS__uploadFiles } from 'uploadthing/client';
 import { genUploader } from 'uploadthing/client';
 import { OurFileRouter } from '../../../server/uploadthing';
+import { NextRequest } from 'next/server';
 
+export const config = {
+	runtime: 'experimental-edge', // this is a pre-requisite
+	regions: ['fra1'], // only execute this function on iad1
+};
 
-const UploadThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
+const UploadThumbnail = async (req: NextRequest) => {
+	if (req.method !== "POST")
+		return new Response(null, { status: 404, statusText: "Not Found" });
 	let foodId, base64;
 	try {
-		const body= JSON.parse(req.body) || req.body;
+		const body = await req.json();
 		foodId = body.foodId
 		base64 = body.base64
 	} catch (e) {
-		res.status(500).json({
-			e,
-			message: "Error destructuring body?",
-		});
+		console.error(e)
+		new Response(e)
 	}
 
 	if (!foodId || !base64) {
-		res.status(400).json({
-			message: 'foodId and base64 are required',
-		});
-		return;
+		return new Response(JSON.stringify(
+			{
+				message: 'foodId and base64 are required',
+			}
+		), {
+			status: 400,
+		})
 	}
 
-	const buffer = await decode(base64)
-	const blob = new Blob([buffer], { type: 'image/png' })
-	const f = {
-		name: 'test.png',
-		type: 'blob',
-		size: blob.size,
-		lastModified: Date.now(),
-		...blob
+	var url = "data:image/png;base64," + base64;
+	async function dataUrlToFile(dataUrl: string, fileName: string): Promise<File> {
+		const res: Response = await fetch(dataUrl);
+		const blob: Blob = await res.blob();
+		return new File([blob], fileName, { type: 'image/png' });
 	}
+	const file = await dataUrlToFile(url, 'thumbnail.png');
+	console.log(file)
 
 	const uploader = genUploader<OurFileRouter>()
-	const imageUpload = uploader([f as File], "aiThumbnail", {
+	const imageUpload = uploader([file], "aiThumbnail", {
 		url: "http://localhost:3000/api/uploadthing/",
 	})
 
@@ -53,8 +60,12 @@ const UploadThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
 	})
 
 
-	res.status(200).json({
-		message: 'success',
+	return new Response(JSON.stringify(
+		{
+			message: 'success',
+		}
+	), {
+		status: 200,
 	})
 }
 
