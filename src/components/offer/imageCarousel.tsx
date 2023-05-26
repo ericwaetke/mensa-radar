@@ -57,14 +57,16 @@ export const ImageCarousel = ({
 						/>
 					) : null}
 					{offer.food_images?.map((food_image, index) => {
-						return (
-							<ImageComponent
-								single={imageAmount === 1}
-								type="user"
-								src={food_image.image_url}
-								key={index}
-							/>
-						)
+						if (food_image.image_url) {
+							return (
+								<ImageComponent
+									single={imageAmount === 1}
+									type="user"
+									src={food_image?.image_url}
+									key={index}
+								/>
+							)
+						}
 					})}
 					{offer.has_ai_thumbnail ? (
 						<ImageComponent

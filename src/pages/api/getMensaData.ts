@@ -3,11 +3,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getDates } from '../../lib/getOpeningString';
 import { createClient } from '@supabase/supabase-js';
 import { env } from '../../env.mjs';
+import { NextRequest } from 'next/server';
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+export const config = {
+	runtime: 'experimental-edge', // this is a pre-requisite
+	regions: ['fra1'], // only execute this function on iad1
+};
 
 const getMensaId = {
 	'golm': 1,
@@ -56,18 +61,18 @@ export const fetchDbData = async (reqDay: number, mensa: string) => {
 	}
 }
 
-const GetMensaData = async (req: NextApiRequest, res: NextApiResponse) => {
+const GetMensaData = async (req: NextRequest) => {
+	const { selectedWeekday, mensa }: { selectedWeekday: -1 | 0 | 1 | 2 | 3 | 4 | 5, mensa: string } = await req.json() || { selectedWeekday: -1, mensa: "undefined" }
 
-	console.log("API Request")
-	console.log(req.body)
-
-	const { selectedWeekday, mensa }: { selectedWeekday: -1 | 0 | 1 | 2 | 3 | 4 | 5, mensa: string } = JSON.parse(req.body) || req.body || { selectedWeekday: -1, mensa: "undefined" }
-
-	selectedWeekday === -1 && mensa === "undefined" ? res.status(400).json({ error: "No data found" }) : null
+	if (selectedWeekday === -1 && mensa === "undefined")
+		return new Response(JSON.stringify({ error: "No data found" }), { status: 400 })
 
 	const data = await fetchDbData(selectedWeekday !== undefined ? selectedWeekday : 0, mensa ? mensa : "fhp")
 
-	data ? res.status(200).json(data) : res.status(404).json({ error: "No data found" })
+	if (data) {
+		return new Response(JSON.stringify(data), { status: 200 })
+	}
+	return new Response(JSON.stringify({ error: "No data found" }), { status: 400 })
 }
 
 export default GetMensaData
