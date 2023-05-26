@@ -53,11 +53,13 @@ type FoodOffering = {
 	price_other: number,
 	sold_out: boolean,
 
-	food_images: {image_url: string}[],
+	food_images: { image_url: string }[],
 	ratings: {
 		rating: number,
 		userSessionId: string,
 	}[]
+
+	has_ai_thumbnail: boolean,
 	ai_thumbnail_url: string,
 }
 

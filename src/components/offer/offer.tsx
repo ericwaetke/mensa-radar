@@ -123,7 +123,19 @@ export const Offer = (
 		// setAverageRatingString(getRatingString(averageRating))
 	}, [])
 
+	const generateUrls = (imageName: string) => {
+		const params = new URLSearchParams({
+			f: imageName + ".png",
+			b: "ai-thumbnails",
+			w: "512",
+			h: null,    // set to null to keep image's aspect ratio
+			q: "80",
+			token: env.NEXT_PUBLIC_SUPABASE_KEY
+		})
+		return `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ai-thumbnails/${imageName + ".png"}?token=${env.NEXT_PUBLIC_SUPABASE_KEY}`
+	}
 	const [localAiThumbnail, setLocalAiThumbnail] = useState("")
+	const [aiThumbnailUrl, setAiThumbnailUrl] = useState(generateUrls(`thumbnail_${offer.id}`))
 
 	const regenerateAiThumbnail = () => {
 		setLocalAiThumbnail(null)
@@ -188,7 +200,7 @@ export const Offer = (
 			<div className={`flex flex-col rounded-2xl bg-white ${offer.sold_out ? "pb-6" : ""} `}>
 
 				<div className="flex flex-col">
-					<ImageCarousel offer={offer} aiThumbnailUrl={""} localAiThumbnail={localAiThumbnail} openImageFlow={() => !modalOpen ? openImageFlow() : null} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
+					<ImageCarousel offer={offer} aiThumbnailUrl={aiThumbnailUrl} localAiThumbnail={localAiThumbnail} openImageFlow={() => !modalOpen ? openImageFlow() : null} tempImage={tempImage} key={offer.id} soldOut={offer.sold_out} />
 
 					<div className="flex flex-col space-y-4 p-6 text-sm">
 						<div className="flex-col space-y-2">
@@ -263,13 +275,13 @@ export const Offer = (
 															<p className="font-sans-semi">
 																{userRatingString} / 5
 															</p>
-															<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
+															<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4" />
 														</div>
 													</div>
 												</> : <>
 													<div className="flex h-full flex-row items-center space-x-1 font-sans-med">
 														<p>Essen bewerten</p>
-														<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
+														<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4" />
 													</div>
 												</>
 										}
@@ -282,7 +294,7 @@ export const Offer = (
 							<div className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x divide-gray/20 border-t border-gray/20 text-sm ${offer.sold_out ? "hidden" : ""} `}>
 								<div className="flex h-full w-full flex-row  items-center justify-center gap-2 border-gray/20 font-sans-semi" onClick={() => !modalOpen ? openRatingFlow() : null}>
 									<p className="font-sans-med">Essen bewerten</p>
-									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4"/>
+									<Image src="/icons/right-arrw.svg" width={16} height={16} alt="right arrow" className="w-4" />
 								</div>
 								<ShareButton url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`} title={offer.food_title} />
 							</div>

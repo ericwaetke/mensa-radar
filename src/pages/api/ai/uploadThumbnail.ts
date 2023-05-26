@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../lib/getSupabaseClient';
 import { decode } from 'base64-arraybuffer';
-import { DANGEROUS__uploadFiles } from 'uploadthing/client';
-import { genUploader } from 'uploadthing/client';
-import { OurFileRouter } from '../../../server/uploadthing';
 import { NextRequest } from 'next/server';
 
 export const config = {
@@ -12,61 +9,46 @@ export const config = {
 };
 
 const UploadThumbnail = async (req: NextRequest) => {
-	if (req.method !== "POST")
-		return new Response(null, { status: 404, statusText: "Not Found" });
-	let foodId, base64;
-	try {
-		const body = await req.json();
-		foodId = body.foodId
-		base64 = body.base64
-	} catch (e) {
-		console.error(e)
-		new Response(e)
-	}
+	const { foodId, base64 } = await req.json();
 
 	if (!foodId || !base64) {
-		return new Response(JSON.stringify(
-			{
-				message: 'foodId and base64 are required',
-			}
-		), {
+		return new Response(JSON.stringify({
+			message: 'foodId and base64 are required',
+		}), {
 			status: 400,
 		})
 	}
 
-	var url = "data:image/png;base64," + base64;
-	async function dataUrlToFile(dataUrl: string, fileName: string): Promise<File> {
-		const res: Response = await fetch(dataUrl);
-		const blob: Blob = await res.blob();
-		return new File([blob], fileName, { type: 'image/png' });
-	}
-	const file = await dataUrlToFile(url, 'thumbnail.png');
-	console.log(file)
+	const buffer = await decode(base64)
 
-	const uploader = genUploader<OurFileRouter>()
-	const imageUpload = uploader([file], "aiThumbnail", {
-		url: "http://localhost:3000/api/uploadthing/",
-	})
-
-	imageUpload.then(async (res) => {
-		console.log(res)
-		// await supabase
-		// 	.from('food_offerings')
-		// 	.update({ ai_thunbnail_url: res[0].fileUrl })
-		// 	.eq('id', foodId)
-		// 	.then(_ => {
-		// 		console.log('success')
-		// 	})
-	})
-
-
-	return new Response(JSON.stringify(
-		{
-			message: 'success',
-		}
-	), {
-		status: 200,
-	})
+	await supabase
+		.storage
+		.from('ai-thumbnails')
+		.upload(`thumbnail_${foodId}.png`, buffer, {
+			contentType: 'image/png',
+		})
+		.then(async _ => {
+			console.log("uploaded image to supabase")
+			await supabase
+				.from('food_offerings')
+				.update({ has_ai_thumbnail: true })
+				.eq('id', foodId)
+				.then(_ => {
+					return new Response(JSON.stringify({
+						message: 'uploaded to supabase',
+					}), {
+						status: 200,
+					})
+				})
+		})
+		.catch(e => {
+			return new Response(JSON.stringify({
+				error: e.json(),
+				message: "Error while uploading image to supabase"
+			}), {
+				status: 500,
+			})
+		})
 }
 
 export default UploadThumbnail
