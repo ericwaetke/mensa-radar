@@ -1,54 +1,54 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../lib/getSupabaseClient';
 import { decode } from 'base64-arraybuffer';
+import { NextRequest } from 'next/server';
 
-const UploadThumbnail = async (req: NextApiRequest, res: NextApiResponse) => {
-	try {
-		const { foodId, base64 } = JSON.parse(req.body) || req.body;
-		if (!foodId || !base64) {
-			res.status(400).json({
-				message: 'foodId and base64 are required',
-			});
-			return;
-		}
+export const config = {
+	runtime: 'experimental-edge', // this is a pre-requisite
+	regions: ['fra1'], // only execute this function on iad1
+};
 
-		const buffer = await decode(base64)
+const UploadThumbnail = async (req: NextRequest) => {
+	const { foodId, base64 } = await req.json();
 
-		await supabase
-			.storage
-			.from('ai-thumbnails')
-			.upload(`thumbnail_${foodId}.png`, buffer, {
-				contentType: 'image/png',
-			})
-			.then(async _ => {
-				console.log("uploaded image to supabase")
-				await supabase
-					.from('food_offerings')
-					.update({ has_ai_thumbnail: true })
-					.eq('id', foodId)
-					.then(_ => {
-						console.log('success')
-					})
-			})
-			.catch(e => {
-				res.status(500).json({
-					error: e.json(),
-					message: "Error while uploading image to supabase"
-				});
-				console.log(e)
-				throw e
-			})
-
-
-		res.status(200).json({
-			message: 'success',
+	if (!foodId || !base64) {
+		return new Response(JSON.stringify({
+			message: 'foodId and base64 are required',
+		}), {
+			status: 400,
 		})
-	} catch (e) {
-		res.status(500).json({
-			e,
-			message: "Error destructuring body?",
-		});
 	}
+
+	const buffer = await decode(base64)
+
+	await supabase
+		.storage
+		.from('ai-thumbnails')
+		.upload(`thumbnail_${foodId}.png`, buffer, {
+			contentType: 'image/png',
+		})
+		.then(async _ => {
+			console.log("uploaded image to supabase")
+			await supabase
+				.from('food_offerings')
+				.update({ has_ai_thumbnail: true })
+				.eq('id', foodId)
+				.then(_ => {
+					return new Response(JSON.stringify({
+						message: 'uploaded to supabase',
+					}), {
+						status: 200,
+					})
+				})
+		})
+		.catch(e => {
+			return new Response(JSON.stringify({
+				error: e.json(),
+				message: "Error while uploading image to supabase"
+			}), {
+				status: 500,
+			})
+		})
 }
 
 export default UploadThumbnail
