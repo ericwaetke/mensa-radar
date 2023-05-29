@@ -34,7 +34,7 @@ export const ImageCarousel = ({
 					? offer.food_images.length + (tempImage ? 1 : 0)
 					: 0)
 		)
-	}, [localAiThumbnail])
+	}, [localAiThumbnail, tempImage])
 
 	return (
 		<div
