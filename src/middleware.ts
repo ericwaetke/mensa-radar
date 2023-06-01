@@ -16,7 +16,10 @@ export function middleware(request: NextRequest) {
 		"sonntag"
 	]
 
-	return NextResponse.redirect(new URL(`/mensa/${mensa}/${weekday[currentWeekday]}`, request.url))
+	if (currentDate.getHours() <= 18 || currentWeekday === 5 || currentWeekday === 6)
+		return NextResponse.redirect(new URL(`/mensa/${mensa}/${weekday[currentWeekday]}`, request.url))
+
+	return NextResponse.redirect(new URL(`/mensa/${mensa}/${weekday[currentWeekday + 1]}`, request.url))
 }
 
 // See "Matching Paths" below to learn more
