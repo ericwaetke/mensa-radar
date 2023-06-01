@@ -127,12 +127,6 @@ export default function Home(props) {
 		"samstag",
 		"sonntag",
 	]
-	const redirectWeekday =
-		currentDate.getHours() < 18 ||
-		currentWeekday === 5 ||
-		currentWeekday === 6
-			? weekday[currentWeekday]
-			: weekday[currentWeekday + 1]
 
 	return (
 		<div className="m-auto box-border flex min-h-screen flex-col items-center space-y-6 p-2 py-4 lg:mx-auto lg:px-0">
@@ -180,6 +174,12 @@ export default function Home(props) {
 			<main className="flex h-full max-w-xl flex-col gap-4 lg:mx-auto">
 				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensen.map((mensa) => {
+						const redirectWeekday =
+							openingTimes?.[mensa.id]?.open ||
+							currentWeekday === 5 ||
+							currentWeekday === 6
+								? weekday[currentWeekday]
+								: weekday[currentWeekday + 1]
 						return (
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
