@@ -16,6 +16,6 @@ export const DayButton = ({mensa, day, isSelected, router}) => {
 						</> : null
 				}
 			</a>
-		</button> //TODO: Current Day Border does not work yet
+		</button>
 	)
 }

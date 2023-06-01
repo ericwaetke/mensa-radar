@@ -36,8 +36,6 @@ export const getOpeningTimes: (currentMensa: MensaData) => { open: boolean, text
 			}
 			const currentTimeObj = dayjs.utc().add(isDstObserved ? 2 : 1, 'hour')
 			const currentTime = currentTimeObj.hour() + currentTimeObj.minute() / 60;
-			console.log(openingTimes)
-
 
 			const open = currentTime >= openingTimes.from && currentTime <= openingTimes.to;
 			if (open) {
@@ -55,8 +53,8 @@ export const getOpeningTimes: (currentMensa: MensaData) => { open: boolean, text
 	}
 
 	// Check if today has food
-	if (currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday+1 > 6 ? 0 : currentWeekday + 1]]) {
-		const openingTimes = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday+1 > 6 ? 0 : currentWeekday + 1]]
+	if (currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday + 1 > 6 ? 0 : currentWeekday + 1]]) {
+		const openingTimes = currentMensa.current_mensa_data[0].openingTimes[days[currentWeekday + 1 > 6 ? 0 : currentWeekday + 1]]
 		const fromHour = Math.floor(openingTimes?.from)
 		const fromMinute = Math.round((openingTimes?.from - fromHour) * 60) === 0 ? "00" : Math.round((openingTimes?.from - fromHour) * 60)
 
