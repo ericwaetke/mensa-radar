@@ -18,6 +18,30 @@ const getMensaId = {
 	'cafeteria-neues-palais': 8,
 }
 
+function getRemainingDaysOfWeek(): string[] {
+	const daysOfWeek: string[] = [];
+	const today: Date = new Date();
+
+	// Calculate the number of days until Sunday (0: Sunday, 1: Monday, ..., 6: Saturday)
+	const daysUntilSunday: number = (7 - today.getDay()) % 7;
+
+	for (let i = 0; i <= daysUntilSunday; i++) {
+		const nextDay: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1 + i);
+		const formattedDate: string = nextDay.toISOString().slice(0, 10);
+		daysOfWeek.push(formattedDate);
+	}
+
+	return daysOfWeek;
+}
+
+function getDifference(obj1: { data: any[], key: string }, obj2: { data: any[], key: string }): any[] {
+	return obj1.data?.filter(object1 => {
+		return obj2.data?.some(object2 => {
+			return object1[obj1.key] === object2[obj2.key];
+		});
+	});
+}
+
 const refreshData = async (mensa: string) => {
 	// Add the current STUDENTENWERK Data to the Database
 	const stwData = await getAllMensaDataFromSTW(mensa);
@@ -26,22 +50,14 @@ const refreshData = async (mensa: string) => {
 		sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
 	})
 
-	const getDifference = (obj1: { data: any[], key: string }, obj2: { data: any[], key: string }) => {
-		return obj1.data.filter(object1 => {
-			return !obj2.data.some(object2 => {
-				return object1[obj1.key] === object2[obj2.key];
-			});
-		});
-	}
-
 	let returnableChanges = [];
 	// Cycling through each day of the STW Data and see if there are any changes to the already stored data
-	Object.keys(sortedStwData).map(async (date) => {
-		// Get MongoDB Data by date
+	getRemainingDaysOfWeek().map(async (date) => {
+
 		const { data: dbData, error } = await supabase
 			.from('food_offerings')
 			.select('*')
-			.eq('date', `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`)
+			.eq('date', date)
 			.eq('mensa', getMensaId[mensa])
 
 		if (error) {
@@ -50,9 +66,30 @@ const refreshData = async (mensa: string) => {
 			throw new Error()
 		}
 
+		const formattedDate = `${date.split("-")[2]}.${date.split("-")[1]}.${date.split("-")[0]}`
+		// No data for this day
+		if (sortedStwData[formattedDate] === undefined) {
+			if (dbData.length > 0) {
+				console.log("No data for this day, but data in DB", formattedDate)
+				// Delete all data for this day
+				const { data, error } = await supabase
+					.from('food_offerings')
+					.delete()
+					.eq('date', date)
+					.eq('mensa', getMensaId[mensa])
+
+				if (error) {
+					console.log("Error in refreshMensaData.ts deleting the data from Supabase")
+					console.error(error)
+					throw new Error()
+				}
+			}
+		}
+
+
 		// Compare the two arrays
 		const changes = [
-			...getDifference({ data: sortedStwData[date], key: "beschreibung" }, { data: dbData, key: "food_title" }),
+			...getDifference({ data: sortedStwData[date], key: "beschreibung" }, { data: dbData, key: "food_title" }) || [],
 			...getDifference({ data: dbData, key: "food_title" }, { data: sortedStwData[date], key: "beschreibung" })
 		];
 		changes.map(async (change) => {
@@ -61,7 +98,7 @@ const refreshData = async (mensa: string) => {
 			// => mark as sold out
 			if (change.id) {
 				// If change is in the future, delete it
-				if (dayjs().isSameOrAfter(change.date, 'day')) {
+				if (dayjs().isSame(change.date, 'day')) {
 					console.log("isSameOrAfter = soldout: " + change.date)
 					const { data, error } = await supabase
 						.from('food_offerings')
@@ -170,6 +207,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			.then((data) => {
 				return res.status(200).json({ revalidated: true, data: data })
 			})
+
+		// refreshData("fhp")
+		// 	.then((data) => res.status(200).json({ revalidated: true, data: data }))
 	} catch (err) {
 		// If there was an error, Next.js will continue
 		// to show the last successfully generated page
