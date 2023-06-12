@@ -36,7 +36,7 @@ function getRemainingDaysOfWeek(): string[] {
 
 function getDifference(obj1: { data: any[], key: string }, obj2: { data: any[], key: string }): any[] {
 	return obj1.data?.filter(object1 => {
-		return obj2.data?.some(object2 => {
+		return !obj2.data.some(object2 => {
 			return object1[obj1.key] === object2[obj2.key];
 		});
 	});
@@ -49,7 +49,6 @@ const refreshData = async (mensa: string) => {
 	stwData.map((offer) => {
 		sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
 	})
-
 	let returnableChanges = [];
 	// Cycling through each day of the STW Data and see if there are any changes to the already stored data
 	getRemainingDaysOfWeek().map(async (date) => {
@@ -89,9 +88,10 @@ const refreshData = async (mensa: string) => {
 
 		// Compare the two arrays
 		const changes = [
-			...getDifference({ data: sortedStwData[date], key: "beschreibung" }, { data: dbData, key: "food_title" }) || [],
-			...getDifference({ data: dbData, key: "food_title" }, { data: sortedStwData[date], key: "beschreibung" })
+			...getDifference({ data: sortedStwData[formattedDate] || [], key: "beschreibung" }, { data: dbData, key: "food_title" }),
+			...getDifference({ data: dbData, key: "food_title" }, { data: sortedStwData[formattedDate] || [], key: "beschreibung" })
 		];
+		console.log(changes)
 		changes.map(async (change) => {
 			// If the change has _id, it exists in MongoDB but not in STW Data
 			// => It was there once, but is not anymore
@@ -160,7 +160,7 @@ const refreshData = async (mensa: string) => {
 						// JSON Object of the allergens
 						allergens: change.allergene,
 
-						date: `${date.split(".")[2]}-${date.split(".")[1]}-${date.split(".")[0]}`,
+						date,
 
 						price_students: change.preise.preis_s[0],
 						price_other: change.preise.preis_g[0],
