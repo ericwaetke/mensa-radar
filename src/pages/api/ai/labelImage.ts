@@ -19,7 +19,6 @@ const getJSONCredentials = () => {
 }
 
 const labelImage = async (req: NextApiRequest, res: NextApiResponse) => {
-	console.log(getJSONCredentials())
 	let body;
 	try {
 		body = JSON.parse(req.body)
