@@ -62,7 +62,8 @@ export const ImageCarousel = ({
 								<ImageComponent
 									single={imageAmount === 1}
 									type="user"
-									src={food_image?.image_url}
+									// /-/format/auto/-/quality/smart/-/preview/
+									src={`${food_image?.image_url}/-/format/auto/-/quality/smart/-/preview/`}
 									key={index}
 								/>
 							)
