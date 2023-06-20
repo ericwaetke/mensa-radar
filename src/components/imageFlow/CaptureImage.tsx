@@ -5,6 +5,7 @@ import { env } from "../../env.mjs"
 import type { OurFileRouter } from "../../server/uploadthing.js"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import Image from "next/image.js"
+import { UploadClient } from '@uploadcare/upload-client'
 
 const CaptureImageButton = ({
 	label,
@@ -76,6 +77,8 @@ export const CaptureImage = ({
 		},
 	})
 
+	const client = new UploadClient({ publicKey: '7fd590f17fe2cfb4de79' })
+
 	const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
 		// Get the file from the input
 		const file: File = e.target.files[0]
@@ -87,21 +90,15 @@ export const CaptureImage = ({
 		setProcessing(true)
 		setCurrentStep("preview")
 
-		// Upload the file to uploadthing
-		const fileUpload: Promise<
-			{
-				fileUrl: string
-				fileKey: string
-			}[]
-		> = startUpload([file])
+		client.uploadFile(file)
+		.then((file) => {
 
-		fileUpload.then((res) => {
-			setImageUrl(res[0].fileUrl)
+			setImageUrl(file.cdnUrl)
 
 			fetch(`/api/ai/labelImage`, {
 				method: "POST",
 				body: JSON.stringify({
-					imageUrl: res[0].fileUrl,
+					imageUrl: file.cdnUrl,
 				}),
 			})
 				.then((res) => res.json())

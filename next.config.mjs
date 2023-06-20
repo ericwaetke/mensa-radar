@@ -43,6 +43,11 @@ const nextConfig = defineNextConfig({
 			{
 				protocol: 'https',
 				hostname: 'uploadthing.com',
+			},
+			// uploadcare
+			{
+				protocol: 'https',
+				hostname: 'ucarecdn.com',
 			}
 		],
 	},
