@@ -25,8 +25,8 @@ function getRemainingDaysOfWeek(): string[] {
 	// Calculate the number of days until Sunday (0: Sunday, 1: Monday, ..., 6: Saturday)
 	const daysUntilSunday: number = (7 - today.getDay()) % 7;
 
-	for (let i = 0; i <= daysUntilSunday; i++) {
-		const nextDay: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1 + i);
+	for (let i = 0; i <= daysUntilSunday + 1; i++) {
+		const nextDay: Date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
 		const formattedDate: string = nextDay.toISOString().slice(0, 10);
 		daysOfWeek.push(formattedDate);
 	}
