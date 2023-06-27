@@ -14,9 +14,9 @@ const Footer = () => {
 				</div>
 				
 				<div className="flex flex-row-reverse space-x-2">
-					<a href="https://wovenspace.xyz" target='_blank' className='font-sans-semi text-sm opacity-50'>
+					<p className='font-sans-semi text-sm opacity-50'>
 						wovenspace
-					</a>
+					</p>
 				</div>
 
 			</div>
