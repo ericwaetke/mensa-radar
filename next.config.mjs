@@ -22,6 +22,25 @@ function defineNextConfig(config) {
 }
 
 const nextConfig = defineNextConfig({
+	output: 'standalone',
+	experimental: {
+		outputFileTracingExcludes: {
+			'/api/ai/uploadThumbnail': ['./**/*'],
+		},
+		outputFileTracingIncludes: {
+			// '/api/another': ['./necessary-folder/**/*'],
+		},
+		turbotrace: {
+			// control the log level of the turbotrace, default is `error`
+			logLevel:
+				'bug',
+			logDetail: true,
+			// show all log messages without limit
+			// turbotrace only show 1 log message for each categories by default
+			logAll: false,
+
+		},
+	},
 	images: {
 		remotePatterns: [
 			{
