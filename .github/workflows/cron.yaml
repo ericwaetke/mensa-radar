@@ -2,7 +2,7 @@ name: Revalidate Mensa Data Cron Job
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 7-14 * * *'
+    #- cron: '*/5 7-14 * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
