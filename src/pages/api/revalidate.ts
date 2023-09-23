@@ -7,6 +7,8 @@ import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
+import puppeteer from 'puppeteer';
+
 const getMensaId = {
 	'golm': 1,
 	'neues-palais': 2,
@@ -42,12 +44,69 @@ function getDifference(obj1: { data: any[], key: string }, obj2: { data: any[], 
 	});
 }
 
-const refreshData = async (mensa: string) => {
+function allergenNumberToName(number: number): string {
+	switch (number) {
+		case Allergene.Eier:
+			return "Eier";
+		case Allergene.Erdnuesse:
+			return "Erdnüsse";
+		case Allergene.Fisch:
+			return "Fisch";
+		case Allergene.GlutenAusDinkel:
+			return "Gluten aus Dinkel";
+		case Allergene.GlutenAusGerste:
+			return "Gluten aus Gerste";
+		case Allergene.GlutenAusHafer:
+			return "Gluten aus Hafer";
+		case Allergene.GlutenAusKamut:
+			return "Gluten aus Kamut";
+		case Allergene.GlutenAusRoggen:
+			return "Gluten aus Roggen";
+		case Allergene.GlutenAusWeizen:
+			return "Gluten aus Weizen";
+		case Allergene.Haselnuesse:
+			return "Haselnüsse";
+		case Allergene.Krebstiere:
+			return "Krebstiere";
+		case Allergene.Lupinen:
+			return "Lupinen";
+		case Allergene.Mandeln:
+			return "Mandeln";
+		case Allergene.Milch:
+			return "Milch";
+		case Allergene.Sellerie:
+			return "Sellerie";
+		case Allergene.Senf:
+			return "Senf";
+		case Allergene.Sesam:
+			return "Sesam";
+		case Allergene.SchwefeldioxidUndSulfite:
+			return "Schwefeldioxid und Sulfite";
+		case Allergene.Soja:
+			return "Soja";
+		case Allergene.Weichtiere:
+			return "Weichtiere";
+		case Allergene.Walnuesse:
+			return "Walnüsse";
+		case Allergene.CashewNuesse:
+			return "Cashewnüsse";
+		default:
+			return "Unbekannt: " + number;
+	}
+}
+
+const refreshData = async (mensa: "golm" | "neues-palais" | "fhp" | "brandenburg" | "filmuniversitaet" | "griebnitzsee" | "wildau" | "cafeteria-neues-palais") => {
 	// Add the current STUDENTENWERK Data to the Database
-	const stwData = await getAllMensaDataFromSTW(mensa);
-	let sortedStwData = {};
-	stwData.map((offer) => {
-		sortedStwData[offer.date] = [...(sortedStwData[offer.date] || []), offer]
+	// const stwData = await getAllMensaDataFromSTW(mensa);
+	const stwData = await getNewSwpData("Kiepenheuerallee");
+	let sortedStwData: {
+		[date: string]: WebspeiseplanGericht[]
+	} = {};
+	stwData.content.map((week) => {
+		week.speiseplanGerichtData.map((offer) => {
+			const date = offer.speiseplanAdvancedGericht.datum = offer.speiseplanAdvancedGericht.datum.split("T")[0]
+			sortedStwData[date] = [...(sortedStwData[date] || []), offer]
+		})
 	})
 	let returnableChanges = [];
 	// Cycling through each day of the STW Data and see if there are any changes to the already stored data
@@ -85,13 +144,12 @@ const refreshData = async (mensa: string) => {
 			}
 		}
 
-
 		// Compare the two arrays
 		const changes = [
-			...getDifference({ data: sortedStwData[formattedDate] || [], key: "beschreibung" }, { data: dbData, key: "food_title" }),
-			...getDifference({ data: dbData, key: "food_title" }, { data: sortedStwData[formattedDate] || [], key: "beschreibung" })
+			...getDifference({ data: sortedStwData[formattedDate] || [], key: "speiseplanAdvancedGericht.gerichtname" }, { data: dbData, key: "food_title" }),
+			...getDifference({ data: dbData, key: "food_title" }, { data: sortedStwData[formattedDate] || [], key: "speiseplanAdvancedGericht.gerichtname" })
 		];
-		console.log(changes)
+
 		changes.map(async (change) => {
 			// If the change has _id, it exists in MongoDB but not in STW Data
 			// => It was there once, but is not anymore
@@ -136,35 +194,62 @@ const refreshData = async (mensa: string) => {
 				}
 
 			} else {
+				const _change = change as WebspeiseplanGericht;
+				if (typeof _change.gerichtsmerkmaleIds === 'string') {
+					_change.gerichtsmerkmaleIds = _change.gerichtsmerkmaleIds.split(",").map((id: string) => parseInt(id, 10));
+				}
+				if (typeof _change.allergeneIds === 'string') {
+					_change.allergeneIds = _change.allergeneIds.split(",").map((id: string) => parseInt(id, 10));
+				}
+				const nutrients = Object.keys(_change.zusatzinformationen).filter((info) => info.startsWith("nw_")).map((info) => {
+					const nutrientTypes = {
+						nwkjInteger: "Energie (Kilojoule)",
+						nwkjkcalInteger: "Energie (Kilokalorien)",
+						nwfettDecimal1: "Fett",
+						nwfettsaeurenDecimal1: "Fettsäuren",
+						nwkohlenhydrateDecimal1: "Kohlenhydrate, resorbierbar",
+						nwzuckerDecimal1: "Zucker",
+						nweiweissDecimal1: "Eiweiß (Protein)",
+						nwsalzDecimal1: "Salz",
+					}
+					return {
+						name: nutrientTypes[info],
+						value: _change.zusatzinformationen[info],
+						unit: info.endsWith("Integer") ? "kJ" : "g"
+					}
+				})
 				returnableChanges.push(change)
 				console.log("NEW FOOD OFFERING", change)
+				const newFoodOffer: FoodOffering = {
+					// Mensa ID
+					mensa: getMensaId[mensa],
+					// Title or Name of the food
+					// food_title: change.beschreibung,
+					food_title: _change.speiseplanAdvancedGericht.gerichtname,
+					// Description of the food
+					food_desc: "",
+					// Is the food vegan?
+					vegan: _change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Vegan),
+					// Is the food vegetarian?
+					vegetarian: _change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Vegetarisch) || _change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Vegan),
+					// has the food fish?
+					fish: _change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Fisch),
+					// has the food meat?
+					meat: !_change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Vegan) && !_change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Vegetarisch) && !_change.gerichtsmerkmaleIds.includes(WebspeiseplanGerichtsmerkmale.Fisch),
+					// JSON Object of the nutrients
+					nutrients,
+					// JSON Object of the allergens
+					allergens: _change.allergeneIds.map(allergenNumberToName),
+
+					date,
+
+					price_students: _change.zusatzinformationen.mitarbeiterpreisDecimal2,
+					price_other: _change.zusatzinformationen.gaestepreisDecimal2,
+					sold_out: false,
+				}
 				const { data, error } = await supabase
 					.from('food_offerings')
-					.insert({
-						// Mensa ID
-						mensa: getMensaId[mensa],
-						// Title or Name of the food
-						food_title: change.beschreibung,
-						// Description of the food
-						food_desc: "",
-						// Is the food vegan?
-						vegan: change.labels?.foodType === "vegan",
-						// Is the food vegetarian?
-						vegetarian: change.labels?.foodType === "vegan" || change.labels?.foodType === "vegetarisch",
-						// has the food fish?
-						fish: change.labels?.foodType === "Fisch",
-						// has the food meat?
-						meat: change.labels?.foodType !== "vegan" && change.labels?.foodType !== "vegetarisch" && change.labels?.foodType !== "Fisch",
-						// JSON Object of the nutrients
-						nutrients: change.nutrients,
-						// JSON Object of the allergens
-						allergens: change.allergene,
-
-						date,
-
-						price_students: change.preise.preis_s[0],
-						price_other: change.preise.preis_g[0],
-					})
+					.insert(newFoodOffer)
 
 				if (error) {
 					console.log("Error in refreshMensaData.ts inserting the new offer")
@@ -186,9 +271,14 @@ const refreshData = async (mensa: string) => {
 	return returnableChanges
 }
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	// Check for secret to confirm this is a valid request
+
+	const foodData = await getNewSwpData("Kiepenheuerallee")
+
+	await refreshData("fhp")
+	return res.status(200).json(foodData)
+
 
 	if (req.headers.authorization !== `Bearer ${env.REVALIDATION_TOKEN}`) {
 		return res.status(401).json({ message: 'Invalid token: ' + req.headers.authorization })
@@ -215,4 +305,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		// to show the last successfully generated page
 		return res.status(500).send({ message: 'Error revalidating', data: err })
 	}
+}
+
+
+async function getNewSwpData(mensa: "Kiepenheuerallee" | "Griebnitzsee" | "Neues Palais" | "Golm" | "Wildau" | "Brandenburg" | "Filmuniversität" | "Cafeteria Neues Palais") {
+	const mensaId = {
+		"Kiepenheuerallee": 9604,
+		"Griebnitzsee": 9601,
+		"Neues Palais": 9600,
+		"Filmuniversität": 9603,
+	}
+	const url = `https://swp.webspeiseplan.de`
+
+	const browser = await puppeteer.launch({ headless: "new" });
+	const page = await browser.newPage();
+	await page.goto(url);
+
+	// Wait for element to appear
+	await page.waitForSelector(".locationWrapper");
+
+	await page.select('.locationSelection', mensaId[mensa].toString())
+
+	// Accent Modal
+	await page.waitForSelector(".modal-message-content");
+	await page.click("div.modal-message-wrapper div.modal-message-content div.message div.slider");
+	await page.click("button.min-w-8rem");
+
+	// Then submit the mensa selection with button .submit
+	await page.click(".submit");
+
+	// Wait for the page to load
+	await page.waitForSelector(".modal-message-content");
+	await page.click("button.p-h-spacer:nth-child(2)");
+
+	return await page.evaluate(() => {
+
+		let url = `https://swp.webspeiseplan.de/index.php?token=55ed21609e26bbf68ba2b19390bf7961&model=menu&location=9604&languagetype=1&_=${Date.now()}`;
+		let response = fetch(url).then(response => response.json());
+
+
+		return response
+	}) as WebspeiseplanResponse
 }
