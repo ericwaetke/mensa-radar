@@ -7,7 +7,7 @@ import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
-import puppeteer, { executablePath } from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
 const getMensaId = {
