@@ -7,7 +7,7 @@ import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
-import puppeteer from 'puppeteer-core';
+import puppeteer, { executablePath } from 'puppeteer-core';
 
 const getMensaId = {
 	'golm': 1,
@@ -317,7 +317,7 @@ async function getNewSwpData(mensa: "Kiepenheuerallee" | "Griebnitzsee" | "Neues
 	}
 	const url = `https://swp.webspeiseplan.de`
 
-	const browser = await puppeteer.launch({ headless: "new" });
+	const browser = await puppeteer.launch({ headless: "new", executablePath: executablePath() });
 	const page = await browser.newPage();
 	await page.goto(url);
 
