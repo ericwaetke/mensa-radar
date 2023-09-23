@@ -7,7 +7,7 @@ import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 
 const getMensaId = {
 	'golm': 1,
