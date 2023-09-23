@@ -8,6 +8,7 @@ import { env } from "../../env.mjs";
 dayjs.extend(isSameOrAfter.default)
 
 import puppeteer, { executablePath } from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 const getMensaId = {
 	'golm': 1,
@@ -317,7 +318,20 @@ async function getNewSwpData(mensa: "Kiepenheuerallee" | "Griebnitzsee" | "Neues
 	}
 	const url = `https://swp.webspeiseplan.de`
 
-	const browser = await puppeteer.launch({ headless: "new", executablePath: executablePath() });
+	const executablePath: string = await chromium.executablePath();
+	const browser = await puppeteer.launch({
+		executablePath: process.env.CHROME_EXECUTABLE_PATH || executablePath,
+		headless: true,
+		ignoreHTTPSErrors: true,
+		args: [
+			...chromium.args,
+			"--no-sandbox",
+			"--disable-setuid-sandbox",
+			"--disable-dev-shm-usage",
+			"--single-process",
+		],
+		ignoreDefaultArgs: ["--disable-extensions"],
+	});
 	const page = await browser.newPage();
 	await page.goto(url);
 
