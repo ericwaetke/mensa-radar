@@ -318,19 +318,23 @@ async function getNewSwpData(mensa: "Kiepenheuerallee" | "Griebnitzsee" | "Neues
 	}
 	const url = `https://swp.webspeiseplan.de`
 
-	const executablePath: string = await chromium.executablePath();
-	const browser = await puppeteer.launch({
-		executablePath: process.env.CHROME_EXECUTABLE_PATH || executablePath,
-		headless: true,
-		ignoreHTTPSErrors: true,
-		args: [
-			...chromium.args,
-			"--no-sandbox",
-			"--disable-setuid-sandbox",
-			"--disable-dev-shm-usage",
-			"--single-process",
-		],
-		ignoreDefaultArgs: ["--disable-extensions"],
+	// const executablePath: string = await chromium.executablePath();
+	// console.log("executablePath", executablePath)
+	// const browser = await puppeteer.launch({
+	// 	executablePath: process.env.CHROME_EXECUTABLE_PATH || executablePath,
+	// 	headless: true,
+	// 	ignoreHTTPSErrors: true,
+	// 	args: [
+	// 		...chromium.args,
+	// 		"--no-sandbox",
+	// 		"--disable-setuid-sandbox",
+	// 		"--disable-dev-shm-usage",
+	// 		"--single-process",
+	// 	],
+	// 	ignoreDefaultArgs: ["--disable-extensions"],
+	// });
+	const browser = await puppeteer.connect({
+		browserWSEndpoint: 'wss://chrome.browserless.io?token=' + process.env.BROWSERLESS_TOKEN,
 	});
 	const page = await browser.newPage();
 	await page.goto(url);
@@ -356,7 +360,6 @@ async function getNewSwpData(mensa: "Kiepenheuerallee" | "Griebnitzsee" | "Neues
 
 		let url = `https://swp.webspeiseplan.de/index.php?token=55ed21609e26bbf68ba2b19390bf7961&model=menu&location=9604&languagetype=1&_=${Date.now()}`;
 		let response = fetch(url).then(response => response.json());
-
 
 		return response
 	}) as WebspeiseplanResponse
