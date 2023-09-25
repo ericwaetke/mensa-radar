@@ -22,6 +22,8 @@ function defineNextConfig(config) {
 }
 
 const nextConfig = defineNextConfig({
+	// Enable only for docker
+	// output: 'standalone',
 	images: {
 		remotePatterns: [
 			{
