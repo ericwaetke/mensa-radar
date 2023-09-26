@@ -180,7 +180,7 @@ export default function Home(props) {
 							currentWeekday === 6
 								? weekday[currentWeekday]
 								: weekday[currentWeekday + 1]
-						return (
+						return mensa.current_mensa_data[0].enabled ? (
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
 								key={mensa.id}>
@@ -205,7 +205,7 @@ export default function Home(props) {
 									</div>
 								</a>
 							</Link>
-						)
+						) : null
 					})}
 				</div>
 				<BugReportButton />
@@ -229,7 +229,8 @@ export async function getStaticProps(context) {
 		loc_long,
 		url,
 		current_mensa_data (
-			openingTimes
+			openingTimes,
+			enabled
 		)`)
 
 	const dateFormated = new Date().toISOString().split("T")[0]

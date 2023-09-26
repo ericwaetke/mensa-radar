@@ -8,7 +8,8 @@ type MensaData = {
 	name: string,
 	open: true | false | null,
 	current_mensa_data: {
-		openingTimes: MensaOpeningTimeObject
+		openingTimes: MensaOpeningTimeObject,
+		enabled: boolean,
 	}[],
 	url: string,
 }

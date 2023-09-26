@@ -473,9 +473,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 				mensa,
 			}),
 		}
-	)
-	const { foodOffers }: { foodOffers: FoodOffering[] } =
-		await getMensaDataReq.json()
+	).then((res) => {
+		console.log(res)
+		return res.json()
+	})
+	const { foodOffers }: { foodOffers: FoodOffering[] } = getMensaDataReq
 	const sortedFoodOffers = foodOffers?.sort((a, b) => {
 		if (a.sold_out && !b.sold_out) {
 			return 1
