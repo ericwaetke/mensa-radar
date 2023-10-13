@@ -10,6 +10,7 @@ import { getOpeningTimes } from "../lib/getOpeningString"
 import { useRouter } from "next/router"
 import { env } from "../env.mjs"
 import { BugReportButton } from "../components/bugReportButton"
+import Balancer from "react-wrap-balancer"
 
 export const runtime = "experimental-edge"
 
@@ -105,7 +106,7 @@ export default function Home(props) {
 	}
 
 	useEffect(() => {
-		getLocation()
+		// getLocation()
 		updateOpeningTimes()
 		//Update the Opening Times every minute
 		const interval = setInterval(() => {
@@ -184,11 +185,12 @@ export default function Home(props) {
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
 								key={mensa.id}>
-								<a className="flex items-center justify-between space-x-2 py-4 pr-4">
-									<h3 className="font-serif-semi text-xl font-normal">
-										{" "}
-										{mensa.name}
-									</h3>
+								<a className="flex items-center justify-between gap-1 space-x-2 py-4 pr-4">
+									<Balancer>
+										<h3 className="font-serif-semi text-xl font-normal">
+											{mensa.name}
+										</h3>
+									</Balancer>
 									<div className="flex h-full items-center font-sans-reg text-sm">
 										<div
 											className={`my-auto mr-2 h-2 w-2 rounded-full ${
@@ -197,10 +199,7 @@ export default function Home(props) {
 													: "bg-red-500"
 											}`}></div>
 										<span className="whitespace-nowrap opacity-60">
-											{" "}
-											{
-												openingTimes?.[mensa.id]?.text
-											}{" "}
+											{openingTimes?.[mensa.id]?.text}
 										</span>
 									</div>
 								</a>
