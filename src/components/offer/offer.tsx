@@ -25,7 +25,7 @@ export const Offer = ({
 	aiThumbnailBase64,
 	triggerAiThumbnailRegeneration,
 }: {
-	offer: FoodOffering
+	offer: NewFoodOffer
 	mensa: string | string[]
 	day: string | string[]
 	aiThumbnailBase64: string
@@ -75,7 +75,7 @@ export const Offer = ({
 		return calcString || ""
 	}
 
-	const [ratings, setRatings] = useState(offer.ratings)
+	const [ratings, setRatings] = useState(offer.qualityReviews)
 	const averageRating = useMemo(
 		() => calculateAverageRating(ratings),
 		[ratings]
@@ -115,11 +115,11 @@ export const Offer = ({
 
 	useEffect(() => {
 		setHasUserRated(
-			offer.ratings.some(
+			offer.qualityReviews.some(
 				(rating) => rating.userSessionId === sessionId.current
 			)
 		)
-		let userRating = offer.ratings.find(
+		let userRating = offer.qualityReviews.find(
 			(rating) => rating.userSessionId === sessionId.current
 		)?.rating
 		userRating = Math.round(((userRating * 100) / 25 + 1) * 10) / 10
@@ -150,7 +150,7 @@ export const Offer = ({
 
 	const regenerateAiThumbnail = () => {
 		setLocalAiThumbnail(null)
-		triggerAiThumbnailRegeneration(offer.id, offer.food_title)
+		triggerAiThumbnailRegeneration(offer.id, offer.foodTitle)
 	}
 
 	useEffect(() => {
@@ -176,11 +176,11 @@ export const Offer = ({
 				header={
 					currentModalContent == "image" ? (
 						<>
-							<CaptureImageHeader foodTitle={offer.food_title} />
+							<CaptureImageHeader foodTitle={offer.foodTitle} />
 						</>
 					) : (
 						<>
-							<RateFoodHeader foodTitle={offer.food_title} />
+							<RateFoodHeader foodTitle={offer.foodTitle} />
 						</>
 					)
 				}
@@ -195,7 +195,7 @@ export const Offer = ({
 							triggerAiThumbnailRegeneration={
 								regenerateAiThumbnail
 							}
-							foodTitle={offer.food_title}
+							foodTitle={offer.foodTitle}
 							foodId={offer.id}
 						/>
 					</>
@@ -204,7 +204,7 @@ export const Offer = ({
 						<RateFood
 							setModalOpen={setModalOpen}
 							setCurrentModalContent={setCurrentModalContent}
-							foodTitle={offer.food_title}
+							foodTitle={offer.foodTitle}
 							foodId={offer.id}
 							updateUserRating={updateUserRating}
 						/>
@@ -218,7 +218,7 @@ export const Offer = ({
 			>
 				<div
 					className={`flex flex-col rounded-2xl bg-white ${
-						offer.sold_out ? "pb-6" : ""
+						offer.soldOut ? "pb-6" : ""
 					} `}
 				>
 					<div className="flex flex-col">
@@ -231,17 +231,17 @@ export const Offer = ({
 							}
 							tempImage={tempImage}
 							key={offer.id}
-							soldOut={offer.sold_out}
+							soldOut={offer.soldOut}
 						/>
 
 						<div className="flex flex-col space-y-4 p-6 text-sm">
 							<div className="flex-col space-y-2">
 								<h2
 									className={`text-h2 font-serif-semi ${
-										offer.sold_out ? "text-gray/50" : ""
+										offer.soldOut ? "text-gray/50" : ""
 									}`}
 								>
-									<Balancer>{offer.food_title}</Balancer>
+									<Balancer>{offer.foodTitle}</Balancer>
 								</h2>
 
 								<Allergens allergens={offer.allergens} />
@@ -251,7 +251,7 @@ export const Offer = ({
 									initial="hidden"
 									animate="show"
 								>
-									{offer.sold_out ? (
+									{offer.soldOut ? (
 										<></>
 									) : (
 										<>
@@ -261,7 +261,7 @@ export const Offer = ({
 													data-tooltip-content="Preis für Studierende"
 												>
 													{formatter.format(
-														offer.price_students
+														offer.priceStudents
 													)}
 												</p>
 												<p className="text-gray/50">
@@ -273,13 +273,13 @@ export const Offer = ({
 													data-tooltip-content="Preis für andere"
 												>
 													{formatter.format(
-														offer.price_other
+														offer.priceOther
 													)}
 												</p>
 											</Pill>
 										</>
 									)}
-									{offer.sold_out ? (
+									{offer.soldOut ? (
 										<>
 											<Pill col={"black"}>
 												<p>😢 </p>Ausverkauft
@@ -417,7 +417,7 @@ export const Offer = ({
 							<>
 								<div
 									className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x divide-gray/20 border-t border-gray/20 text-sm ${
-										offer.sold_out ? "hidden" : ""
+										offer.soldOut ? "hidden" : ""
 									} `}
 								>
 									<div
@@ -439,7 +439,7 @@ export const Offer = ({
 									</div>
 									<ShareButton
 										url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`}
-										title={offer.food_title}
+										title={offer.foodTitle}
 									/>
 								</div>
 							</>

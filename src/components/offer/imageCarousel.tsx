@@ -10,7 +10,7 @@ export const ImageCarousel = ({
 	openImageFlow,
 	soldOut,
 }: {
-	offer: FoodOffering
+	offer: NewFoodOffer
 	tempImage: string
 	localAiThumbnail: string
 	aiThumbnailUrl: string
@@ -18,20 +18,20 @@ export const ImageCarousel = ({
 	soldOut: boolean
 }) => {
 	const [imageAmount, setImageAmount] = useState<number>(
-		//ai images
-		(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+		//ai xs
+		(offer.hasAiThumbnail || localAiThumbnail ? 1 : 0) +
 			// user images
-			(offer.food_images
-				? offer.food_images.length + (tempImage ? 1 : 0)
+			(offer.foodImages
+				? offer.foodImages.length + (tempImage ? 1 : 0)
 				: 0)
 	)
 	useEffect(() => {
 		setImageAmount(
 			//ai images
-			(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+			(offer.hasAiThumbnail || localAiThumbnail ? 1 : 0) +
 				// user images
-				(offer.food_images
-					? offer.food_images.length + (tempImage ? 1 : 0)
+				(offer.foodImages
+					? offer.foodImages.length + (tempImage ? 1 : 0)
 					: 0)
 		)
 	}, [localAiThumbnail, tempImage])
@@ -40,7 +40,8 @@ export const ImageCarousel = ({
 		<div
 			className={`w-full overflow-hidden  rounded-t-xl border-b border-gray/20 bg-lightshiny-green ${
 				imageAmount > 1 ? "p-4" : ""
-			} ${soldOut ? "opacity-50" : ""}`}>
+			} ${soldOut ? "opacity-50" : ""}`}
+		>
 			<div className="relative m-auto min-h-max">
 				<div
 					onClick={() => (!soldOut ? openImageFlow() : null)}
@@ -48,7 +49,8 @@ export const ImageCarousel = ({
 						imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"
 					} flex snap-x snap-mandatory gap-8 ${
 						imageAmount !== 1 ? "rounded-lg px-[25%]" : ""
-					}`}>
+					}`}
+				>
 					{tempImage ? (
 						<ImageComponent
 							single={imageAmount === 1}
@@ -56,20 +58,20 @@ export const ImageCarousel = ({
 							src={tempImage}
 						/>
 					) : null}
-					{offer.food_images?.map((food_image, index) => {
-						if (food_image.image_url) {
+					{offer.foodImages?.map((food_image, index) => {
+						if (food_image.imageUrl) {
 							return (
 								<ImageComponent
 									single={imageAmount === 1}
 									type="user"
 									// /-/format/auto/-/quality/smart/-/preview/
-									src={`${food_image?.image_url}/-/format/auto/-/quality/smart/-/preview/`}
+									src={`${food_image?.imageUrl}/-/format/auto/-/quality/smart/-/preview/`}
 									key={index}
 								/>
 							)
 						}
 					})}
-					{offer.has_ai_thumbnail ? (
+					{offer.hasAiThumbnail ? (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"
@@ -78,7 +80,7 @@ export const ImageCarousel = ({
 					) : null}
 					{localAiThumbnail &&
 					localAiThumbnail !== "" &&
-					!offer.has_ai_thumbnail ? (
+					!offer.hasAiThumbnail ? (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"
@@ -98,7 +100,8 @@ export const ImageCarousel = ({
 						src="/icons/camera.svg"
 						height={24}
 						width={24}
-						className="w-6"></Image>
+						className="w-6"
+					></Image>
 				</span>
 			</div>
 		</div>
