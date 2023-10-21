@@ -582,6 +582,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		.from(mensen)
 		.innerJoin(currentMensaData, eq(mensen.id, currentMensaData.id))
 
+	await client.end()
+
 	return {
 		props: {
 			food: smartFood,
