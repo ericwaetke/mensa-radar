@@ -14,37 +14,17 @@ import { Pill } from "../../../../components/pill"
 import { getOpeningTimes } from "../../../../lib/getOpeningString"
 import { Offer } from "../../../../components/offer/offer"
 
-import { and, eq } from "drizzle-orm"
+import { and, asc, desc, eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { motion } from "framer-motion"
-import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { GetServerSideProps } from "next"
 import { usePlausible } from "next-plausible"
-import dynamic from "next/dynamic"
 import Image from "next/image"
 import postgres from "postgres"
 import { BugReportButton } from "../../../../components/bugReportButton"
 import { NoFood } from "../../../../components/errors/NoFood"
 import useScrollPosition from "../../../../hooks/useScrollPosition"
-import {
-	currentMensaData,
-	foodImages,
-	foodOfferings,
-	mensen,
-	qualityReviews,
-} from "../../../../server/dbSchema"
-
-const DynamicOffer = dynamic<{
-	offer: NewFoodOffer
-	mensa: string | string[]
-	day: string | string[]
-	triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
-	aiThumbnailBase64: string
-}>(
-	() => import("../../../../components/offer/offer").then((mod) => mod.Offer),
-	{
-		loading: () => <p>Loading...</p>,
-	}
-)
+import { foodOfferings, mensen } from "../../../../server/dbSchema"
 
 type DrizzleFoodQuery = {
 	name: string
@@ -54,6 +34,8 @@ type DrizzleFoodQuery = {
 	foodOfferings: NewFoodOffer[]
 }
 
+type DrizzleMensenQuery = NewMansaData[]
+
 export const runtime = "experimental-edge"
 
 export default function Mensa({
@@ -61,7 +43,7 @@ export default function Mensa({
 	mensenList,
 }: {
 	food: DrizzleFoodQuery
-	mensenList: any
+	mensenList: DrizzleMensenQuery
 }): JSX.Element {
 	const router = useRouter()
 	const { mensa, day } =
@@ -72,7 +54,7 @@ export default function Mensa({
 	const [openingTimes, setOpeningTimes] = useState<{
 		open: boolean
 		text: string
-	}>({ open: false, text: "" })
+	}>({ open: false, text: "Öffnungszeiten laden" })
 
 	const [path, setPath] = useState(router.asPath.split("#"))
 
@@ -152,18 +134,18 @@ export default function Mensa({
 	const [generatedThumbnails, setGeneratedThumbnails] = useState(
 		new Map<number, string>()
 	)
-	// async function queueThumbnailGeneration() {
-	// 	for await (const offer of foodOffers as FoodOffering[]) {
-	// 		if (
-	// 			offer.food_images.length === 0 &&
-	// 			!offer.has_ai_thumbnail &&
-	// 			!offer.sold_out
-	// 		) {
-	// 			console.log("Starting Generation")
-	// 			await aiThumbnailGeneration(offer.id, offer.food_title)
-	// 		}
-	// 	}
-	// }
+	async function queueThumbnailGeneration() {
+		for await (const offer of food.foodOfferings) {
+			if (
+				offer.foodImages.length === 0 &&
+				!offer.hasAiThumbnail &&
+				!offer.soldOut
+			) {
+				console.log("Starting Generation")
+				await aiThumbnailGeneration(offer.id, offer.foodTitle)
+			}
+		}
+	}
 	async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
 		console.log("Generating AI Thumbnail")
 		return await fetch(
@@ -192,23 +174,17 @@ export default function Mensa({
 			.catch((err) => console.log(err))
 	}
 
-	// useEffect(() => {
-	// 	setModalOpen(false)
-	// 	setOpeningTimes(getOpeningTimes(currentMensa))
-	// 	queueThumbnailGeneration()
-	// 	// Update the Opening Times every minute
-	// 	const interval = setInterval(() => {
-	// 		setOpeningTimes(getOpeningTimes(currentMensa))
-	// 	}, 60 * 1000)
+	useEffect(() => {
+		setModalOpen(false)
+		setOpeningTimes(getOpeningTimes(currentMensa))
+		queueThumbnailGeneration()
+		// Update the Opening Times every minute
+		const interval = setInterval(() => {
+			setOpeningTimes(getOpeningTimes(currentMensa))
+		}, 60 * 1000)
 
-	// 	return () => clearInterval(interval)
-	// }, [router.asPath])
-
-	// const getFoodDataById = (id: string): FoodOffering => {
-	// 	return foodOffers.find(
-	// 		(foodOffer: FoodOffering) => foodOffer.id === parseInt(id)
-	// 	)
-	// }
+		return () => clearInterval(interval)
+	}, [router.asPath])
 
 	const container = {
 		hidden: { opacity: 0 },
@@ -221,16 +197,13 @@ export default function Mensa({
 		},
 	}
 
-	const currentMensa = {
-		name: "fhp",
-		url: "fhp",
-	}
+	const currentMensa = mensenList.find((m) => m.url === mensa)
 
-	// const headTitle = `${currentMensa.name} - Mensa Radar`
+	const headTitle = `${currentMensa.name} - Mensa Radar`
 
 	return (
 		<>
-			{/* <Modal
+			<Modal
 				isOpen={modalOpen}
 				onRequestClose={() => setModalOpen(false)}
 				style={
@@ -242,7 +215,7 @@ export default function Mensa({
 				{currentModalContent === "nutrients" ? (
 					<>
 						<NutrientOverview
-							foodOffers={foodOffers}
+							foodOffers={food.foodOfferings}
 							setModalOpen={setModalOpen}
 						/>
 					</>
@@ -251,11 +224,11 @@ export default function Mensa({
 						<SelectMensa
 							setModalOpen={setModalOpen}
 							currentMensa={mensa}
-							mensen={mensaList}
+							mensen={mensenList}
 						/>
 					</>
 				)}
-			</Modal> */}
+			</Modal>
 			<div className="mx-auto flex flex-col">
 				<Head>{/* <title>{headTitle}</title> */}</Head>
 
@@ -392,8 +365,7 @@ export default function Mensa({
 					initial="hidden"
 					animate="show"
 				>
-					{food.foodOfferings?.map((offer, i) => {
-						console.log(offer)
+					{food.foodOfferings?.map((offer) => {
 						return (
 							<Offer
 								key={offer.id}
@@ -412,17 +384,15 @@ export default function Mensa({
 					<BugReportButton />
 				</motion.div>
 
-				{/* Bug Reporting Button */}
-
 				{scrollPosition ? (
 					<>
-						<div className="fixed bottom-0 h-10 w-full px-3 py-2">
+						<div className="fixed bottom-0 h-10 w-full border-gray/10 bg-light-green px-3 py-2">
 							<div className="m-auto grid max-w-xl grid-cols-2">
 								<div className="flex flex-row space-x-2">
 									<Link href="/impressum">
-										<p className="text-sm opacity-50">
+										<a className="text-sm opacity-50">
 											Über Mensa-Radar
-										</p>
+										</a>
 									</Link>
 								</div>
 								{day === "samstag" ||
@@ -458,28 +428,6 @@ import * as schema from "../../../../server/dbSchema"
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params
 
-	// const sortedFoodOffers = foodOffers?.sort((a, b) => {
-	// 	if (a.sold_out && !b.sold_out) {
-	// 		return 1
-	// 	}
-	// 	if (!a.sold_out && b.sold_out) {
-	// 		return -1
-	// 	}
-	// 	if (a.vegan && !b.vegan) {
-	// 		return -1
-	// 	}
-	// 	if (!a.vegan && b.vegan) {
-	// 		return 1
-	// 	}
-	// 	if (a.vegetarian && !b.vegetarian) {
-	// 		return -1
-	// 	}
-	// 	if (!a.vegetarian && b.vegetarian) {
-	// 		return 1
-	// 	}
-	// 	return 0
-	// })
-
 	const selectedWeekday = getWeekdayByName(day)
 	let currentWeekday = new Date().getDay()
 	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
@@ -514,6 +462,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 					soldOut: true,
 					hasAiThumbnail: true,
 				},
+				orderBy: [
+					asc(foodOfferings.soldOut),
+					desc(foodOfferings.vegan),
+					desc(foodOfferings.vegetarian),
+					desc(foodOfferings.fish),
+					desc(foodOfferings.meat),
+				],
 				with: {
 					qualityReviews: {
 						columns: {
@@ -532,63 +487,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		},
 	})
 
-	// const food = await db
-	// 	.select({
-	// 		id: foodOfferings.id,
-	// 		mensa: foodOfferings.mensa,
-	// 		foodTitle: foodOfferings.foodTitle,
-	// 		vegan: foodOfferings.vegan,
-	// 		vegetarian: foodOfferings.vegetarian,
-	// 		fish: foodOfferings.fish,
-	// 		meat: foodOfferings.meat,
-	// 		nutrients: foodOfferings.nutrients,
-	// 		allergens: foodOfferings.allergens,
-	// 		date: foodOfferings.date,
-	// 		priceStudents: foodOfferings.priceStudents,
-	// 		priceOther: foodOfferings.priceOther,
-	// 		soldOut: foodOfferings.soldOut,
-	// 		images: {
-	// 			hasAiThumbnail: foodOfferings.hasAiThumbnail,
-	// 			imageName: foodImages.imageName,
-	// 			imageUrl: foodImages.imageUrl,
-	// 		},
-	// 		rating: {
-	// 			rating: qualityReviews.rating,
-	// 			userSessionId: qualityReviews.userSessionId,
-	// 		},
-	// 	})
-	// 	.from(foodOfferings)
-	// 	.leftJoin(foodImages, eq(foodOfferings.id, foodImages.id))
-	// 	.leftJoin(qualityReviews, eq(foodOfferings.id, qualityReviews.id))
-	// 	.innerJoin(mensen, eq(foodOfferings.mensa, mensen.id))
-	// 	.where(
-	// 		and(
-	// 			eq(mensen.url, mensa.toString()),
-	// 			eq(foodOfferings.date, selectedDay)
-	// 		)
-	// 	)
-
-	const mensenList = await smartDb
-		.select({
-			name: mensen.name,
-			url: mensen.url,
-			location: {
-				lat: mensen.locLat,
-				long: mensen.locLong,
+	const mensenList = await smartDb.query.mensen.findMany({
+		columns: {
+			name: true,
+			url: true,
+			locLat: true,
+			locLong: true,
+		},
+		with: {
+			currentMensaData: {
+				columns: {
+					openingTimes: true,
+					enabled: true,
+				},
 			},
-			openingTimes: currentMensaData.openingTimes,
-			enabled: currentMensaData.enabled,
-		})
-		.from(mensen)
-		.innerJoin(currentMensaData, eq(mensen.id, currentMensaData.id))
+		},
+	})
 
 	await client.end()
 
 	return {
 		props: {
 			food: smartFood,
-			// smartFood,
-			mensenList: JSON.stringify(mensenList),
+			mensenList: mensenList,
 		},
 	}
 }
