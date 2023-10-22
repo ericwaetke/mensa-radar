@@ -34,7 +34,7 @@ type DrizzleFoodQuery = {
 	foodOfferings: NewFoodOffer[]
 }
 
-type DrizzleMensenQuery = NewMansaData[]
+type DrizzleMensenQuery = NewMensaData[]
 
 export const runtime = "experimental-edge"
 
@@ -174,17 +174,17 @@ export default function Mensa({
 			.catch((err) => console.log(err))
 	}
 
-	useEffect(() => {
-		setModalOpen(false)
-		setOpeningTimes(getOpeningTimes(currentMensa))
-		queueThumbnailGeneration()
-		// Update the Opening Times every minute
-		const interval = setInterval(() => {
-			setOpeningTimes(getOpeningTimes(currentMensa))
-		}, 60 * 1000)
+	// useEffect(() => {
+	// 	setModalOpen(false)
+	// 	setOpeningTimes(getOpeningTimes(currentMensa))
+	// 	queueThumbnailGeneration()
+	// 	// Update the Opening Times every minute
+	// 	const interval = setInterval(() => {
+	// 		setOpeningTimes(getOpeningTimes(currentMensa))
+	// 	}, 60 * 1000)
 
-		return () => clearInterval(interval)
-	}, [router.asPath])
+	// 	return () => clearInterval(interval)
+	// }, [router.asPath])
 
 	const container = {
 		hidden: { opacity: 0 },

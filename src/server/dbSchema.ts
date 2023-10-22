@@ -2,7 +2,9 @@ import { relations } from "drizzle-orm"
 import {
 	bigint,
 	boolean,
+	date,
 	json,
+	jsonb,
 	pgTable,
 	real,
 	serial,
@@ -105,3 +107,14 @@ export const foodImagesRelations = relations(foodImages, ({ one }) => ({
 		references: [foodOfferings.id],
 	}),
 }))
+
+export const getMensen = pgTable("get_mensen", {
+	mensa: bigint("mensa", { mode: "number" }),
+	nextFood: date("next_food"),
+	name: text("name"),
+	url: varchar("url"),
+	locLong: varchar("loc_long"),
+	locLat: varchar("loc_lat"),
+	openingTimes: jsonb("opening_times"),
+	enabled: boolean("enabled"),
+})

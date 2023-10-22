@@ -26,13 +26,13 @@ type NewMensaData = {
 }
 
 type MensaOpeningTimeObject = {
-	mo: MensaOpeningTime
-	tu: MensaOpeningTime
-	we: MensaOpeningTime
-	th: MensaOpeningTime
-	fr: MensaOpeningTime
-	sa: MensaOpeningTime
-	su: MensaOpeningTime
+	mo?: MensaOpeningTime
+	tu?: MensaOpeningTime
+	we?: MensaOpeningTime
+	th?: MensaOpeningTime
+	fr?: MensaOpeningTime
+	sa?: MensaOpeningTime
+	su?: MensaOpeningTime
 }
 
 type MensaOpeningTime = {
@@ -141,3 +141,14 @@ type MensaList = {
 	open: boolean
 	openingString: string
 }[]
+
+type EnhancedMensaList = {
+	id: number
+	nextFood: date
+	name: string
+	url: string
+	enabled: boolean
+	openingTimes: MensaOpeningTimeObject
+	locLat: string
+	locLong: string
+}

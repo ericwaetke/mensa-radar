@@ -4,24 +4,27 @@ import tz from "dayjs/plugin/timezone"
 dayjs.extend(utc)
 dayjs.extend(tz)
 
-export const getOpeningTimes: (currentMensa: NewMensaData) => {
+export const getOpeningTimes: (currentMensa: EnhancedMensaList) => {
 	open: boolean
 	text: string
-} = (currentMensa: NewMensaData) => {
+} = (currentMensa: EnhancedMensaList) => {
+	console.log(currentMensa)
 	const currentWeekday =
 		new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
 	const days = ["mo", "tu", "we", "th", "fr", "sa", "su"]
-	const openingTimes:
-		| {
-				from: number
-				to: number
-		  }
-		| undefined =
-		currentMensa.currentMensaData.openingTimes[days[currentWeekday]]
 
 	const currentDate = new Date()
 
-	if (openingTimes) {
+	if (
+		currentMensa.openingTimes &&
+		currentMensa.openingTimes[days[currentWeekday]]
+	) {
+		const openingTimes:
+			| {
+					from: number
+					to: number
+			  }
+			| undefined = currentMensa.openingTimes[days[currentWeekday]]
 		const toHour = Math.floor(openingTimes?.to ? openingTimes?.to : 0)
 		const toMinute =
 			Math.round((openingTimes?.to - toHour) * 60) === 0
@@ -74,14 +77,13 @@ export const getOpeningTimes: (currentMensa: NewMensaData) => {
 		}
 	}
 
-	// Check if today has food
 	if (
-		currentMensa.currentMensaData.openingTimes[
+		currentMensa.openingTimes[
 			days[currentWeekday + 1 > 6 ? 0 : currentWeekday + 1]
 		]
 	) {
 		const openingTimes =
-			currentMensa.currentMensaData.openingTimes[
+			currentMensa.openingTimes[
 				days[currentWeekday + 1 > 6 ? 0 : currentWeekday + 1]
 			]
 		const fromHour = Math.floor(openingTimes?.from)
@@ -105,7 +107,7 @@ export const getOpeningTimes: (currentMensa: NewMensaData) => {
 	const indexDayAfterTomorow =
 		currentWeekday + 2 > 6 ? currentWeekday + 2 - 7 : currentWeekday + 2
 	const openingTimesDayAfterTomorrow =
-		currentMensa.currentMensaData.openingTimes[days[indexDayAfterTomorow]]
+		currentMensa.openingTimes[days[indexDayAfterTomorow]]
 	if (openingTimesDayAfterTomorrow) {
 		const fromHour = Math.floor(openingTimesDayAfterTomorrow?.from)
 		const fromMinute =
