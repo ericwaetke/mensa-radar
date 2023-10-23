@@ -187,8 +187,7 @@ export default function Home(props) {
 						return mensa.enabled ? (
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
-								key={mensa.id}
-							>
+								key={mensa.id}>
 								<a className="flex items-center justify-between gap-1 space-x-2 py-4 pr-4">
 									<h3 className="font-serif-semi text-xl font-normal">
 										<Balancer>{mensa.name}</Balancer>
@@ -196,13 +195,12 @@ export default function Home(props) {
 									<div className="flex h-full items-center font-sans-reg text-sm">
 										<div
 											className={`my-auto mr-2 h-2 w-2 rounded-full ${
-												openingTimes?.[mensa.id]?.open
+												openingTimes.get(mensa.id)?.open
 													? "bg-main-green"
 													: "bg-red-500"
-											}`}
-										></div>
+											}`}></div>
 										<span className="whitespace-nowrap opacity-60">
-											{openingTimes?.[mensa.id]?.text}
+											{openingTimes.get(mensa.id)?.text}
 										</span>
 									</div>
 								</a>

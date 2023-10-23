@@ -14,7 +14,7 @@ import { Pill } from "../../../../components/pill"
 import { getOpeningTimes } from "../../../../lib/getOpeningString"
 import { Offer } from "../../../../components/offer/offer"
 
-import { and, asc, desc, eq } from "drizzle-orm"
+import { gt, asc, desc, eq, sql } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { motion } from "framer-motion"
 import { GetServerSideProps } from "next"
@@ -24,7 +24,11 @@ import postgres from "postgres"
 import { BugReportButton } from "../../../../components/bugReportButton"
 import { NoFood } from "../../../../components/errors/NoFood"
 import useScrollPosition from "../../../../hooks/useScrollPosition"
-import { foodOfferings, mensen } from "../../../../server/dbSchema"
+import {
+	currentMensaData,
+	foodOfferings,
+	mensen,
+} from "../../../../server/dbSchema"
 
 type DrizzleFoodQuery = {
 	name: string
@@ -34,16 +38,16 @@ type DrizzleFoodQuery = {
 	foodOfferings: NewFoodOffer[]
 }
 
-type DrizzleMensenQuery = NewMensaData[]
+type DrizzleMensenQuery = EnhancedMensaList[]
 
 export const runtime = "experimental-edge"
 
 export default function Mensa({
 	food,
-	mensenList,
+	mensenListReq,
 }: {
 	food: DrizzleFoodQuery
-	mensenList: DrizzleMensenQuery
+	mensenListReq: string // JSON Stringified
 }): JSX.Element {
 	const router = useRouter()
 	const { mensa, day } =
@@ -51,10 +55,13 @@ export default function Mensa({
 			? router.query
 			: { mensa: "fhp", day: "freitag" }
 
-	const [openingTimes, setOpeningTimes] = useState<{
-		open: boolean
-		text: string
-	}>({ open: false, text: "Öffnungszeiten laden" })
+	const mensenList: DrizzleMensenQuery = JSON.parse(mensenListReq)
+	const currentMensa = mensenList.find((m) => m.url === mensa)
+
+	const [mensaOpen, setMensaOpen] = useState(false)
+	const [mensaOpenText, setMensaOpenText] = useState(
+		"Öffnungszeiten werden geladen"
+	)
 
 	const [path, setPath] = useState(router.asPath.split("#"))
 
@@ -174,17 +181,23 @@ export default function Mensa({
 			.catch((err) => console.log(err))
 	}
 
-	// useEffect(() => {
-	// 	setModalOpen(false)
-	// 	setOpeningTimes(getOpeningTimes(currentMensa))
-	// 	queueThumbnailGeneration()
-	// 	// Update the Opening Times every minute
-	// 	const interval = setInterval(() => {
-	// 		setOpeningTimes(getOpeningTimes(currentMensa))
-	// 	}, 60 * 1000)
+	const updateOpeningTimes = () => {
+		const { open, text } = getOpeningTimes(currentMensa)
+		setMensaOpen(open)
+		setMensaOpenText(text)
+	}
 
-	// 	return () => clearInterval(interval)
-	// }, [router.asPath])
+	useEffect(() => {
+		setModalOpen(false)
+		updateOpeningTimes()
+		queueThumbnailGeneration()
+		// Update the Opening Times every minute
+		const interval = setInterval(() => {
+			updateOpeningTimes()
+		}, 60 * 1000)
+
+		return () => clearInterval(interval)
+	}, [router.asPath])
 
 	const container = {
 		hidden: { opacity: 0 },
@@ -197,8 +210,6 @@ export default function Mensa({
 		},
 	}
 
-	const currentMensa = mensenList.find((m) => m.url === mensa)
-
 	const headTitle = `${currentMensa.name} - Mensa Radar`
 
 	return (
@@ -210,8 +221,7 @@ export default function Mensa({
 					currentModalContent === "nutrients"
 						? fullsizeModal
 						: resizedModal
-				}
-			>
+				}>
 				{currentModalContent === "nutrients" ? (
 					<>
 						<NutrientOverview
@@ -230,18 +240,18 @@ export default function Mensa({
 				)}
 			</Modal>
 			<div className="mx-auto flex flex-col">
-				<Head>{/* <title>{headTitle}</title> */}</Head>
+				<Head>
+					<title>{headTitle}</title>
+				</Head>
 
 				<div
 					className={`fixed p-3 ${
 						modalOpen ? null : "z-10"
-					} w-full border-b border-gray/10 bg-light-green`}
-				>
+					} w-full border-b border-gray/10 bg-light-green`}>
 					<div className="m-auto w-full divide-y divide-gray/20 rounded-xl border border-solid border-gray/20 sm:max-w-xl">
 						<div
 							onClick={() => openMensaSelectionFlow()}
-							className="flex h-12 w-full flex-row items-center justify-center gap-2 space-x-2"
-						>
+							className="flex h-12 w-full flex-row items-center justify-center gap-2 space-x-2">
 							<h1 className="text-h1 block font-serif-bold">
 								{currentMensa.name}
 							</h1>
@@ -259,8 +269,7 @@ export default function Mensa({
 									<Link
 										href={`/mensa/${mensa}/${
 											days[selectedWeekday - 1]
-										}`}
-									>
+										}`}>
 										<a className="inline-flex grow basis-0 flex-row items-center gap-1 font-sans-med text-sm">
 											<Image
 												src="/icons/right-arrw.svg"
@@ -299,8 +308,7 @@ export default function Mensa({
 									<Link
 										href={`/mensa/${mensa}/${
 											days[selectedWeekday + 1]
-										}`}
-									>
+										}`}>
 										<a className="inline-flex grow basis-0 flex-row items-center gap-1 text-right font-sans-med text-sm">
 											<p className="w-full capitalize">
 												{currentWeekday ===
@@ -332,15 +340,14 @@ export default function Mensa({
 									<Pill col={"transparent"}>
 										<div
 											className={`mr-1 h-2 w-2 rounded-full ${
-												openingTimes.open
+												mensaOpen
 													? `bg-dark-green`
 													: ` bg-red-500`
-											}`}
-										></div>
+											}`}></div>
 										<p className="font-sans-reg text-sm">
 											{currentMensa.url === undefined
 												? ""
-												: openingTimes.text}
+												: mensaOpenText}
 										</p>
 									</Pill>
 								</div>
@@ -363,8 +370,7 @@ export default function Mensa({
 					className="hide-scroll-bar flex w-full snap-y snap-proximity flex-col gap-4 overflow-y-scroll px-3 pt-32"
 					variants={container}
 					initial="hidden"
-					animate="show"
-				>
+					animate="show">
 					{food.foodOfferings?.map((offer) => {
 						return (
 							<Offer
@@ -400,8 +406,7 @@ export default function Mensa({
 								food.foodOfferings?.length === 0 ? null : (
 									<div
 										className="flex cursor-pointer items-center space-x-1"
-										onClick={() => openNutrientsFlow()}
-									>
+										onClick={() => openNutrientsFlow()}>
 										<p className="w-full text-right text-sm">
 											Nährwerte vgl.
 										</p>
@@ -424,6 +429,7 @@ export default function Mensa({
 }
 
 import * as schema from "../../../../server/dbSchema"
+import { set } from "zod"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params
@@ -438,8 +444,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	const connectionString = process.env.DATABASE_URL
 	const client = postgres(connectionString)
-	const smartDb = drizzle(client, { schema })
-	const smartFood = await smartDb.query.mensen.findFirst({
+	const db = drizzle(client, { schema })
+	const food = await db.query.mensen.findFirst({
 		columns: {
 			createdAt: false,
 			id: false,
@@ -487,29 +493,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		},
 	})
 
-	const mensenList = await smartDb.query.mensen.findMany({
-		columns: {
-			name: true,
-			url: true,
-			locLat: true,
-			locLong: true,
-		},
-		with: {
-			currentMensaData: {
-				columns: {
-					openingTimes: true,
-					enabled: true,
-				},
-			},
-		},
-	})
+	const mensenList = await db
+		.select({
+			id: foodOfferings.mensa,
+			nextFood: sql<Date>`min(food_offerings.date)`,
+			name: mensen.name,
+			url: mensen.url,
+			locLat: mensen.locLat,
+			locLong: mensen.locLong,
+			openingTimes: currentMensaData.openingTimes,
+			enabled: currentMensaData.enabled,
+		})
+		.from(foodOfferings)
+		.innerJoin(mensen, eq(foodOfferings.mensa, mensen.id))
+		.innerJoin(
+			currentMensaData,
+			eq(foodOfferings.mensa, currentMensaData.mensaId)
+		)
+		.where(gt(foodOfferings.date, sql`current_date`))
+		.groupBy(
+			sql`food_offerings.mensa, mensen.name, mensen.url, current_mensa_data."openingTimes", mensen.loc_lat, mensen.loc_long, current_mensa_data.enabled`
+		)
 
 	await client.end()
 
 	return {
 		props: {
-			food: smartFood,
-			mensenList: mensenList,
+			food: food,
+			mensenListReq: JSON.stringify(mensenList),
 		},
 	}
 }

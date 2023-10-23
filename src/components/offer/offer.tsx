@@ -168,6 +168,8 @@ export const Offer = ({
 		},
 	}
 
+	const isFoodOffer = offer.priceOther !== 0 && offer.priceStudents !== 0
+
 	return (
 		<>
 			<BottomSheet
@@ -184,8 +186,7 @@ export const Offer = ({
 						</>
 					)
 				}
-				blocking={true}
-			>
+				blocking={true}>
 				{currentModalContent == "image" ? (
 					<>
 						<CaptureImage
@@ -212,178 +213,193 @@ export const Offer = ({
 				) : null}
 			</BottomSheet>
 			<div
-				className={`relative mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl`}
+				className={`relative mx-auto w-full snap-start flex-row pt-4 sm:max-w-xl ${
+					!isFoodOffer && offer.foodTitle.includes("Info")
+						? "-order-1"
+						: !isFoodOffer && "order-1"
+				}`}
 				// variants={containerAnimation}
-				id={offer.id.toString()}
-			>
+				id={offer.id.toString()}>
 				<div
 					className={`flex flex-col rounded-2xl bg-white ${
 						offer.soldOut ? "pb-6" : ""
-					} `}
-				>
+					} `}>
 					<div className="flex flex-col">
-						<ImageCarousel
-							offer={offer}
-							aiThumbnailUrl={aiThumbnailUrl}
-							localAiThumbnail={localAiThumbnail}
-							openImageFlow={() =>
-								!modalOpen ? openImageFlow() : null
-							}
-							tempImage={tempImage}
-							key={offer.id}
-							soldOut={offer.soldOut}
-						/>
+						{isFoodOffer && (
+							<ImageCarousel
+								offer={offer}
+								aiThumbnailUrl={aiThumbnailUrl}
+								localAiThumbnail={localAiThumbnail}
+								openImageFlow={() =>
+									!modalOpen ? openImageFlow() : null
+								}
+								tempImage={tempImage}
+								key={offer.id}
+								soldOut={offer.soldOut}
+							/>
+						)}
 
 						<div className="flex flex-col space-y-4 p-6 text-sm">
 							<div className="flex-col space-y-2">
 								<h2
 									className={`text-h2 font-serif-semi ${
 										offer.soldOut ? "text-gray/50" : ""
-									}`}
-								>
+									}`}>
 									<Balancer>{offer.foodTitle}</Balancer>
 								</h2>
 
 								<Allergens allergens={offer.allergens} />
-								<motion.div
-									className="flex flex-row flex-wrap gap-x-2 space-y-1 font-sans-med"
-									variants={pillAnimationContainer}
-									initial="hidden"
-									animate="show"
-								>
-									{offer.soldOut ? (
-										<></>
-									) : (
-										<>
-											<Pill>
-												<p
-													id={`price-students-${offer.id}`}
-													data-tooltip-content="Preis für Studierende"
-												>
-													{formatter.format(
-														offer.priceStudents
-													)}
-												</p>
-												<p className="text-gray/50">
-													·
-												</p>
-												<p
-													className="text-gray/50"
-													id={`price-others-${offer.id}`}
-													data-tooltip-content="Preis für andere"
-												>
-													{formatter.format(
-														offer.priceOther
-													)}
-												</p>
-											</Pill>
-										</>
-									)}
-									{offer.soldOut ? (
-										<>
-											<Pill col={"black"}>
-												<p>😢 </p>Ausverkauft
-											</Pill>
-										</>
-									) : offer.vegan ? (
-										<>
-											<Pill
-												col={"vegan"}
-												icon={"/icons/vegan.svg"}
-											>
-												Vegan
-											</Pill>
-										</>
-									) : offer.vegetarian ? (
-										<>
-											<Pill
-												col={"vegeterian"}
-												icon={"/icons/vegeterian.svg"}
-											>
-												Vegetarisch
-											</Pill>
-										</>
-									) : offer.fish ? (
-										<>
-											<Pill
-												col={"fish"}
-												icon={
-													"/icons/allergene/Fisch.svg"
-												}
-											>
-												Fisch
-											</Pill>
-										</>
-									) : offer.meat &&
-									  offer.allergens.includes(
-											"tierisches Lab"
-									  ) ? (
-										<>
-											<Pill
-												col={"meat"}
-												icon={"/icons/meat.svg"}
-											>
-												Tierisches Lab
-											</Pill>
-										</>
-									) : offer.meat ? (
-										<>
-											<Pill
-												col={"meat"}
-												icon={"/icons/meat.svg"}
-											>
-												Fleisch
-											</Pill>
-										</>
-									) : null}
-								</motion.div>
-								{/* TODO: Rating */}
+
+								{isFoodOffer && (
+									<motion.div
+										className="flex flex-row flex-wrap gap-x-2 space-y-1 pt-4 font-sans-med"
+										variants={pillAnimationContainer}
+										initial="hidden"
+										animate="show">
+										{offer.soldOut ? (
+											<></>
+										) : (
+											<>
+												<Pill>
+													<p
+														id={`price-students-${offer.id}`}
+														data-tooltip-content="Preis für Studierende">
+														{formatter.format(
+															offer.priceStudents
+														)}
+													</p>
+													<p className="text-gray/50">
+														·
+													</p>
+													<p
+														className="text-gray/50"
+														id={`price-others-${offer.id}`}
+														data-tooltip-content="Preis für andere">
+														{formatter.format(
+															offer.priceOther
+														)}
+													</p>
+												</Pill>
+											</>
+										)}
+										{offer.soldOut ? (
+											<>
+												<Pill col={"black"}>
+													<p>😢 </p>Ausverkauft
+												</Pill>
+											</>
+										) : offer.vegan ? (
+											<>
+												<Pill
+													col={"vegan"}
+													icon={"/icons/vegan.svg"}>
+													Vegan
+												</Pill>
+											</>
+										) : offer.vegetarian ? (
+											<>
+												<Pill
+													col={"vegeterian"}
+													icon={
+														"/icons/vegeterian.svg"
+													}>
+													Vegetarisch
+												</Pill>
+											</>
+										) : offer.fish ? (
+											<>
+												<Pill
+													col={"fish"}
+													icon={
+														"/icons/allergene/Fisch.svg"
+													}>
+													Fisch
+												</Pill>
+											</>
+										) : offer.meat &&
+										  offer.allergens.includes(
+												"tierisches Lab"
+										  ) ? (
+											<>
+												<Pill
+													col={"meat"}
+													icon={"/icons/meat.svg"}>
+													Tierisches Lab
+												</Pill>
+											</>
+										) : offer.meat ? (
+											<>
+												<Pill
+													col={"meat"}
+													icon={"/icons/meat.svg"}>
+													Fleisch
+												</Pill>
+											</>
+										) : null}
+									</motion.div>
+								)}
 							</div>
 						</div>
 					</div>
-					<div>
-						{ratings.length !== 0 ? (
-							<>
-								<div
-									className="flex h-12 w-full cursor-pointer flex-row items-center justify-between border-t border-gray/20 px-6 text-sm"
-									onClick={() =>
-										!modalOpen ? openRatingFlow() : null
-									}
-								>
-									<div className="flex flex-row space-x-1 whitespace-nowrap font-sans-semi">
-										<p>
-											{averageRating < 0.25
-												? emojis[0]
-												: averageRating < 0.5
-												? emojis[1]
-												: averageRating < 0.75
-												? emojis[2]
-												: emojis[3]}
-										</p>
-										<p>{averageRatingString} / 5</p>
-										<p className="hidden font-sans-med text-gray/50 xs:block">
-											·
-										</p>
-										<p className="hidden font-sans-med text-gray/50 xs:block">
-											{ratings.length === 1
-												? "1 Bew."
-												: `${ratings.length} Bew.`}
-										</p>
-										<p className="block font-sans-med text-gray/50 xs:hidden">{`(${ratings.length})`}</p>
-									</div>
+					{isFoodOffer && (
+						<div>
+							{ratings.length !== 0 ? (
+								<>
+									<div
+										className="flex h-12 w-full cursor-pointer flex-row items-center justify-between border-t border-gray/20 px-6 text-sm"
+										onClick={() =>
+											!modalOpen ? openRatingFlow() : null
+										}>
+										<div className="flex flex-row space-x-1 whitespace-nowrap font-sans-semi">
+											<p>
+												{averageRating < 0.25
+													? emojis[0]
+													: averageRating < 0.5
+													? emojis[1]
+													: averageRating < 0.75
+													? emojis[2]
+													: emojis[3]}
+											</p>
+											<p>{averageRatingString} / 5</p>
+											<p className="hidden font-sans-med text-gray/50 xs:block">
+												·
+											</p>
+											<p className="hidden font-sans-med text-gray/50 xs:block">
+												{ratings.length === 1
+													? "1 Bew."
+													: `${ratings.length} Bew.`}
+											</p>
+											<p className="block font-sans-med text-gray/50 xs:hidden">{`(${ratings.length})`}</p>
+										</div>
 
-									<div className="flex h-full cursor-pointer flex-row  items-center space-x-1 border-l border-gray/20 pl-6 font-sans-semi">
-										<div className="font-sans-med">
-											{hasUserRated ? (
-												<>
-													<div className="inline-flex flex-row items-center space-x-2">
-														<div className="inline-flex flex-row space-x-1 whitespace-nowrap rounded-full bg-light-green px-3 py-1 font-sans-reg text-sm">
-															<p>Du:</p>
-															<p className="font-sans-semi">
-																{
-																	userRatingString
-																}{" "}
-																/ 5
+										<div className="flex h-full cursor-pointer flex-row  items-center space-x-1 border-l border-gray/20 pl-6 font-sans-semi">
+											<div className="font-sans-med">
+												{hasUserRated ? (
+													<>
+														<div className="inline-flex flex-row items-center space-x-2">
+															<div className="inline-flex flex-row space-x-1 whitespace-nowrap rounded-full bg-light-green px-3 py-1 font-sans-reg text-sm">
+																<p>Du:</p>
+																<p className="font-sans-semi">
+																	{
+																		userRatingString
+																	}{" "}
+																	/ 5
+																</p>
+																<Image
+																	src="/icons/right-arrw.svg"
+																	width={16}
+																	height={16}
+																	alt="right arrow"
+																	className="w-4"
+																/>
+															</div>
+														</div>
+													</>
+												) : (
+													<>
+														<div className="flex h-full flex-row items-center space-x-1 font-sans-med">
+															<p>
+																Essen bewerten
 															</p>
 															<Image
 																src="/icons/right-arrw.svg"
@@ -393,58 +409,45 @@ export const Offer = ({
 																className="w-4"
 															/>
 														</div>
-													</div>
-												</>
-											) : (
-												<>
-													<div className="flex h-full flex-row items-center space-x-1 font-sans-med">
-														<p>Essen bewerten</p>
-														<Image
-															src="/icons/right-arrw.svg"
-															width={16}
-															height={16}
-															alt="right arrow"
-															className="w-4"
-														/>
-													</div>
-												</>
-											)}
+													</>
+												)}
+											</div>
 										</div>
 									</div>
-								</div>
-							</>
-						) : (
-							<>
-								<div
-									className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x divide-gray/20 border-t border-gray/20 text-sm ${
-										offer.soldOut ? "hidden" : ""
-									} `}
-								>
+								</>
+							) : (
+								<>
 									<div
-										className="flex h-full w-full flex-row  items-center justify-center gap-2 border-gray/20 font-sans-semi"
-										onClick={() =>
-											!modalOpen ? openRatingFlow() : null
-										}
-									>
-										<p className="font-sans-med">
-											Essen bewerten
-										</p>
-										<Image
-											src="/icons/right-arrw.svg"
-											width={16}
-											height={16}
-											alt="right arrow"
-											className="w-4"
+										className={`flex h-12 w-full cursor-pointer flex-row items-center justify-center divide-x divide-gray/20 border-t border-gray/20 text-sm ${
+											offer.soldOut ? "hidden" : ""
+										} `}>
+										<div
+											className="flex h-full w-full flex-row  items-center justify-center gap-2 border-gray/20 font-sans-semi"
+											onClick={() =>
+												!modalOpen
+													? openRatingFlow()
+													: null
+											}>
+											<p className="font-sans-med">
+												Essen bewerten
+											</p>
+											<Image
+												src="/icons/right-arrw.svg"
+												width={16}
+												height={16}
+												alt="right arrow"
+												className="w-4"
+											/>
+										</div>
+										<ShareButton
+											url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`}
+											title={offer.foodTitle}
 										/>
 									</div>
-									<ShareButton
-										url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`}
-										title={offer.foodTitle}
-									/>
-								</div>
-							</>
-						)}
-					</div>
+								</>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 			<Tooltip anchorId={`price-students-${offer.id}`} />

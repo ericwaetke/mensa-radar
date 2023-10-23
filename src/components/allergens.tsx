@@ -1,208 +1,202 @@
-export const Allergens = (
-	{
-		allergens,
-	}: {
-		allergens: string[]
-	}
-) => {
-
-
+export const Allergens = ({ allergens }: { allergens: string[] }) => {
 	const allergyHelper = {
-		"Farbstoff": {
+		Farbstoff: {
 			name: "Farbstoff",
-			icon: "" //colorpicker
+			icon: "", //colorpicker
 		},
 		"Gluten aus Weizen": {
 			name: "Gluten aus Weizen",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
-		"Macadamia": {
+		Macadamia: {
 			name: "Macadamia",
-			icon: "" //nut
+			icon: "", //nut
 		},
-		"Konservierungsstoff": {
+		Konservierungsstoff: {
 			name: "Konservierungsstoff",
-			icon: "" //chemie
+			icon: "", //chemie
 		},
 		"Gluten aus Roggen": {
 			name: "Gluten Roggen",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
-		"Sellerie": {
+		Sellerie: {
 			name: "Sellerie",
-			icon: "Sellerie"
+			icon: "Sellerie",
 		},
-		"Antioxidationsmittel": {
+		Antioxidationsmittel: {
 			name: "Antioxidationsmittel",
-			icon: "" //test tube
+			icon: "", //test tube
 		},
 		"Gluten aus Hafer": {
 			name: "Gluten Hafer",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
-		"Senf": {
+		Senf: {
 			name: "Senf",
-			icon: "Senf"
+			icon: "Senf",
 		},
-		"Geschmacksverstärker": {
+		Geschmacksverstärker: {
 			name: "Geschmacksverstärker",
-			icon: "" //chemie
+			icon: "", //chemie
 		},
 		"Gluten aus Dinkel": {
 			name: "Gluten Dinkel",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
-		"Sesamsamen": {
+		Sesamsamen: {
 			name: "Sesamsamen",
-			icon: "Sesamsamen"
+			icon: "Sesamsamen",
 		},
-		"geschwefelt": {
+		geschwefelt: {
 			name: "geschwefelt",
-			icon: "" //chemie
+			icon: "", //chemie
 		},
 		"Gluten aus Kamut": {
 			name: "Gluten aus Kamut",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
 		"Schwefeldioxid/Sulphite": {
 			name: "Schwefeldioxid/Sulphite",
-			icon: "Sulphite"
+			icon: "Sulphite",
 		},
-		"geschwärzt": {
+		geschwärzt: {
 			name: "geschwärzt",
-			icon: "" //black cat
+			icon: "", //black cat
 		},
 		"Gluten aus Gerste": {
 			name: "Gluten aus Gerste",
-			icon: "Getreide"
+			icon: "Getreide",
 		},
-		"Lupinen": {
+		Lupinen: {
 			name: "Lupinen",
-			icon: "Erdnüsse" 
+			icon: "Erdnüsse",
 		},
-		"gewachst": {
+		gewachst: {
 			name: "gewachst",
-			icon: "" //bee
+			icon: "", //bee
 		},
-		"Krebstiere": {
+		Krebstiere: {
 			name: "Krebstiere",
-			icon: "Krebstiere"
+			icon: "Krebstiere",
 		},
-		"Weichtiere": {
+		Weichtiere: {
 			name: "Weichtiere",
-			icon: "Weichtiere"
+			icon: "Weichtiere",
 		},
-		"Phosphat": {
+		Phosphat: {
 			name: "Phosphat",
-			icon: "" //chemieding
+			icon: "", //chemieding
 		},
-		"Eier": {
+		Eier: {
 			name: "Eier",
-			icon: "Eier"
+			icon: "Eier",
 		},
-		"Süßungsmitteln": {
+		Süßungsmitteln: {
 			name: "Süßungsmitteln",
-			icon: "" //sweetener
+			icon: "", //sweetener
 		},
-		"Fisch": {
+		Fisch: {
 			name: "Fisch",
-			icon: "Fisch"
-			
+			icon: "Fisch",
 		},
 		"enthält eine Phenylalaninquelle": {
 			name: "Phenylalanin",
-			icon: "" //protein
+			icon: "", //protein
 		},
-		"Erdnüsse": {
+		Erdnüsse: {
 			name: "Erdnüsse",
-			icon: "Erdnüsse"
+			icon: "Erdnüsse",
 		},
-		"chininhaltig": {
+		chininhaltig: {
 			name: "chininhaltig",
-			icon: "" //powder
+			icon: "", //powder
 		},
-		"Sojabohnen": {
+		Sojabohnen: {
 			name: "Sojabohnen",
-			icon: "Sojabohnen"
+			icon: "Sojabohnen",
 		},
-		"koffeinhaltig": {
+		koffeinhaltig: {
 			name: "koffeinhaltig",
-			icon: "" //coffee
+			icon: "", //coffee
 		},
-		"Milch": {
+		Milch: {
 			name: "Milch",
-			icon: "Milch"
+			icon: "Milch",
 		},
 		"kakaohaltige Fettglasur": {
 			name: "kakaohaltige Fettglasur",
-			icon: "" //sparkling
+			icon: "", //sparkling
 		},
-		"Mandeln": {
+		Mandeln: {
 			name: "Mandeln",
-			icon: "" //nut
+			icon: "", //nut
 		},
 		"enthält tierisches Lab": {
 			name: "tierisches Lab",
-			icon: "" //ox
+			icon: "", //ox
 		},
-		"Haselnüsse": {
+		Haselnüsse: {
 			name: "Haselnüsse",
-			icon: "Haselnüsse" 
+			icon: "Haselnüsse",
 		},
-		"Alkohol": {
+		Alkohol: {
 			name: "Alkohol",
-			icon: "" //wine
+			icon: "", //wine
 		},
-		"Walnüsse": {
+		Walnüsse: {
 			name: "Walnüsse",
-			icon: "" //nut
+			icon: "", //nut
 		},
-		"Gelatine": {
+		Gelatine: {
 			name: "Gelatine",
-			icon: "" //jelly
+			icon: "", //jelly
 		},
-		"Kaschunüsse": {
+		Kaschunüsse: {
 			name: "Cashewnüsse",
-			icon: "" //nut
+			icon: "", //nut
 		},
-		"Knoblauch": {
+		Knoblauch: {
 			name: "Knoblauch",
-			icon: "" //garlic
+			icon: "", //garlic
 		},
-		"Pecannüsse": {
+		Pecannüsse: {
 			name: "Pecannüsse",
-			icon: "" //nut
+			icon: "", //nut
 		},
-		"Paranüsse": {
+		Paranüsse: {
 			name: "Paranüsse",
-			icon: "" //nut
+			icon: "", //nut
 		},
-		"Pistazien": {
+		Pistazien: {
 			name: "Pistazien",
-			icon: "" //nut
+			icon: "", //nut
 		},
 	}
 
 	return (
-		<div className="-mx-1 flex flex-row flex-wrap gap-y-1 pb-4">
-			{
-				allergens.map((allergen, index) => {
-					return (
-						<div className="mx-1 flex flex-row space-x-0.5 text-gray/50" key={index}> 
-							{
-								allergyHelper[allergen] ? <>
-									{
-										allergyHelper[allergen].icon !== "" ? (
-											<img src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`} className="w-3.5 align-bottom opacity-50" />
-										) : null
-									}
-									<p className="font-serif-reg text-sm">{allergyHelper[allergen].name}</p>
-								</> : null
-							}
-						</div>
-					)
-				})
-			}
+		<div className="-mx-1 flex flex-row flex-wrap gap-y-1">
+			{allergens.map((allergen, index) => {
+				return (
+					<div
+						className="mx-1 flex flex-row space-x-0.5 text-gray/50"
+						key={index}>
+						{allergyHelper[allergen] ? (
+							<>
+								{allergyHelper[allergen].icon !== "" ? (
+									<img
+										src={`/icons/allergene/${allergyHelper[allergen].icon}.svg`}
+										className="w-3.5 align-bottom opacity-50"
+									/>
+								) : null}
+								<p className="font-serif-reg text-sm">
+									{allergyHelper[allergen].name}
+								</p>
+							</>
+						) : null}
+					</div>
+				)
+			})}
 		</div>
 	)
 }

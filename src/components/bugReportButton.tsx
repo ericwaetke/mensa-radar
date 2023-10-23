@@ -4,7 +4,7 @@ import Link from "next/link"
 export const BugReportButton = () => {
 	return (
 		<Link href="https://tally.so/r/mKeeeD" target={"_blank"}>
-			<a className="mx-auto mb-16 w-full max-w-xl">
+			<a className="order-2 mx-auto mb-16 w-full max-w-xl">
 				<div className="flex justify-center gap-2 rounded-lg border border-gray/20 bg-black/20 py-4 font-sans">
 					<span className="font-bold">Fehler gefunden?</span>
 					<span>Melden</span>
