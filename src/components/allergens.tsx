@@ -193,7 +193,9 @@ export const Allergens = ({ allergens }: { allergens: string[] }) => {
 									{allergyHelper[allergen].name}
 								</p>
 							</>
-						) : null}
+						) : (
+							<p className="font-serif-reg text-sm">{allergen}</p>
+						)}
 					</div>
 				)
 			})}
