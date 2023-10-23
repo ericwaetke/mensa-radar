@@ -154,6 +154,12 @@ export default function Mensa({
 		}
 	}
 	async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
+		const isFoodOffer =
+			food.foodOfferings.find((offer) => offer.id === foodId)
+				?.priceOther !== 0 &&
+			food.foodOfferings.find((offer) => offer.id === foodId)
+				?.priceStudents !== 0
+		if (!isFoodOffer) return
 		console.log("Generating AI Thumbnail")
 		return await fetch(
 			`${
