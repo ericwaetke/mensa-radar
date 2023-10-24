@@ -66,7 +66,7 @@ export const foodOfferings = pgTable("food_offerings", {
 	soldOut: boolean("sold_out"),
 	changedAt: timestamp("changed_at"),
 	hasAiThumbnail: boolean("has_ai_thumbnail"),
-	aiThumbnailUrl: text("ai_thumbnail_url"),
+	blurhash: text("blurhash"),
 })
 export const foodIfferingsRelations = relations(
 	foodOfferings,

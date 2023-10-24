@@ -9,6 +9,7 @@ export const ImageCarousel = ({
 	aiThumbnailUrl,
 	openImageFlow,
 	soldOut,
+	blurhash,
 }: {
 	offer: NewFoodOffer
 	tempImage: string
@@ -16,6 +17,7 @@ export const ImageCarousel = ({
 	aiThumbnailUrl: string
 	openImageFlow: () => void
 	soldOut: boolean
+	blurhash?: string
 }) => {
 	const [imageAmount, setImageAmount] = useState<number>(
 		//ai xs
@@ -40,8 +42,7 @@ export const ImageCarousel = ({
 		<div
 			className={`w-full overflow-hidden  rounded-t-xl border-b border-gray/20 bg-lightshiny-green ${
 				imageAmount > 1 ? "p-4" : ""
-			} ${soldOut ? "opacity-50" : ""}`}
-		>
+			} ${soldOut ? "opacity-50" : ""}`}>
 			<div className="relative m-auto min-h-max">
 				<div
 					onClick={() => (!soldOut ? openImageFlow() : null)}
@@ -49,15 +50,14 @@ export const ImageCarousel = ({
 						imageAmount > 1 ? "overflow-x-auto" : "overflow-hidden"
 					} flex snap-x snap-mandatory gap-8 ${
 						imageAmount !== 1 ? "rounded-lg px-[25%]" : ""
-					}`}
-				>
-					{tempImage ? (
+					}`}>
+					{tempImage && (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="user"
 							src={tempImage}
 						/>
-					) : null}
+					)}
 					{offer.foodImages?.map((food_image, index) => {
 						if (food_image.imageUrl) {
 							return (
@@ -75,6 +75,7 @@ export const ImageCarousel = ({
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"
+							blurHash={blurhash}
 							src={aiThumbnailUrl}
 						/>
 					) : null}
@@ -100,8 +101,7 @@ export const ImageCarousel = ({
 						src="/icons/camera.svg"
 						height={24}
 						width={24}
-						className="w-6"
-					></Image>
+						className="w-6"></Image>
 				</span>
 			</div>
 		</div>

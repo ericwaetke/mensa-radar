@@ -67,11 +67,11 @@ type FoodOffering = {
 
 	food_images?: { image_url: string }[] | null
 	ratings?:
-		| {
-				rating: number
-				userSessionId: string
-		  }[]
-		| null
+	| {
+		rating: number
+		userSessionId: string
+	}[]
+	| null
 
 	has_ai_thumbnail?: boolean | null
 	ai_thumbnail_url?: string | null
@@ -98,34 +98,35 @@ type NewFoodOffer = {
 	vegan: boolean
 	vegetarian: boolean
 	hasAiThumbnail: boolean
+	blurhash: string
 	foodImages: { imageName: string; imageUrl: string }[]
 }
 
 type RedirectPromt = {
 	today:
-		| "montag"
-		| "dienstag"
-		| "mittwoch"
-		| "donnerstag"
-		| "freitag"
-		| "samstag"
-		| "sonntag"
+	| "montag"
+	| "dienstag"
+	| "mittwoch"
+	| "donnerstag"
+	| "freitag"
+	| "samstag"
+	| "sonntag"
 	tomorrow:
-		| "montag"
-		| "dienstag"
-		| "mittwoch"
-		| "donnerstag"
-		| "freitag"
-		| "samstag"
-		| "sonntag"
+	| "montag"
+	| "dienstag"
+	| "mittwoch"
+	| "donnerstag"
+	| "freitag"
+	| "samstag"
+	| "sonntag"
 	recommendedRedirect:
-		| "montag"
-		| "dienstag"
-		| "mittwoch"
-		| "donnerstag"
-		| "freitag"
-		| "samstag"
-		| "sonntag"
+	| "montag"
+	| "dienstag"
+	| "mittwoch"
+	| "donnerstag"
+	| "freitag"
+	| "samstag"
+	| "sonntag"
 	shouldRedirectToTomorrow: boolean
 }
 

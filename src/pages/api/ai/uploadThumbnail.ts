@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../lib/getSupabaseClient';
 import { decode } from 'base64-arraybuffer';
 import { NextRequest } from 'next/server';
+import { encode } from 'blurhash';
 
 export const config = {
 	runtime: 'experimental-edge', // this is a pre-requisite
@@ -9,9 +10,9 @@ export const config = {
 };
 
 const UploadThumbnail = async (req: NextRequest) => {
-	const { foodId, base64 } = await req.json();
+	const { foodId, base64, blurhash } = await req.json();
 
-	if (!foodId || !base64) {
+	if (!foodId || !base64 || !blurhash) {
 		return new Response(JSON.stringify({
 			message: 'foodId and base64 are required',
 		}), {
@@ -31,7 +32,7 @@ const UploadThumbnail = async (req: NextRequest) => {
 			console.log("uploaded image to supabase")
 			await supabase
 				.from('food_offerings')
-				.update({ has_ai_thumbnail: true })
+				.update({ has_ai_thumbnail: true, blurhash })
 				.eq('id', foodId)
 				.then(_ => {
 					return new Response(JSON.stringify({

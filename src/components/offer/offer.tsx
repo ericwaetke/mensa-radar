@@ -236,6 +236,7 @@ export const Offer = ({
 								tempImage={tempImage}
 								key={offer.id}
 								soldOut={offer.soldOut}
+								blurhash={offer.blurhash}
 							/>
 						)}
 

@@ -21,6 +21,7 @@
     "@vercel/og": "^0.5.4",
     "axios": "^1.4.0",
     "base64-arraybuffer": "^1.0.2",
+    "blurhash": "^2.0.5",
     "dayjs": "^1.11.7",
     "drizzle-orm": "^0.28.6",
     "framer-motion": "^7.10.3",

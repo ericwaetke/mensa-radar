@@ -120,7 +120,11 @@ export default function Mensa({
 
 	const scrollPosition = useScrollPosition(50)
 
-	function uploadBase64toSupabase(base64: string, foodId: number) {
+	async function uploadBase64toSupabase(base64: string, foodId: number) {
+		const blurhash = await encodeImageToBlurhash(
+			"data:image/png;base64," + base64
+		)
+
 		if (base64 !== "" && base64 !== undefined && foodId) {
 			fetch(
 				`${
@@ -133,6 +137,7 @@ export default function Mensa({
 					body: JSON.stringify({
 						foodId: foodId,
 						base64: base64,
+						blurhash,
 					}),
 				}
 			)
@@ -436,6 +441,8 @@ export default function Mensa({
 
 import * as schema from "../../../../server/dbSchema"
 import { set } from "zod"
+import { encode } from "blurhash"
+import { encodeImageToBlurhash } from "../../../../lib/blurhashFromImage"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params
@@ -473,6 +480,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 					priceOther: true,
 					soldOut: true,
 					hasAiThumbnail: true,
+					blurhash: true,
 				},
 				orderBy: [
 					asc(foodOfferings.soldOut),
