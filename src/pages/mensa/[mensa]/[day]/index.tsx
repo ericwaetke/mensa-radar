@@ -8,56 +8,60 @@ import { getWeekdayByName } from "../../../../lib/getWeekdayByName"
 import Head from "next/head"
 import Link from "next/link"
 import Modal from "react-modal"
+import { SelectMensa } from "../../../../components/SelectMensa"
 import { NutrientOverview } from "../../../../components/nutrients/nutrientOverview"
 import { Pill } from "../../../../components/pill"
-import { SelectMensa } from "../../../../components/SelectMensa"
 import { getOpeningTimes } from "../../../../lib/getOpeningString"
-import { supabase } from "../../../../lib/getSupabaseClient"
+import { Offer } from "../../../../components/offer/offer"
 
-import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { gt, asc, desc, eq, sql } from "drizzle-orm"
+import { drizzle } from "drizzle-orm/postgres-js"
+import { motion } from "framer-motion"
+import { GetServerSideProps } from "next"
 import { usePlausible } from "next-plausible"
-import dynamic from "next/dynamic"
+import Image from "next/image"
+import postgres from "postgres"
+import { BugReportButton } from "../../../../components/bugReportButton"
 import { NoFood } from "../../../../components/errors/NoFood"
 import useScrollPosition from "../../../../hooks/useScrollPosition"
-import { env } from "../../../../env.mjs"
-import dayjs from "dayjs"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { BugReportButton } from "../../../../components/bugReportButton"
+import {
+	currentMensaData,
+	foodOfferings,
+	mensen,
+} from "../../../../server/dbSchema"
 
-const DynamicOffer = dynamic<{
-	offer: FoodOffering
-	mensa: string | string[]
-	day: string | string[]
-	triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
-	aiThumbnailBase64: string
-}>(
-	() => import("../../../../components/offer/offer").then((mod) => mod.Offer),
-	{
-		loading: () => <p>Loading...</p>,
-	}
-)
+type DrizzleFoodQuery = {
+	name: string
+	url: string
+	locLat: string
+	locLong: string
+	foodOfferings: NewFoodOffer[]
+}
+
+type DrizzleMensenQuery = EnhancedMensaList[]
 
 export const runtime = "experimental-edge"
 
 export default function Mensa({
-	currentMensa,
-	mensaList,
-	foodOffers,
+	food,
+	mensenListReq,
 }: {
-	currentMensa: MensaData
-	mensaList: MensaList
-	foodOffers: FoodOffering[]
+	food: DrizzleFoodQuery
+	mensenListReq: string // JSON Stringified
 }): JSX.Element {
 	const router = useRouter()
 	const { mensa, day } =
 		router.query !== undefined
 			? router.query
-			: { mensa: currentMensa.name, day: "freitag" }
-	const [openingTimes, setOpeningTimes] = useState<{
-		open: boolean
-		text: string
-	}>({ open: false, text: "" })
+			: { mensa: "fhp", day: "freitag" }
+
+	const mensenList: DrizzleMensenQuery = JSON.parse(mensenListReq)
+	const currentMensa = mensenList.find((m) => m.url === mensa)
+
+	const [mensaOpen, setMensaOpen] = useState(false)
+	const [mensaOpenText, setMensaOpenText] = useState(
+		"Öffnungszeiten werden geladen"
+	)
 
 	const [path, setPath] = useState(router.asPath.split("#"))
 
@@ -116,7 +120,11 @@ export default function Mensa({
 
 	const scrollPosition = useScrollPosition(50)
 
-	function uploadBase64toSupabase(base64: string, foodId: number) {
+	async function uploadBase64toSupabase(base64: string, foodId: number) {
+		const blurhash = await encodeImageToBlurhash(
+			"data:image/png;base64," + base64
+		)
+
 		if (base64 !== "" && base64 !== undefined && foodId) {
 			fetch(
 				`${
@@ -129,6 +137,7 @@ export default function Mensa({
 					body: JSON.stringify({
 						foodId: foodId,
 						base64: base64,
+						blurhash,
 					}),
 				}
 			)
@@ -138,18 +147,24 @@ export default function Mensa({
 		new Map<number, string>()
 	)
 	async function queueThumbnailGeneration() {
-		for await (const offer of foodOffers as FoodOffering[]) {
+		for await (const offer of food.foodOfferings) {
 			if (
-				offer.food_images.length === 0 &&
-				!offer.has_ai_thumbnail &&
-				!offer.sold_out
+				offer.foodImages.length === 0 &&
+				!offer.hasAiThumbnail &&
+				!offer.soldOut
 			) {
 				console.log("Starting Generation")
-				await aiThumbnailGeneration(offer.id, offer.food_title)
+				await aiThumbnailGeneration(offer.id, offer.foodTitle)
 			}
 		}
 	}
 	async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
+		const isFoodOffer =
+			food.foodOfferings.find((offer) => offer.id === foodId)
+				?.priceOther !== 0 &&
+			food.foodOfferings.find((offer) => offer.id === foodId)
+				?.priceStudents !== 0
+		if (!isFoodOffer) return
 		console.log("Generating AI Thumbnail")
 		return await fetch(
 			`${
@@ -177,23 +192,23 @@ export default function Mensa({
 			.catch((err) => console.log(err))
 	}
 
+	const updateOpeningTimes = () => {
+		const { open, text } = getOpeningTimes(currentMensa)
+		setMensaOpen(open)
+		setMensaOpenText(text)
+	}
+
 	useEffect(() => {
 		setModalOpen(false)
-		setOpeningTimes(getOpeningTimes(currentMensa))
+		updateOpeningTimes()
 		queueThumbnailGeneration()
 		// Update the Opening Times every minute
 		const interval = setInterval(() => {
-			setOpeningTimes(getOpeningTimes(currentMensa))
+			updateOpeningTimes()
 		}, 60 * 1000)
 
 		return () => clearInterval(interval)
 	}, [router.asPath])
-
-	const getFoodDataById = (id: string): FoodOffering => {
-		return foodOffers.find(
-			(foodOffer: FoodOffering) => foodOffer.id === parseInt(id)
-		)
-	}
 
 	const container = {
 		hidden: { opacity: 0 },
@@ -221,7 +236,7 @@ export default function Mensa({
 				{currentModalContent === "nutrients" ? (
 					<>
 						<NutrientOverview
-							foodOffers={foodOffers}
+							foodOffers={food.foodOfferings}
 							setModalOpen={setModalOpen}
 						/>
 					</>
@@ -230,7 +245,7 @@ export default function Mensa({
 						<SelectMensa
 							setModalOpen={setModalOpen}
 							currentMensa={mensa}
-							mensen={mensaList}
+							mensen={mensenList}
 						/>
 					</>
 				)}
@@ -336,14 +351,14 @@ export default function Mensa({
 									<Pill col={"transparent"}>
 										<div
 											className={`mr-1 h-2 w-2 rounded-full ${
-												openingTimes.open
+												mensaOpen
 													? `bg-dark-green`
 													: ` bg-red-500`
 											}`}></div>
 										<p className="font-sans-reg text-sm">
 											{currentMensa.url === undefined
 												? ""
-												: openingTimes.text}
+												: mensaOpenText}
 										</p>
 									</Pill>
 								</div>
@@ -356,7 +371,7 @@ export default function Mensa({
 					<div className="flex h-screen w-full items-center justify-center">
 						<NoFood mainMessage="Ab Montag gibt's hier wieder Essen!" />
 					</div>
-				) : foodOffers?.length === 0 ? (
+				) : food.foodOfferings?.length === 0 ? (
 					<div className="flex h-screen w-full items-center justify-center">
 						<NoFood mainMessage="Bald gibt's hier wieder Essen!" />
 					</div>
@@ -367,9 +382,9 @@ export default function Mensa({
 					variants={container}
 					initial="hidden"
 					animate="show">
-					{foodOffers?.map((offer, i) => {
+					{food.foodOfferings?.map((offer) => {
 						return (
-							<DynamicOffer
+							<Offer
 								key={offer.id}
 								offer={offer}
 								mensa={mensa}
@@ -386,26 +401,24 @@ export default function Mensa({
 					<BugReportButton />
 				</motion.div>
 
-				{/* Bug Reporting Button */}
-
 				{scrollPosition ? (
 					<>
-						<div className="fixed bottom-0 h-10 w-full border-t border-gray/10 bg-light-green px-3 py-2">
+						<div className="fixed bottom-0 h-10 w-full border-gray/10 bg-light-green px-3 py-2">
 							<div className="m-auto grid max-w-xl grid-cols-2">
 								<div className="flex flex-row space-x-2">
 									<Link href="/impressum">
-										<p className="font-sans-semi text-sm opacity-50">
+										<a className="text-sm opacity-50">
 											Über Mensa-Radar
-										</p>
+										</a>
 									</Link>
 								</div>
 								{day === "samstag" ||
 								day === "sonntag" ||
-								foodOffers?.length === 0 ? null : (
+								food.foodOfferings?.length === 0 ? null : (
 									<div
 										className="flex cursor-pointer items-center space-x-1"
 										onClick={() => openNutrientsFlow()}>
-										<p className="w-full text-right font-sans-semi text-sm">
+										<p className="w-full text-right text-sm">
 											Nährwerte vgl.
 										</p>
 										<Image
@@ -426,120 +439,102 @@ export default function Mensa({
 	)
 }
 
+import * as schema from "../../../../server/dbSchema"
+import { set } from "zod"
+import { encode } from "blurhash"
+import { encodeImageToBlurhash } from "../../../../lib/blurhashFromImage"
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params
-	const { data: mensaData, error: mensenError } = await supabase
-		.from("mensen")
-		.select(
-			`
-			id,
-			name,
-			loc_lat,
-			loc_long,
-			url,
-			current_mensa_data ( openingTimes )
-		`
-		)
-		.eq("url", mensa)
-
-	const dateFormated = new Date().toISOString().split("T")[0]
-	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } =
-		await supabase
-			.from("food_offerings")
-			.select("mensa, date")
-			.gte("date", dateFormated)
-			.eq("mensa", mensaData![0].id)
-
-	const daysWithFood = Array.from(
-		new Set(daysWithFoodUnfiltered!.map((day) => day.date))
-	)
-
-	const currentMensa = {
-		...mensaData![0],
-		daysWithFood,
-	}
 
 	const selectedWeekday = getWeekdayByName(day)
-
-	const dev = process.env.NODE_ENV !== "production"
-	const getMensaDataReq = await fetch(
-		`${
-			dev ? "http://localhost:3000" : "https://mensa-radar.de"
-		}/api/getMensaData`,
-		{
-			method: "POST",
-			body: JSON.stringify({
-				selectedWeekday,
-				mensa,
-			}),
-		}
-	).then((res) => {
-		console.log(res)
-		return res.json()
-	})
-	const { foodOffers }: { foodOffers: FoodOffering[] } = getMensaDataReq
-	const sortedFoodOffers = foodOffers?.sort((a, b) => {
-		if (a.sold_out && !b.sold_out) {
-			return 1
-		}
-		if (!a.sold_out && b.sold_out) {
-			return -1
-		}
-		if (a.vegan && !b.vegan) {
-			return -1
-		}
-		if (!a.vegan && b.vegan) {
-			return 1
-		}
-		if (a.vegetarian && !b.vegetarian) {
-			return -1
-		}
-		if (!a.vegetarian && b.vegetarian) {
-			return 1
-		}
-		return 0
-	})
-
-	const windowWidth = 1200
-	// window.innerWidth >= 1200 ? 1000 : window.innerWidth >= 800 ? 800 : 600
-
-	// Get Images to the food offers
-	const combinedFoodOffers = await Promise.all(
-		sortedFoodOffers.map(async (offer) => {
-			const { data: ratings } = await supabase
-				.from("quality_reviews")
-				.select("rating, userSessionId")
-				.eq("offerId", offer.id)
-
-			return {
-				...offer,
-				ratings,
-			}
-		})
+	let currentWeekday = new Date().getDay()
+	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
+	let selectedDay = new Date()
+	selectedDay.setDate(
+		selectedDay.getDate() + (selectedWeekday - currentWeekday)
 	)
 
-	// Get List of all mensa's
-	const { data: mensaList, error: mensaListError } = await supabase
-		.from("mensen")
-		.select(
-			`
-			id,
-			name,
-			loc_lat,
-			loc_long,
-			url,
-			current_mensa_data (
-				openingTimes
-				)
-		`
+	const connectionString = process.env.DATABASE_URL
+	const client = postgres(connectionString)
+	const db = drizzle(client, { schema })
+	const food = await db.query.mensen.findFirst({
+		columns: {
+			createdAt: false,
+			id: false,
+		},
+		where: eq(mensen.url, mensa.toString()),
+		with: {
+			foodOfferings: {
+				where: eq(foodOfferings.date, selectedDay),
+				columns: {
+					id: true,
+					foodTitle: true,
+					vegan: true,
+					vegetarian: true,
+					fish: true,
+					meat: true,
+					nutrients: true,
+					allergens: true,
+					priceStudents: true,
+					priceOther: true,
+					soldOut: true,
+					hasAiThumbnail: true,
+					blurhash: true,
+				},
+				orderBy: [
+					asc(foodOfferings.soldOut),
+					desc(foodOfferings.vegan),
+					desc(foodOfferings.vegetarian),
+					desc(foodOfferings.fish),
+					desc(foodOfferings.meat),
+				],
+				with: {
+					qualityReviews: {
+						columns: {
+							rating: true,
+							userSessionId: true,
+						},
+					},
+					foodImages: {
+						columns: {
+							imageName: true,
+							imageUrl: true,
+						},
+					},
+				},
+			},
+		},
+	})
+
+	const mensenList = await db
+		.select({
+			id: foodOfferings.mensa,
+			nextFood: sql<Date>`min(food_offerings.date)`,
+			name: mensen.name,
+			url: mensen.url,
+			locLat: mensen.locLat,
+			locLong: mensen.locLong,
+			openingTimes: currentMensaData.openingTimes,
+			enabled: currentMensaData.enabled,
+		})
+		.from(foodOfferings)
+		.innerJoin(mensen, eq(foodOfferings.mensa, mensen.id))
+		.innerJoin(
+			currentMensaData,
+			eq(foodOfferings.mensa, currentMensaData.mensaId)
 		)
-		.order("name", { ascending: true })
+		.where(gt(foodOfferings.date, sql`current_date`))
+		.groupBy(
+			sql`food_offerings.mensa, mensen.name, mensen.url, current_mensa_data."openingTimes", mensen.loc_lat, mensen.loc_long, current_mensa_data.enabled`
+		)
+
+	await client.end()
 
 	return {
 		props: {
-			currentMensa,
-			foodOffers: combinedFoodOffers,
-			mensaList,
+			food: food,
+			mensenListReq: JSON.stringify(mensenList),
 		},
 	}
 }

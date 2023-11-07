@@ -9,29 +9,31 @@ export const ImageCarousel = ({
 	aiThumbnailUrl,
 	openImageFlow,
 	soldOut,
+	blurhash,
 }: {
-	offer: FoodOffering
+	offer: NewFoodOffer
 	tempImage: string
 	localAiThumbnail: string
 	aiThumbnailUrl: string
 	openImageFlow: () => void
 	soldOut: boolean
+	blurhash?: string
 }) => {
 	const [imageAmount, setImageAmount] = useState<number>(
-		//ai images
-		(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+		//ai xs
+		(offer.hasAiThumbnail || localAiThumbnail ? 1 : 0) +
 			// user images
-			(offer.food_images
-				? offer.food_images.length + (tempImage ? 1 : 0)
+			(offer.foodImages
+				? offer.foodImages.length + (tempImage ? 1 : 0)
 				: 0)
 	)
 	useEffect(() => {
 		setImageAmount(
 			//ai images
-			(offer.has_ai_thumbnail || localAiThumbnail ? 1 : 0) +
+			(offer.hasAiThumbnail || localAiThumbnail ? 1 : 0) +
 				// user images
-				(offer.food_images
-					? offer.food_images.length + (tempImage ? 1 : 0)
+				(offer.foodImages
+					? offer.foodImages.length + (tempImage ? 1 : 0)
 					: 0)
 		)
 	}, [localAiThumbnail, tempImage])
@@ -49,36 +51,37 @@ export const ImageCarousel = ({
 					} flex snap-x snap-mandatory gap-8 ${
 						imageAmount !== 1 ? "rounded-lg px-[25%]" : ""
 					}`}>
-					{tempImage ? (
+					{tempImage && (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="user"
 							src={tempImage}
 						/>
-					) : null}
-					{offer.food_images?.map((food_image, index) => {
-						if (food_image.image_url) {
+					)}
+					{offer.foodImages?.map((food_image, index) => {
+						if (food_image.imageUrl) {
 							return (
 								<ImageComponent
 									single={imageAmount === 1}
 									type="user"
 									// /-/format/auto/-/quality/smart/-/preview/
-									src={`${food_image?.image_url}/-/format/auto/-/quality/smart/-/preview/`}
+									src={`${food_image?.imageUrl}/-/format/auto/-/quality/smart/-/preview/`}
 									key={index}
 								/>
 							)
 						}
 					})}
-					{offer.has_ai_thumbnail ? (
+					{offer.hasAiThumbnail ? (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"
+							blurHash={blurhash}
 							src={aiThumbnailUrl}
 						/>
 					) : null}
 					{localAiThumbnail &&
 					localAiThumbnail !== "" &&
-					!offer.has_ai_thumbnail ? (
+					!offer.hasAiThumbnail ? (
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"

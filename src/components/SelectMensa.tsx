@@ -10,13 +10,7 @@ export const SelectMensa = ({
 	setModalOpen: (open: boolean) => void
 
 	currentMensa: string | string[]
-	mensen: {
-		id: number
-		name: string
-		url: string
-		open: boolean
-		openingString: string
-	}[]
+	mensen: EnhancedMensaList[]
 }) => {
 	const selectedMensa = mensen.find((m) => m.url == currentMensa)
 
@@ -44,17 +38,14 @@ export const SelectMensa = ({
 									{mensa.name}
 								</h3>
 								<div className="text-s flex h-full items-center font-sans-reg">
-									{mensa.open ||
-									mensa.openingString ===
-										"offen bis 14:30" ? (
+									{false && (
 										<>
 											<div className="my-auto mr-2 h-2 w-2 rounded-full bg-main-green"></div>
 										</>
-									) : null}
+									)}
 
 									<span className="whitespace-nowrap opacity-60">
-										{" "}
-										{mensa.openingString}{" "}
+										{/* {mensa.openingString} */}
 									</span>
 								</div>
 							</a>

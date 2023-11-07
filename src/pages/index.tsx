@@ -11,98 +11,101 @@ import { useRouter } from "next/router"
 import { env } from "../env.mjs"
 import { BugReportButton } from "../components/bugReportButton"
 import Balancer from "react-wrap-balancer"
+import postgres from "postgres"
+import { drizzle } from "drizzle-orm/postgres-js"
 
 export const runtime = "experimental-edge"
 
 export default function Home(props) {
 	const router = useRouter()
 
-	const { mensaData }: { mensaData: MensaData[] } = props
+	const mensenList: EnhancedMensaList[] = JSON.parse(props.mensenList)
+
 	const d = new Date()
 	const currentTime = d.getHours() + d.getMinutes() / 60
 	const currentDay = d.getDay()
 
-	const [mensen, setMensen] = useState(mensaData)
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [locationLoaded, setLocationLoaded] = useState(false)
 
-	const [openingTimes, setOpeningTimes] = useState<{
-		[mensaId: string]: {
-			open: boolean
-			text: string
-		}
-	}>()
+	const [openingTimes, setOpeningTimes] = useState<
+		Map<number, { open: boolean; text: string }>
+	>(new Map())
 
-	const getLocation = () => {
-		const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
-			const earthRadius = 6371 // Radius of the earth in km
-			const dLat = deg2rad(lat2 - lat1)
-			const dLon = deg2rad(lon2 - lon1)
-			var a =
-				Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-				Math.cos(deg2rad(lat1)) *
-					Math.cos(deg2rad(lat2)) *
-					Math.sin(dLon / 2) *
-					Math.sin(dLon / 2)
-			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+	// const getLocation = () => {
+	// 	const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+	// 		const earthRadius = 6371 // Radius of the earth in km
+	// 		const dLat = deg2rad(lat2 - lat1)
+	// 		const dLon = deg2rad(lon2 - lon1)
+	// 		var a =
+	// 			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	// 			Math.cos(deg2rad(lat1)) *
+	// 				Math.cos(deg2rad(lat2)) *
+	// 				Math.sin(dLon / 2) *
+	// 				Math.sin(dLon / 2)
+	// 		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
-			return earthRadius * c
-		}
+	// 		return earthRadius * c
+	// 	}
 
-		const deg2rad = (deg) => deg * (Math.PI / 180)
+	// 	const deg2rad = (deg) => deg * (Math.PI / 180)
 
-		const success = (data) => {
-			setLocationPermission(true)
-			// User Coords
-			const { latitude, longitude } = data.coords
+	// 	const success = (data) => {
+	// 		setLocationPermission(true)
+	// 		// User Coords
+	// 		const { latitude, longitude } = data.coords
 
-			let tempMensen = []
-			mensaData.map((mensa) => {
-				const distance = getDistanceFromLatLonInKm(
-					latitude,
-					longitude,
-					mensa.loc_lat,
-					mensa.loc_long
-				)
-				tempMensen.push({
-					...mensa,
-					distance: Math.round(distance * 10) / 10,
-				})
-			})
+	// 		let tempMensen = []
+	// 		mensaData.map((mensa) => {
+	// 			const distance = getDistanceFromLatLonInKm(
+	// 				latitude,
+	// 				longitude,
+	// 				mensa.loc_lat,
+	// 				mensa.loc_long
+	// 			)
+	// 			tempMensen.push({
+	// 				...mensa,
+	// 				distance: Math.round(distance * 10) / 10,
+	// 			})
+	// 		})
 
-			// Sorting Mensas from closest to furthest
-			tempMensen.sort(
-				(firstItem, secondItem) =>
-					firstItem.distance - secondItem.distance
-			)
+	// 		// Sorting Mensas from closest to furthest
+	// 		tempMensen.sort(
+	// 			(firstItem, secondItem) =>
+	// 				firstItem.distance - secondItem.distance
+	// 		)
 
-			// Get nearest Mensa and redirect client
-			const nearestMensa = tempMensen[0]
-			router.push(`/mensa/${nearestMensa.url}`)
-			console.log("redirecting to", nearestMensa)
+	// 		// Get nearest Mensa and redirect client
+	// 		const nearestMensa = tempMensen[0]
+	// 		router.push(`/mensa/${nearestMensa.url}`)
+	// 		console.log("redirecting to", nearestMensa)
 
-			// Setting the State so the data gets updated
-			setMensen(tempMensen)
-			setLocationLoaded(true)
-		}
+	// 		// Setting the State so the data gets updated
+	// 		setMensen(tempMensen)
+	// 		setLocationLoaded(true)
+	// 	}
 
-		if (!navigator.geolocation) {
-			console.error("Geolocation is not supported by your browser")
-		} else {
-			navigator.geolocation.getCurrentPosition(success, (e) =>
-				console.log("error getting location: ", e)
-			)
-			setLocationLoaded(true)
-		}
-	}
+	// 	if (!navigator.geolocation) {
+	// 		console.error("Geolocation is not supported by your browser")
+	// 	} else {
+	// 		navigator.geolocation.getCurrentPosition(success, (e) =>
+	// 			console.log("error getting location: ", e)
+	// 		)
+	// 		setLocationLoaded(true)
+	// 	}
+	// }
 
 	const updateOpeningTimes = () => {
-		const tempOpeningTimes = {}
-		for (let i = 0; i < mensaData.length; i++) {
-			const mensa = mensaData[i]
-			tempOpeningTimes[mensa.id] = getOpeningTimes(mensa)
+		for (let i = 0; i < mensenList.length; i++) {
+			setOpeningTimes(
+				new Map(
+					openingTimes.set(
+						mensenList[i].id,
+						getOpeningTimes(mensenList[i])
+					)
+				)
+			)
 		}
-		setOpeningTimes(tempOpeningTimes)
 	}
 
 	useEffect(() => {
@@ -174,32 +177,30 @@ export default function Home(props) {
 
 			<main className="flex h-full max-w-xl flex-col gap-4 lg:mx-auto">
 				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
-					{mensen.map((mensa) => {
+					{mensenList.map((mensa) => {
 						const redirectWeekday =
 							openingTimes?.[mensa.id]?.open ||
 							currentWeekday === 5 ||
 							currentWeekday === 6
 								? weekday[currentWeekday]
 								: weekday[currentWeekday + 1]
-						return mensa.current_mensa_data[0].enabled ? (
+						return mensa.enabled ? (
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
 								key={mensa.id}>
 								<a className="flex items-center justify-between gap-1 space-x-2 py-4 pr-4">
-									<Balancer>
-										<h3 className="font-serif-semi text-xl font-normal">
-											{mensa.name}
-										</h3>
-									</Balancer>
+									<h3 className="font-serif-semi text-xl font-normal">
+										<Balancer>{mensa.name}</Balancer>
+									</h3>
 									<div className="flex h-full items-center font-sans-reg text-sm">
 										<div
 											className={`my-auto mr-2 h-2 w-2 rounded-full ${
-												openingTimes?.[mensa.id]?.open
+												openingTimes.get(mensa.id)?.open
 													? "bg-main-green"
 													: "bg-red-500"
 											}`}></div>
 										<span className="whitespace-nowrap opacity-60">
-											{openingTimes?.[mensa.id]?.text}
+											{openingTimes.get(mensa.id)?.text}
 										</span>
 									</div>
 								</a>
@@ -213,51 +214,40 @@ export default function Home(props) {
 		</div>
 	)
 }
-//{ mensa.openingString }
 
-const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import * as schema from "../server/dbSchema"
+import { eq, gt, sql } from "drizzle-orm"
+import { currentMensaData, foodOfferings, mensen } from "../server/dbSchema"
 
 export async function getStaticProps(context) {
-	const { data: mensen, error: mensenError } = await supabase.from("mensen")
-		.select(`
-		id,
-		name,
-		loc_lat,
-		loc_long,
-		url,
-		current_mensa_data (
-			openingTimes,
-			enabled
-		)`)
+	const connectionString = process.env.DATABASE_URL
+	const client = postgres(connectionString)
+	const db = drizzle(client, { schema })
 
-	const dateFormated = new Date().toISOString().split("T")[0]
-	const { data: daysWithFoodUnfiltered, error: daysWithFoodUnfilteredError } =
-		await supabase
-			.from("food_offerings")
-			.select("mensa, date")
-			.gte("date", dateFormated)
-
-	const mensaData = mensen?.map((mensa) => {
-		const daysWithFood = [
-			...new Set(
-				daysWithFoodUnfiltered
-					?.filter((day) => day.mensa === mensa.id)
-					.map((day) => day.date)
-			),
-		]
-
-		return {
-			...mensa,
-			daysWithFood,
-		}
-	})
+	const mensenList = await db
+		.select({
+			id: foodOfferings.mensa,
+			nextFood: sql<Date>`min(food_offerings.date)`,
+			name: mensen.name,
+			url: mensen.url,
+			locLat: mensen.locLat,
+			locLong: mensen.locLong,
+			openingTimes: currentMensaData.openingTimes,
+			enabled: currentMensaData.enabled,
+		})
+		.from(foodOfferings)
+		.innerJoin(mensen, eq(foodOfferings.mensa, mensen.id))
+		.innerJoin(
+			currentMensaData,
+			eq(foodOfferings.mensa, currentMensaData.mensaId)
+		)
+		.where(gt(foodOfferings.date, sql`current_date`))
+		.groupBy(
+			sql`food_offerings.mensa, mensen.name, mensen.url, current_mensa_data."openingTimes", mensen.loc_lat, mensen.loc_long, current_mensa_data.enabled`
+		)
 
 	return {
-		props: {
-			mensaData,
-		},
+		props: { mensenList: JSON.stringify(mensenList) },
 		revalidate: 60,
 	}
 }
