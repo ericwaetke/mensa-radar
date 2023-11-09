@@ -132,6 +132,8 @@ export default function Home(props) {
 		"sonntag",
 	]
 
+	console.log(openingTimes)
+
 	return (
 		<div className="m-auto box-border flex min-h-screen flex-col items-center space-y-6 p-2 py-4 lg:mx-auto lg:px-0">
 			<Head>
@@ -179,7 +181,7 @@ export default function Home(props) {
 				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensenList.map((mensa) => {
 						const redirectWeekday =
-							openingTimes?.[mensa.id]?.open ||
+							openingTimes.get(mensa.id)?.open ||
 							currentWeekday === 5 ||
 							currentWeekday === 6
 								? weekday[currentWeekday]
@@ -187,7 +189,8 @@ export default function Home(props) {
 						return mensa.enabled ? (
 							<Link
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
-								key={mensa.id}>
+								key={mensa.id}
+							>
 								<a className="flex items-center justify-between gap-1 space-x-2 py-4 pr-4">
 									<h3 className="font-serif-semi text-xl font-normal">
 										<Balancer>{mensa.name}</Balancer>
@@ -198,7 +201,8 @@ export default function Home(props) {
 												openingTimes.get(mensa.id)?.open
 													? "bg-main-green"
 													: "bg-red-500"
-											}`}></div>
+											}`}
+										></div>
 										<span className="whitespace-nowrap opacity-60">
 											{openingTimes.get(mensa.id)?.text}
 										</span>
