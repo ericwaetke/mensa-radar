@@ -182,6 +182,7 @@ export default function Mensa({
 		)
 			.then((res) => res.json())
 			.then((res) => {
+				console.log(res)
 				if (res.message === "success") {
 					uploadBase64toSupabase(res.base64, foodId)
 					setGeneratedThumbnails(
