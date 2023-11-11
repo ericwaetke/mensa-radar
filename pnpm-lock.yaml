@@ -139,6 +139,9 @@ devDependencies:
   '@types/sharp':
     specifier: ^0.31.1
     version: 0.31.1
+  '@types/ws':
+    specifier: ^8.5.9
+    version: 8.5.9
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.23)
@@ -2292,6 +2295,12 @@ packages:
     dependencies:
       '@types/node': 20.2.1
     dev: false
+
+  /@types/ws@8.5.9:
+    resolution: {integrity: sha512-jbdrY0a8lxfdTp/+r7Z4CkycbOFN8WX+IOchLJr3juT/xzbJ8URyTVSJ/hvNdadTgM1mnedb47n+Y31GsFnQlg==}
+    dependencies:
+      '@types/node': 20.2.1
+    dev: true
 
   /@types/yauzl@2.10.0:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}

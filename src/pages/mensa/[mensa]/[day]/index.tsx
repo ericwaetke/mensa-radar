@@ -42,6 +42,16 @@ type DrizzleMensenQuery = EnhancedMensaList[]
 
 export const runtime = "experimental-edge"
 
+const blobToBase64: (blob: any) => Promise<string> = (blob) => {
+	const reader = new FileReader()
+	reader.readAsDataURL(blob)
+	return new Promise((resolve: (val: string) => void) => {
+		reader.onloadend = () => {
+			resolve(reader.result.toString())
+		}
+	})
+}
+
 export default function Mensa({
 	food,
 	mensenListReq,
@@ -180,15 +190,28 @@ export default function Mensa({
 				}),
 			}
 		)
-			.then((res) => res.json())
-			.then((res) => {
+			.then(async (res) => {
 				console.log(res)
-				if (res.message === "success") {
-					uploadBase64toSupabase(res.base64, foodId)
+
+				if (res.status === 200) {
+					const blob = await res.blob()
+					const base64 = await blobToBase64(blob)
+					console.log(blob, base64)
+					uploadBase64toSupabase(base64, foodId)
 					setGeneratedThumbnails(
-						new Map(generatedThumbnails.set(foodId, res.base64))
+						new Map(generatedThumbnails.set(foodId, base64))
 					)
 				}
+				// if (res.message === "success") {
+				// 	console.log(res.image)
+				// 	uploadBase64toSupabase(
+				// 		await blobToBase64(res.image),
+				// 		foodId
+				// 	)
+				// 	setGeneratedThumbnails(
+				// 		new Map(generatedThumbnails.set(foodId, res.base64))
+				// 	)
+				// }
 			})
 			.catch((err) => console.log(err))
 	}

@@ -50,12 +50,28 @@ const nextConfig = defineNextConfig({
 			{
 				protocol: 'https',
 				hostname: 'ucarecdn.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'ai.ericwaetke.de',
 			}
 		],
 	},
 	experimental: {
 		esmExternals: false, // THIS IS THE FLAG THAT MATTERS
-	}
+	},
+	async headers() {
+		return [
+			{
+				source: '/:path*',
+				headers: [
+					{ key: "Access-Control-Allow-Origin", value: "ai.ericwaetke.de" }, // replace this your actual origin
+
+				],
+			},
+		]
+	},
+
 });
 
 export default withPWA(nextConfig);

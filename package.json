@@ -57,6 +57,7 @@
     "@total-typescript/ts-reset": "^0.3.7",
     "@types/react": "^18.2.6",
     "@types/sharp": "^0.31.1",
+    "@types/ws": "^8.5.9",
     "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.19.13",
