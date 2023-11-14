@@ -129,28 +129,52 @@ export default function Mensa({
 	}
 
 	const scrollPosition = useScrollPosition(50)
+	const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
+	const supabaseKey = env.NEXT_PUBLIC_SUPABASE_KEY
+	const supabase = createClient(supabaseUrl, supabaseKey)
 
-	async function uploadBase64toSupabase(base64: string, foodId: number) {
-		const blurhash = await encodeImageToBlurhash(
-			"data:image/png;base64," + base64
-		)
+	async function uploadBase64toSupabase(
+		base64: string,
+		foodId: number,
+		blob: Blob
+	) {
+		const blurhash = await encodeImageToBlurhash(base64)
 
 		if (base64 !== "" && base64 !== undefined && foodId) {
-			fetch(
-				`${
-					process.env.NODE_ENV === "development"
-						? "http://localhost:3000"
-						: "https://mensa-radar.de"
-				}/api/ai/uploadThumbnail/`,
-				{
-					method: "POST",
-					body: JSON.stringify({
-						foodId: foodId,
-						base64: base64,
-						blurhash,
-					}),
-				}
-			)
+			await supabase.storage
+				.from("ai-thumbnails")
+				.upload(`thumbnail_${foodId}.png`, blob, {
+					contentType: "image/png",
+				})
+				.then(async (_) => {
+					console.log("uploaded image to supabase")
+					console.log(_)
+					await supabase
+						.from("food_offerings")
+						.update({ has_ai_thumbnail: true, blurhash })
+						.eq("id", foodId)
+						.then((_) => {
+							return new Response(
+								JSON.stringify({
+									message: "uploaded to supabase",
+								}),
+								{
+									status: 200,
+								}
+							)
+						})
+				})
+				.catch((e) => {
+					return new Response(
+						JSON.stringify({
+							error: e.json(),
+							message: "Error while uploading image to supabase",
+						}),
+						{
+							status: 500,
+						}
+					)
+				})
 		}
 	}
 	const [generatedThumbnails, setGeneratedThumbnails] = useState(
@@ -196,22 +220,11 @@ export default function Mensa({
 				if (res.status === 200) {
 					const blob = await res.blob()
 					const base64 = await blobToBase64(blob)
-					console.log(blob, base64)
-					uploadBase64toSupabase(base64, foodId)
+					uploadBase64toSupabase(base64, foodId, blob)
 					setGeneratedThumbnails(
 						new Map(generatedThumbnails.set(foodId, base64))
 					)
 				}
-				// if (res.message === "success") {
-				// 	console.log(res.image)
-				// 	uploadBase64toSupabase(
-				// 		await blobToBase64(res.image),
-				// 		foodId
-				// 	)
-				// 	setGeneratedThumbnails(
-				// 		new Map(generatedThumbnails.set(foodId, res.base64))
-				// 	)
-				// }
 			})
 			.catch((err) => console.log(err))
 	}
@@ -464,9 +477,9 @@ export default function Mensa({
 }
 
 import * as schema from "../../../../server/dbSchema"
-import { set } from "zod"
-import { encode } from "blurhash"
 import { encodeImageToBlurhash } from "../../../../lib/blurhashFromImage"
+import { env } from "../../../../env.mjs"
+import { createClient } from "@supabase/supabase-js"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params

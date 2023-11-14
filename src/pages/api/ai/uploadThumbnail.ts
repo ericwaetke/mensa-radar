@@ -20,7 +20,8 @@ const UploadThumbnail = async (req: NextRequest) => {
 		})
 	}
 
-	const buffer = await decode(base64)
+	const buffer = decode(base64.substring(21))
+	console.log(buffer)
 
 	await supabase
 		.storage
@@ -30,17 +31,18 @@ const UploadThumbnail = async (req: NextRequest) => {
 		})
 		.then(async _ => {
 			console.log("uploaded image to supabase")
-			await supabase
-				.from('food_offerings')
-				.update({ has_ai_thumbnail: true, blurhash })
-				.eq('id', foodId)
-				.then(_ => {
-					return new Response(JSON.stringify({
-						message: 'uploaded to supabase',
-					}), {
-						status: 200,
-					})
-				})
+			console.log(_)
+			// await supabase
+			// 	.from('food_offerings')
+			// 	.update({ has_ai_thumbnail: true, blurhash })
+			// 	.eq('id', foodId)
+			// 	.then(_ => {
+			// 		return new Response(JSON.stringify({
+			// 			message: 'uploaded to supabase',
+			// 		}), {
+			// 			status: 200,
+			// 		})
+			// 	})
 		})
 		.catch(e => {
 			return new Response(JSON.stringify({
