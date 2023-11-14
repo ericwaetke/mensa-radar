@@ -116,6 +116,9 @@ dependencies:
   uuid:
     specifier: ^9.0.0
     version: 9.0.0
+  ws:
+    specifier: ^8.14.2
+    version: 8.14.2
   xml2js:
     specifier: ^0.4.23
     version: 0.4.23
@@ -136,6 +139,9 @@ devDependencies:
   '@types/sharp':
     specifier: ^0.31.1
     version: 0.31.1
+  '@types/ws':
+    specifier: ^8.5.9
+    version: 8.5.9
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.23)
@@ -2290,6 +2296,12 @@ packages:
       '@types/node': 20.2.1
     dev: false
 
+  /@types/ws@8.5.9:
+    resolution: {integrity: sha512-jbdrY0a8lxfdTp/+r7Z4CkycbOFN8WX+IOchLJr3juT/xzbJ8URyTVSJ/hvNdadTgM1mnedb47n+Y31GsFnQlg==}
+    dependencies:
+      '@types/node': 20.2.1
+    dev: true
+
   /@types/yauzl@2.10.0:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
@@ -2365,7 +2377,7 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       form-data: 4.0.0
-      ws: 8.13.0
+      ws: 8.14.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -7718,8 +7730,8 @@ packages:
         optional: true
     dev: true
 
-  /ws@8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
+  /ws@8.14.2:
+    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

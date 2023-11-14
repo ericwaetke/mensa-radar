@@ -85,7 +85,7 @@ export const ImageCarousel = ({
 						<ImageComponent
 							single={imageAmount === 1}
 							type="ai"
-							src={`data:image/png;base64,${localAiThumbnail}`}
+							src={`${localAiThumbnail}`}
 						/>
 					) : null}
 
