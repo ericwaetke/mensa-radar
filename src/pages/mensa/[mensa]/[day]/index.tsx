@@ -42,16 +42,6 @@ type DrizzleMensenQuery = EnhancedMensaList[]
 
 export const runtime = "experimental-edge"
 
-const blobToBase64: (blob: any) => Promise<string> = (blob) => {
-	const reader = new FileReader()
-	reader.readAsDataURL(blob)
-	return new Promise((resolve: (val: string) => void) => {
-		reader.onloadend = () => {
-			resolve(reader.result.toString())
-		}
-	})
-}
-
 export default function Mensa({
 	food,
 	mensenListReq,
@@ -73,11 +63,21 @@ export default function Mensa({
 		"Öffnungszeiten werden geladen"
 	)
 
-	const [path, setPath] = useState(router.asPath.split("#"))
-
 	useEffect(() => {
 		setModalOpen(false)
 	}, [mensa, day])
+
+	function refetchImage(foodId: number) {
+		food = {
+			...food,
+			foodOfferings: food.foodOfferings.map((offer) => {
+				if (offer.id === foodId) {
+					offer.hasAiThumbnail = true
+				}
+				return offer
+			}),
+		}
+	}
 
 	// get current weekday
 	const selectedWeekday = getWeekdayByName(day)
@@ -129,104 +129,37 @@ export default function Mensa({
 	}
 
 	const scrollPosition = useScrollPosition(50)
-	const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
-	const supabaseKey = env.NEXT_PUBLIC_SUPABASE_KEY
-	const supabase = createClient(supabaseUrl, supabaseKey)
 
-	async function uploadBase64toSupabase(
-		base64: string,
-		foodId: number,
-		blob: Blob
-	) {
-		const blurhash = await encodeImageToBlurhash(base64)
-
-		if (base64 !== "" && base64 !== undefined && foodId) {
-			await supabase.storage
-				.from("ai-thumbnails")
-				.upload(`thumbnail_${foodId}.png`, blob, {
-					contentType: "image/png",
-				})
-				.then(async (_) => {
-					console.log("uploaded image to supabase")
-					console.log(_)
-					await supabase
-						.from("food_offerings")
-						.update({ has_ai_thumbnail: true, blurhash })
-						.eq("id", foodId)
-						.then((_) => {
-							return new Response(
-								JSON.stringify({
-									message: "uploaded to supabase",
-								}),
-								{
-									status: 200,
-								}
-							)
-						})
-				})
-				.catch((e) => {
-					return new Response(
-						JSON.stringify({
-							error: e.json(),
-							message: "Error while uploading image to supabase",
-						}),
-						{
-							status: 500,
-						}
-					)
-				})
-		}
-	}
 	const [generatedThumbnails, setGeneratedThumbnails] = useState(
 		new Map<number, string>()
 	)
 	async function queueThumbnailGeneration() {
+		console.log("Queueing Thumbnail Generation")
 		for await (const offer of food.foodOfferings) {
 			if (
 				offer.foodImages.length === 0 &&
 				!offer.hasAiThumbnail &&
-				!offer.soldOut
+				!offer.soldOut &&
+				offer.priceOther !== 0 &&
+				offer.priceStudents !== 0
 			) {
-				console.log("Starting Generation")
-				await aiThumbnailGeneration(offer.id, offer.foodTitle)
+				return fetch(`/api/ai/generateThumbnail`, {
+					method: "POST",
+					body: JSON.stringify({
+						food_id: offer.id,
+						prompt: offer.foodTitleEn,
+					}),
+					headers: {
+						"Access-Control-Allow-Origin": "*",
+						"Content-Type": "application/json",
+					},
+				})
+					.then(async (res) => {
+						if (res.status === 201) refetchImage(offer.id)
+					})
+					.catch((err) => console.log(err))
 			}
 		}
-	}
-	async function aiThumbnailGeneration(foodId: number, foodTitle: string) {
-		const isFoodOffer =
-			food.foodOfferings.find((offer) => offer.id === foodId)
-				?.priceOther !== 0 &&
-			food.foodOfferings.find((offer) => offer.id === foodId)
-				?.priceStudents !== 0
-		if (!isFoodOffer) return
-		console.log("Generating AI Thumbnail")
-		return await fetch(
-			`${
-				process.env.NODE_ENV === "development"
-					? "http://localhost:3000"
-					: "https://mensa-radar.de"
-			}/api/ai/generateThumbnail/`,
-			{
-				method: "POST",
-				body: JSON.stringify({
-					foodId: foodId,
-					foodTitle: foodTitle,
-				}),
-			}
-		)
-			.then(async (res) => {
-				console.log(res)
-
-				if (res.status === 200) {
-					const blob = await res.blob()
-					const base64 = await blobToBase64(blob)
-					uploadBase64toSupabase(base64, foodId, blob)
-					setGeneratedThumbnails(
-						new Map(generatedThumbnails.set(foodId, base64))
-					)
-				}
-			})
-			.catch((err) => console.log(err))
 	}
 
 	const updateOpeningTimes = () => {
@@ -429,9 +362,6 @@ export default function Mensa({
 								aiThumbnailBase64={generatedThumbnails.get(
 									offer.id
 								)}
-								triggerAiThumbnailRegeneration={
-									aiThumbnailGeneration
-								}
 							/>
 						)
 					})}
@@ -507,6 +437,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 				columns: {
 					id: true,
 					foodTitle: true,
+					foodTitleEn: true,
 					vegan: true,
 					vegetarian: true,
 					fish: true,

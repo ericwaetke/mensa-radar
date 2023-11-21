@@ -54,6 +54,7 @@ export const foodOfferings = pgTable("food_offerings", {
 	mensa: bigint("mensa", { mode: "number" }),
 	date: timestamp("date"),
 	foodTitle: text("food_title"),
+	foodTitleEn: text("food_title_eng"),
 	foodDescription: text("food_desc"),
 	vegan: boolean("vegan"),
 	vegetarian: boolean("vegetarian"),

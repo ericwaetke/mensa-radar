@@ -5,7 +5,7 @@ import { env } from "../../env.mjs"
 import type { OurFileRouter } from "../../server/uploadthing.js"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import Image from "next/image.js"
-import { UploadClient } from '@uploadcare/upload-client'
+import { UploadClient } from "@uploadcare/upload-client"
 
 const CaptureImageButton = ({
 	label,
@@ -40,16 +40,12 @@ export const CaptureImage = ({
 	setTempImage,
 	setCurrentModalContent,
 
-	triggerAiThumbnailRegeneration,
-
 	foodTitle,
 	foodId,
 }: {
 	setModalOpen: (open: boolean) => void
 	setTempImage: (image: string) => void
 	setCurrentModalContent: (content: string) => void
-
-	triggerAiThumbnailRegeneration: () => void
 
 	foodTitle: string
 	foodId: number
@@ -77,7 +73,7 @@ export const CaptureImage = ({
 		},
 	})
 
-	const client = new UploadClient({ publicKey: '7fd590f17fe2cfb4de79' })
+	const client = new UploadClient({ publicKey: "7fd590f17fe2cfb4de79" })
 
 	const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
 		// Get the file from the input
@@ -90,9 +86,7 @@ export const CaptureImage = ({
 		setProcessing(true)
 		setCurrentStep("preview")
 
-		client.uploadFile(file)
-		.then((file) => {
-
+		client.uploadFile(file).then((file) => {
 			setImageUrl(file.cdnUrl)
 
 			fetch(`/api/ai/labelImage`, {

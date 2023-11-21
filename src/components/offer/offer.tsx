@@ -23,13 +23,11 @@ export const Offer = ({
 	mensa,
 	day,
 	aiThumbnailBase64,
-	triggerAiThumbnailRegeneration,
 }: {
 	offer: NewFoodOffer
 	mensa: string | string[]
 	day: string | string[]
 	aiThumbnailBase64: string
-	triggerAiThumbnailRegeneration: (foodId: number, foodTitle: string) => void
 }) => {
 	const containerAnimation = {
 		hidden: {
@@ -148,11 +146,6 @@ export const Offer = ({
 		generateUrls(`thumbnail_${offer.id}`)
 	)
 
-	const regenerateAiThumbnail = () => {
-		setLocalAiThumbnail(null)
-		triggerAiThumbnailRegeneration(offer.id, offer.foodTitle)
-	}
-
 	useEffect(() => {
 		setLocalAiThumbnail(aiThumbnailBase64)
 	}, [aiThumbnailBase64])
@@ -193,9 +186,6 @@ export const Offer = ({
 							setModalOpen={setModalOpen}
 							setCurrentModalContent={setCurrentModalContent}
 							setTempImage={setTempImage}
-							triggerAiThumbnailRegeneration={
-								regenerateAiThumbnail
-							}
 							foodTitle={offer.foodTitle}
 							foodId={offer.id}
 						/>

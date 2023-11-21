@@ -81,6 +81,7 @@ type NewFoodOffer = {
 	allergens: string[]
 	fish: boolean
 	foodTitle: string
+	foodTitleEn: string
 	id: number
 	meat: boolean
 	nutrients: {
