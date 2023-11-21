@@ -60,26 +60,13 @@ const nextConfig = defineNextConfig({
 	experimental: {
 		esmExternals: false, // THIS IS THE FLAG THAT MATTERS
 	},
-	async headers() {
+	async rewrites() {
 		return [
 			{
-				source: '/:path*',
-				headers: [
-					{
-						key: 'Access-Control-Allow-Origin',
-						value: '*',
-					},
-					{
-						key: 'Access-Control-Allow-Methods',
-						value: 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-					},
-					{
-						key: 'Access-Control-Allow-Headers',
-						value: 'X-Requested-With, Content-Type, Authorization',
-					},
-				],
+				source: '/ai/:path*',
+				destination: 'https://ai.ericwaetke.de/:path*',
 			},
-		];
+		]
 	},
 
 });

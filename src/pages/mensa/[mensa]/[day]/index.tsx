@@ -63,21 +63,23 @@ export default function Mensa({
 		"Öffnungszeiten werden geladen"
 	)
 
+	// const [food, setFood] = useState<DrizzleFoodQuery>(foodReq)
+
 	useEffect(() => {
 		setModalOpen(false)
 	}, [mensa, day])
 
-	function refetchImage(foodId: number) {
-		food = {
-			...food,
-			foodOfferings: food.foodOfferings.map((offer) => {
-				if (offer.id === foodId) {
-					offer.hasAiThumbnail = true
-				}
-				return offer
-			}),
-		}
-	}
+	// function refetchImage(foodId: number) {
+	// 	setFood({
+	// 		...food,
+	// 		foodOfferings: food.foodOfferings.map((offer) => {
+	// 			if (offer.id === foodId) {
+	// 				offer.hasAiThumbnail = true
+	// 			}
+	// 			return offer
+	// 		}),
+	// 	})
+	// }
 
 	// get current weekday
 	const selectedWeekday = getWeekdayByName(day)
@@ -133,9 +135,11 @@ export default function Mensa({
 	const [generatedThumbnails, setGeneratedThumbnails] = useState(
 		new Map<number, string>()
 	)
+
 	async function queueThumbnailGeneration() {
 		console.log("Queueing Thumbnail Generation")
-		for await (const offer of food.foodOfferings) {
+		for (let i = 0; i < food.foodOfferings.length; i++) {
+			const offer = food.foodOfferings[i]
 			if (
 				offer.foodImages.length === 0 &&
 				!offer.hasAiThumbnail &&
@@ -143,7 +147,11 @@ export default function Mensa({
 				offer.priceOther !== 0 &&
 				offer.priceStudents !== 0
 			) {
-				return fetch(`/api/ai/generateThumbnail`, {
+				console.log(
+					"Queueing Thumbnail Generation for",
+					offer.foodTitleEn
+				)
+				await fetch(`/ai/prompt`, {
 					method: "POST",
 					body: JSON.stringify({
 						food_id: offer.id,
@@ -155,7 +163,7 @@ export default function Mensa({
 					},
 				})
 					.then(async (res) => {
-						if (res.status === 201) refetchImage(offer.id)
+						// if (res.status === 201) refetchImage(offer.id)
 					})
 					.catch((err) => console.log(err))
 			}
@@ -410,6 +418,7 @@ import * as schema from "../../../../server/dbSchema"
 import { encodeImageToBlurhash } from "../../../../lib/blurhashFromImage"
 import { env } from "../../../../env.mjs"
 import { createClient } from "@supabase/supabase-js"
+import { set } from "zod"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.params
