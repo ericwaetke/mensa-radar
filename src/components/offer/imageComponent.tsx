@@ -1,7 +1,6 @@
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { blurHashToDataURL } from "../../lib/blurhashDataURL"
-import { encodeImageToBlurhash } from "../../lib/blurhashFromImage"
 
 export const ImageComponent = ({
 	type,
@@ -24,8 +23,8 @@ export const ImageComponent = ({
 			<Image
 				src={src}
 				className={`h-full w-full object-cover ${
-					!single ? "rounded-lg" : ""
-				} ${type === "user" ? "contrast-125 saturate-150" : ""}`}
+					!single && "rounded-lg"
+				}`}
 				layout="fill"
 				alt={`${type} Bild vom Essen`}
 				placeholder={blurDataUrl ? "blur" : "empty"}

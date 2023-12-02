@@ -65,7 +65,7 @@ export const ImageCarousel = ({
 									single={imageAmount === 1}
 									type="user"
 									// /-/format/auto/-/quality/smart/-/preview/
-									src={`${food_image?.imageUrl}/-/format/auto/-/quality/smart/-/preview/`}
+									src={`${food_image?.imageUrl}/-/format/auto/-/quality/smart/-/preview/512x512/`}
 									key={index}
 								/>
 							)
