@@ -177,7 +177,7 @@ export default function Home(props) {
 				<h1 className="text-h1 font-serif-bold">Mensa-Radar</h1>
 			</div>
 
-			<main className="flex h-full max-w-xl flex-col gap-4 lg:mx-auto">
+			<main className="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
 				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensenList.map((mensa) => {
 						const redirectWeekday =
