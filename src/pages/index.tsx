@@ -178,7 +178,7 @@ export default function Home(props) {
 			</div>
 
 			<main className="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
-				<div className="flex max-w-xl flex-col divide-y  divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
+				<div className="flex max-w-xl flex-col divide-y divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensenList.map((mensa) => {
 						const redirectWeekday =
 							openingTimes.get(mensa.id)?.open ||
@@ -191,7 +191,7 @@ export default function Home(props) {
 								href={`/mensa/${mensa.url}/${redirectWeekday}`}
 								key={mensa.id}
 							>
-								<a className="flex items-center justify-between gap-1 space-x-2 py-4 pr-4">
+								<a className="flex flex-col gap-0 py-3 pr-4">
 									<h3 className="font-serif-semi text-xl font-normal">
 										<Balancer>{mensa.name}</Balancer>
 									</h3>

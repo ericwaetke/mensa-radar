@@ -15,7 +15,7 @@ const Footer = () => {
 				
 				<div className="flex flex-row-reverse space-x-2">
 					<p className='font-sans-semi text-sm opacity-50'>
-						wovenspace
+						woven
 					</p>
 				</div>
 
