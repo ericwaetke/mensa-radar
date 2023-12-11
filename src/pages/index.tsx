@@ -177,7 +177,7 @@ export default function Home(props) {
 				<h1 className="text-h1 font-serif-bold">Mensa-Radar</h1>
 			</div>
 
-			<main className="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
+			<main className="flex h-full w-full max-w-xl flex-col gap-4 lg:mx-auto">
 				<div className="flex max-w-xl flex-col divide-y divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensenList.map((mensa) => {
 						const redirectWeekday =
@@ -188,9 +188,8 @@ export default function Home(props) {
 								: weekday[currentWeekday + 1]
 						return mensa.enabled ? (
 							<Link
-								href={`/mensa/${mensa.url}/${redirectWeekday}`}
-								key={mensa.id}
-							>
+								href={`/mensa/${mensa.url}?day=${redirectWeekday}`}
+								key={mensa.id}>
 								<a className="flex flex-col gap-0 py-3 pr-4">
 									<h3 className="font-serif-semi text-xl font-normal">
 										<Balancer>{mensa.name}</Balancer>
@@ -201,8 +200,7 @@ export default function Home(props) {
 												openingTimes.get(mensa.id)?.open
 													? "bg-main-green"
 													: "bg-red-500"
-											}`}
-										></div>
+											}`}></div>
 										<span className="whitespace-nowrap opacity-60">
 											{openingTimes.get(mensa.id)?.text}
 										</span>
