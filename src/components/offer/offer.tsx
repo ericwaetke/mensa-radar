@@ -431,7 +431,7 @@ export const Offer = ({
 											/>
 										</div>
 										<ShareButton
-											url={`https://mensa-radar.de/mensa/${mensa}/${day}/${offer.id}`}
+											url={`https://mensa-radar.de/mensa/${mensa}/${offer.id}`}
 											title={offer.foodTitle}
 										/>
 									</div>
