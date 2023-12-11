@@ -1,24 +1,20 @@
-import Link from 'next/link'
-import 'tailwindcss/tailwind.css'
+import { A } from "solid-start"
 
 const Footer = () => {
 	return (
-		<footer className='fixed bottom-0 h-10 w-full border-t border-gray/10 bg-light-green px-3 py-2'>
-			<div className="mx-auto grid max-w-xl grid-cols-2">
-				<div className="flex flex-row space-x-2">
-					<Link href="/impressum">
-						<a className='font-sans-semi text-sm opacity-50'>
-							Über Mensa-Radar
-						</a>
-					</Link>
-				</div>
-				
-				<div className="flex flex-row-reverse space-x-2">
-					<p className='font-sans-semi text-sm opacity-50'>
-						woven
-					</p>
+		<footer class="fixed bottom-0 h-10 w-full border-t border-gray/10 bg-light-green px-3 py-2">
+			<div class="mx-auto grid max-w-xl grid-cols-2">
+				<div class="flex flex-row space-x-2">
+					<A
+						class="font-sans-semi text-sm opacity-50"
+						href="/impressum">
+						Über Mensa-Radar
+					</A>
 				</div>
 
+				<div class="flex flex-row-reverse space-x-2">
+					<p class="font-sans-semi text-sm opacity-50">woven</p>
+				</div>
 			</div>
 		</footer>
 	)

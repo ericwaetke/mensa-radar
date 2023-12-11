@@ -1,41 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "jsxImportSource": "solid-js",
     "jsx": "preserve",
-    "types": [
-      "react/experimental"
-    ]
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "src/pages/mensa/[mensa]/[day]/[offer].ts",
-    "src/components/ratings/qualityRatingComponent.tsx+",
-    "src/env.mjs"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "paths": {
-    "*": [
-      "types/*.d.ts"
-    ]
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   }
 }
