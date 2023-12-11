@@ -33,6 +33,23 @@ export default function Mensa(): JSX.Element {
 		if (mensaInformation[mensa.toString()])
 			setSelectedMensa(mensaInformation[mensa.toString()])
 
+		// Check if site is accessed by crawling bot
+		// Checking user agent
+		const userAgent = window.navigator.userAgent
+		if (
+			userAgent.includes("Googlebot") ||
+			userAgent.includes("bingbot") ||
+			userAgent.includes("YandexBot") ||
+			userAgent.includes("Baiduspider") ||
+			userAgent.includes("DuckDuckBot") ||
+			userAgent.includes("Sogou") ||
+			userAgent.includes("Exabot") ||
+			userAgent.includes("ia_archiver") ||
+			userAgent.includes("Facebot") ||
+			userAgent.includes("facebookexternalhit") ||
+			userAgent.includes("Slackbot")
+		)
+			return
 		router.push(`/mensa/${mensa}/${weekday[currentWeekday]}`)
 	}, [router.query])
 
