@@ -31,8 +31,8 @@ export const ImageComponent = ({
 				blurDataURL={blurDataUrl}
 			/>
 			<span
-				className="absolute left-2 top-2 z-10 flex space-x-1 rounded-full bg-white/60 px-2 py-1 font-sans-med text-xs text-black
-    after:absolute after:left-0 after:top-0 after:h-full after:w-full after:rounded-full after:backdrop-blur after:content-['']">
+				className="absolute left-2 top-2 z-0 flex space-x-1 rounded-full bg-white/60 px-2 py-1 font-sans-med text-xs text-black
+    after:absolute after:left-0 after:top-0 after:h-full after:w-full after:rounded-full after:content-['']">
 				{type === "ai" ? (
 					<>
 						<svg
