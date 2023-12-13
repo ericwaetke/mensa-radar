@@ -441,10 +441,10 @@ export default function Mensa({
 			</Modal>
 			<div className="mx-auto flex flex-col">
 				<Head>
-					<title>{selectedMensa.title} - Mensa Radar</title>
+					<title>{selectedMensa.title} – Mensa Radar</title>
 					<meta
 						name="description"
-						content={selectedMensa.description}
+						content={`Speiseplan der ${selectedMensa.title} – schaue dir die aktuellen Essens-Angebote der Mensa mit Bildern von Nutzenden oder AI-Bildern, um schon vorher zu wissen, was du essen möchtest!`}
 					/>
 					<meta property="twitter:domain" content="mensa-radar.de" />
 					<meta
