@@ -661,18 +661,19 @@ export default function Mensa({
 }
 
 import * as schema from "../../../server/dbSchema"
-import { encodeImageToBlurhash } from "../../../lib/blurhashFromImage"
-import { env } from "../../../env.mjs"
-import { createClient } from "@supabase/supabase-js"
-import { set } from "zod"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { mensa, day } = context.query
 	console.log("SERVER CODE: ", mensa, day)
 
-	const selectedWeekday = getWeekdayByName(day)
 	let currentWeekday = new Date().getDay()
 	currentWeekday = currentWeekday === 0 ? 6 : currentWeekday - 1
+	let selectedWeekday
+	if (day === undefined) {
+		selectedWeekday = currentWeekday
+	} else {
+		selectedWeekday = getWeekdayByName(day)
+	}
 	let selectedDay = new Date()
 	selectedDay.setDate(
 		selectedDay.getDate() + (selectedWeekday - currentWeekday)
