@@ -13,7 +13,7 @@ import { Pill } from "../../../components/pill"
 import { getOpeningTimes } from "../../../lib/getOpeningString"
 import { Offer } from "../../../components/offer/offer"
 
-import { gt, asc, desc, eq, sql } from "drizzle-orm"
+import { gt, asc, desc, eq, sql, gte } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { motion } from "framer-motion"
 import { GetServerSideProps } from "next"
@@ -750,7 +750,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			currentMensaData,
 			eq(foodOfferings.mensa, currentMensaData.mensaId)
 		)
-		.where(gt(foodOfferings.date, sql`current_date`))
+		// .where(gte(foodOfferings.date, sql`current_date`))
 		.groupBy(
 			sql`food_offerings.mensa, mensen.name, mensen.url, current_mensa_data."openingTimes", mensen.loc_lat, mensen.loc_long, current_mensa_data.enabled`
 		)

@@ -224,7 +224,7 @@ export default function Home(props) {
 }
 
 import * as schema from "../server/dbSchema"
-import { eq, gt, sql } from "drizzle-orm"
+import { eq, gt, gte, sql } from "drizzle-orm"
 import { currentMensaData, foodOfferings, mensen } from "../server/dbSchema"
 
 export async function getStaticProps(context) {
@@ -249,7 +249,7 @@ export async function getStaticProps(context) {
 			currentMensaData,
 			eq(foodOfferings.mensa, currentMensaData.mensaId)
 		)
-		.where(gt(foodOfferings.date, sql`current_date`))
+		// .where(gte(foodOfferings.date, sql`current_date`))
 		.groupBy(
 			sql`food_offerings.mensa, mensen.name, mensen.url, current_mensa_data."openingTimes", mensen.loc_lat, mensen.loc_long, current_mensa_data.enabled`
 		)
