@@ -178,6 +178,12 @@ export default function Home(props) {
 			</div>
 
 			<main className="flex h-full w-full max-w-xl flex-col gap-4 lg:mx-auto">
+				<div className="flex justify-center gap-2 rounded-lg border border-gray/20 bg-black/20 p-4 font-sans">
+					<span className="font-bold">
+						Es gibt aktuell einen kleinen Technischen Fehler mit
+						einigen Mensen. Wir arbeiten dran!
+					</span>
+				</div>
 				<div className="flex max-w-xl flex-col divide-y divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
 					{mensenList.map((mensa) => {
 						const redirectWeekday =
