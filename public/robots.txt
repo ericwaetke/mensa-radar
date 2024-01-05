@@ -1,6 +1,7 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /about/
 
 # Host
 Host: https://mensa-radar.de
