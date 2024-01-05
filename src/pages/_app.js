@@ -1,6 +1,6 @@
 // import App from 'next/app'
 import "../assets/css/app.css"
-import {Toaster} from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
 import PlausibleProvider from 'next-plausible'
 import NextNProgress from 'nextjs-progressbar';
 import '../assets/css/react-spring-bottom-sheet.css'
@@ -23,14 +23,14 @@ function MyApp({ Component, pageProps }) {
 		<>
 			<Head>
 				<meta name="theme-color" content="#CFE0D1" />
-				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />	
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 			</Head>
-			<NextNProgress color="#88E2A1"/>
-			<Toaster 
+			<NextNProgress color="#88E2A1" />
+			<Toaster
 				position="bottom-center"
 			/>
 
-			<PlausibleProvider domain="mensa-radar.de" customDomain="https://plausible.wovenspace.xyz" selfHosted="true" enabled="true">
+			<PlausibleProvider domain="mensa-radar.de" customDomain="https://plausible.woven.design" selfHosted="true" enabled="true">
 				<Provider>
 					<Component {...pageProps} />
 				</Provider>
