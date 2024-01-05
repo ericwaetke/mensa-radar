@@ -65,8 +65,8 @@ export default function Mensa({
 		"sonntag",
 	]
 	let [selectedMensa, setSelectedMensa] = useState({
-		title: "Mensa not Found",
-		description: "Mensa not Found",
+		title: "Mensa loading",
+		description: "Die Mensa lädt aktuell noch.",
 		body: <></>,
 	})
 	useEffect(() => {
@@ -487,9 +487,9 @@ export default function Mensa({
 						<div
 							onClick={() => openMensaSelectionFlow()}
 							className="flex h-12 w-full flex-row items-center justify-center gap-2 space-x-2">
-							<h1 className="text-h1 block font-serif-bold">
+							<h2 className="text-h1 block font-serif-bold">
 								{currentMensa.name}
-							</h1>
+							</h2>
 							<Image
 								src="/icons/chev-down.svg"
 								width={16}
