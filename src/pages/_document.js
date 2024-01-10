@@ -8,7 +8,7 @@ class MyDocument extends Document {
 
 	render() {
 		return (
-			<Html>
+			<Html lang='de'>
 				<Head>
 					<link rel="manifest" href="/manifest.json" />
 					<link rel="apple-touch-icon" href="/icon-apple-touch.png" />
