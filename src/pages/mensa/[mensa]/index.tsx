@@ -44,9 +44,15 @@ export const runtime = "experimental-edge"
 export default function Mensa({
 	food,
 	mensenListReq,
+	selectedMensa,
 }: {
 	food: DrizzleFoodQuery
 	mensenListReq: string // JSON Stringified
+	selectedMensa: {
+		title: string
+		description: string
+		body: JSX.Element
+	}
 }): JSX.Element {
 	const router = useRouter()
 	const { mensa } =
@@ -64,224 +70,6 @@ export default function Mensa({
 		"samstag",
 		"sonntag",
 	]
-	let [selectedMensa, setSelectedMensa] = useState({
-		title: "Mensa loading",
-		description: "Die Mensa lädt aktuell noch.",
-		body: <></>,
-	})
-	useEffect(() => {
-		const mensa = router.query.mensa
-		if (mensa === undefined) return
-		if (mensaInformation[mensa.toString()])
-			setSelectedMensa(mensaInformation[mensa.toString()])
-	}, [router.query])
-
-	const mensaInformation: Record<
-		string,
-		{
-			title: string
-			description: string
-			body: JSX.Element
-		}
-	> = {
-		fhp: {
-			title: "Mensa Kiepenheuerallee/Fachhochschule Potsdam",
-			description:
-				"Die Mensa Kiepenheuerallee ist auf dem Campus der Fachhochschule Potsdam",
-			body: (
-				<>
-					<p>
-						Auf dem Campus der Fachhochschule Potsdam gelegen, ist
-						die Mensa Kiepenheuerallee als kulinarischer Knotenpunkt
-						für Studierende und Besucher gleichermaßen.
-					</p>
-					<p>
-						Die im Frühjahr 2009 eröffnete Mensa Kiepenheuerallee
-						ist ein fester Bestandteil des wachsenden Campus der
-						FHP. In zwei großzügigen Mensen und einer Cafeteria
-						bietet die Mensa während des Semesters täglich ein Menü
-						mit regionalen und internationalen Gerichten an. Durch
-						die Verwendung saisonaler und regionaler Produkte trägt
-						die Mensa zu einem nachhaltigen Speiseplan bei. Vegane
-						Optionen sind an jedem Wochentag verfügbar, wobei der
-						»Veggie-Wednesday« eine exklusive vegane und
-						vegetarische Auswahl bietet. Entdecken Sie die Mensa
-						Kiepenheuerallee für eine Vielzahl von Mahlzeiten und
-						einen bequemen Essensstandort auf dem Campus der
-						Fachhochschule Potsdam.
-					</p>
-				</>
-			),
-		},
-		golm: {
-			title: "Mensa Golm",
-			description:
-				"Die Mensa Golm ist auf dem Campus der Universität Potsdam",
-			body: (
-				<>
-					<p>
-						Die Mensa Golm, eingebettet zwischen Hörsälen und
-						studentischen Wohnanlagen auf dem Campus der Universität
-						Potsdam im Wissenschaftsstandort Golm, ist ein beliebter
-						Anlaufpunkt für Studierende und Besucher. Das Gebäude
-						ist durch einen umlaufenden Arkadengang komplett
-						umschlossen, ermöglicht Mahlzeiten im Freien bei fast
-						jedem Wetter und bietet auf zwei Ebenen ausreichend
-						Platz. Eine großzügige Terrasse lädt dazu ein, das
-						Mittagessen unter freiem Himmel zu genießen, besonders
-						an warmen Tagen.
-					</p>
-					<p>
-						Die Mensa Golm präsentiert ein vielfältiges
-						Speisenangebot von Montag bis Freitag. Neben der
-						Möglichkeit, täglich vegane Gerichte zu genießen, stehen
-						jeden Mittwoch ausschließlich vegane und vegetarische
-						Angebote auf dem Speiseplan. Entdecken Sie die
-						entspannte Atmosphäre der Mensa Golm, erleben Sie
-						kulinarische Vielfalt und genießen Sie eine angenehme
-						Essensumgebung auf dem lebendigen Campus des
-						Wissenschaftsstandorts Golm der Universität Potsdam.
-					</p>
-				</>
-			),
-		},
-		filmuniversitaet: {
-			title: "Mensa Filmuniversität Babelsberg KONRAD WOLF",
-			description:
-				"Die Mensa Filmuniversität Babelsberg KONRAD WOLF ist auf dem Campus der Filmuniversität Babelsberg KONRAD WOLF",
-			body: (
-				<>
-					<p>
-						Im neu eingeweihten Haus 6 öffnete die Mensa der
-						Filmuniversität Babelsberg KONRAD WOLF erstmals im Mai
-						2021 ihre Pforten. Mit 100 Plätzen im Innenbereich und
-						weiteren 120 Plätzen auf einer großen wettergeschützten
-						Außenterrasse bietet die Mensa eine gemütliche
-						Verpflegungsmöglichkeit für Studierende und Beschäftigte
-						der Filmuniversität. Das kulinarische Konzept legt dabei
-						besonderen Wert auf ein vielfältiges vegetarisch-veganes
-						Angebot. Genießen Sie hausgemachte Spezialitäten wie
-						Limonaden und erleben Sie live zubereitete Gerichte im
-						offenen Küchenbereich.
-					</p>
-					<p>
-						Übrigens: Am »Veggie Wednesday« stehen jeden Mittwoch
-						exklusiv vegane und vegetarische Angebote auf dem
-						Speiseplan. Tauchen Sie ein in die entspannte Atmosphäre
-						der Mensa und lassen Sie sich von einer breiten Auswahl
-						an hausgemachten Leckereien verwöhnen.
-					</p>
-				</>
-			),
-		},
-		"neues-palais": {
-			title: "Mensa Am Neuen Palais",
-			description:
-				"Die Mensa Am Neuen Palais ist auf dem Campus der Universität Potsdam",
-			body: (
-				<>
-					<p>
-						Im nördlichen Teil des Schlossparks Sanssouci finden Sie
-						unsere Mensa »Am Neuen Palais«. Das historische
-						Wirtschaftsgebäude, das die zweigeschossige Mensa
-						beherbergt, vermittelt einen Hauch des prachtvollen
-						UNESCO-Weltkulturerbes. Der Innenhof der Mensa bietet
-						zahlreiche Außenplätze, die in angenehmer Atmosphäre zum
-						Verweilen einladen.
-					</p>
-					<p>
-						Die Mensa »Am Neuen Palais« bietet von Montag bis
-						Freitag ein vielfältiges Speisenangebot, darunter auch
-						vegane Optionen. Besonders hervorzuheben ist der »Veggie
-						Wednesday«, an dem ausschließlich vegane und
-						vegetarische Köstlichkeiten auf dem Speiseplan stehen.
-						Erleben Sie kulinarischen Genuss inmitten historischer
-						Pracht und entspannen Sie im einzigartigen Ambiente der
-						Mensa »Am Neuen Palais«.
-					</p>
-				</>
-			),
-		},
-		griebnitzsee: {
-			title: "Mensa Griebnitzsee",
-			description:
-				"Die Mensa Griebnitzsee ist auf dem Campus der Universität Potsdam",
-			body: (
-				<>
-					<p>
-						Zentral am Bahnhof Griebnitzsee gelegen, verbindet die
-						Mensa Griebnitzsee die drei Hochschulstandorte der
-						Universität Potsdam durch eine tägliche Zugverbindung.
-						Diese Mensa zeichnet sich als eine der größten aus und
-						bietet neben ihrem vielfältigen Speisenangebot eine
-						besondere Nudelbar. Die Kaffeebar »Die Bohne« befindet
-						sich nur wenige Schritte weiter im Foyer von Haus 6 und
-						lockt mit verschiedenen Kaffeespezialitäten und Snacks.
-					</p>
-				</>
-			),
-		},
-		wildau: {
-			title: "Mensa Wildau/Technische Hochschule Wildau",
-			description:
-				"Die Mensa Wildau ist auf dem Campus der Technischen Hochschule Wildau",
-			body: (
-				<>
-					<p>
-						Erleben Sie modernes Essen in historischen Mauern in
-						unserer zweigeschossigen Mensa, einst eine Werkhalle,
-						auf dem angenehm gestalteten Campus der Technischen
-						Hochschule Wildau. Das historische Ambiente bildet den
-						perfekten Rahmen für täglich frisch zubereitete
-						Gerichte. Neben der Mensa befinden sich die Cafeteria
-						und die Kaffeebar »HaSi«, die gemeinsam einen belebten
-						Treffpunkt auf dem Campus bilden und nur wenige Meter
-						vom S-Bahnhof Wildau entfernt liegen.
-					</p>
-					<p>
-						Die Mensa Wildau setzt auf gastronomische Vielfalt und
-						bietet von Montag bis Freitag eine Auswahl an veganen
-						Gerichten. Der »Veggie-Wednesday« präsentiert dabei
-						exklusiv vegane und vegetarische Optionen. Genießen Sie
-						eine zeitgemäße Kulinarik in historischer Kulisse und
-						lassen Sie sich von unserem vielfältigen Speiseangebot
-						auf dem Campus der Technischen Hochschule Wildau
-						begeistern.
-					</p>
-				</>
-			),
-		},
-		brandenburg: {
-			title: "Mensa Brandenburg/Technische Hochschule Brandenburg",
-			description:
-				"Die Mensa Brandenburg ist auf dem Campus der Technischen Hochschule Brandenburg",
-			body: (
-				<>
-					<p>
-						Direkt auf dem Campus der Technischen Hochschule
-						Brandenburg und in unmittelbarer Nähe unserer
-						studentischen Wohnanlage Zanderstraße befindet sich die
-						Mensa Brandenburg. Inmitten des Semesters präsentieren
-						wir täglich eine Auswahl an regionalen und
-						internationalen Gerichten. Die Cafeteria, räumlich von
-						der Mensa getrennt und im Erdgeschoss gelegen, bietet
-						eine Auswahl an Snacks, Heißgetränken und einer
-						wechselnden Tagessuppe.
-					</p>
-					<p>
-						Die Mensa Brandenburg steht im Zeichen kulinarischer
-						Vielfalt und bietet von Montag bis Freitag auch vegane
-						Speisen an. Besonders hervorzuheben ist der »Veggie
-						Wednesday«, an dem ausschließlich vegane und
-						vegetarische Köstlichkeiten auf dem Speiseplan stehen.
-						Entdecken Sie die entspannte Atmosphäre der Mensa
-						Brandenburg, Ihr gastronomischer Treffpunkt auf dem
-						Campus der Technischen Hochschule Brandenburg.
-					</p>
-				</>
-			),
-		},
-	} as const
 
 	const mensenList: DrizzleMensenQuery = JSON.parse(mensenListReq)
 	const currentMensa = mensenList.find((m) => m.url === mensa)
@@ -757,10 +545,182 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	await client.end()
 
+	const mensaInformation: Record<
+		string,
+		{
+			title: string
+			description: string
+			body: string
+		}
+	> = {
+		fhp: {
+			title: "Mensa Kiepenheuerallee/Fachhochschule Potsdam",
+			description:
+				"Die Mensa Kiepenheuerallee ist auf dem Campus der Fachhochschule Potsdam",
+			body: `
+			Auf dem Campus der Fachhochschule Potsdam gelegen, ist
+						die Mensa Kiepenheuerallee als kulinarischer Knotenpunkt
+						für Studierende und Besucher gleichermaßen.
+						\n\n
+						Die im Frühjahr 2009 eröffnete Mensa Kiepenheuerallee
+						ist ein fester Bestandteil des wachsenden Campus der
+						FHP. In zwei großzügigen Mensen und einer Cafeteria
+						bietet die Mensa während des Semesters täglich ein Menü
+						mit regionalen und internationalen Gerichten an. Durch
+						die Verwendung saisonaler und regionaler Produkte trägt
+						die Mensa zu einem nachhaltigen Speiseplan bei. Vegane
+						Optionen sind an jedem Wochentag verfügbar, wobei der
+						»Veggie-Wednesday« eine exklusive vegane und
+						vegetarische Auswahl bietet. Entdecken Sie die Mensa
+						Kiepenheuerallee für eine Vielzahl von Mahlzeiten und
+						einen bequemen Essensstandort auf dem Campus der
+						Fachhochschule Potsdam.`,
+		},
+		golm: {
+			title: "Mensa Golm",
+			description:
+				"Die Mensa Golm ist auf dem Campus der Universität Potsdam",
+			body: `Die Mensa Golm, eingebettet zwischen Hörsälen und
+			studentischen Wohnanlagen auf dem Campus der Universität
+			Potsdam im Wissenschaftsstandort Golm, ist ein beliebter
+			Anlaufpunkt für Studierende und Besucher. Das Gebäude
+			ist durch einen umlaufenden Arkadengang komplett
+			umschlossen, ermöglicht Mahlzeiten im Freien bei fast
+			jedem Wetter und bietet auf zwei Ebenen ausreichend
+			Platz. Eine großzügige Terrasse lädt dazu ein, das
+			Mittagessen unter freiem Himmel zu genießen, besonders
+			an warmen Tagen.
+			\n\n
+			Die Mensa Golm präsentiert ein vielfältiges
+			Speisenangebot von Montag bis Freitag. Neben der
+			Möglichkeit, täglich vegane Gerichte zu genießen, stehen
+			jeden Mittwoch ausschließlich vegane und vegetarische
+			Angebote auf dem Speiseplan. Entdecken Sie die
+			entspannte Atmosphäre der Mensa Golm, erleben Sie
+			kulinarische Vielfalt und genießen Sie eine angenehme
+			Essensumgebung auf dem lebendigen Campus des
+			Wissenschaftsstandorts Golm der Universität Potsdam.`,
+		},
+		filmuniversitaet: {
+			title: "Mensa Filmuniversität Babelsberg KONRAD WOLF",
+			description:
+				"Die Mensa Filmuniversität Babelsberg KONRAD WOLF ist auf dem Campus der Filmuniversität Babelsberg KONRAD WOLF",
+			body: `
+			Im neu eingeweihten Haus 6 öffnete die Mensa der
+						Filmuniversität Babelsberg KONRAD WOLF erstmals im Mai
+						2021 ihre Pforten. Mit 100 Plätzen im Innenbereich und
+						weiteren 120 Plätzen auf einer großen wettergeschützten
+						Außenterrasse bietet die Mensa eine gemütliche
+						Verpflegungsmöglichkeit für Studierende und Beschäftigte
+						der Filmuniversität. Das kulinarische Konzept legt dabei
+						besonderen Wert auf ein vielfältiges vegetarisch-veganes
+						Angebot. Genießen Sie hausgemachte Spezialitäten wie
+						Limonaden und erleben Sie live zubereitete Gerichte im
+						offenen Küchenbereich.
+						\n\n
+						Übrigens: Am »Veggie Wednesday« stehen jeden Mittwoch
+						exklusiv vegane und vegetarische Angebote auf dem
+						Speiseplan. Tauchen Sie ein in die entspannte Atmosphäre
+						der Mensa und lassen Sie sich von einer breiten Auswahl
+						an hausgemachten Leckereien verwöhnen.
+			`,
+		},
+		"neues-palais": {
+			title: "Mensa Am Neuen Palais",
+			description:
+				"Die Mensa Am Neuen Palais ist auf dem Campus der Universität Potsdam",
+			body: `Im nördlichen Teil des Schlossparks Sanssouci finden Sie
+			unsere Mensa »Am Neuen Palais«. Das historische
+			Wirtschaftsgebäude, das die zweigeschossige Mensa
+			beherbergt, vermittelt einen Hauch des prachtvollen
+			UNESCO-Weltkulturerbes. Der Innenhof der Mensa bietet
+			zahlreiche Außenplätze, die in angenehmer Atmosphäre zum
+			Verweilen einladen.
+			\n\n
+			Die Mensa »Am Neuen Palais« bietet von Montag bis
+			Freitag ein vielfältiges Speisenangebot, darunter auch
+			vegane Optionen. Besonders hervorzuheben ist der »Veggie
+			Wednesday«, an dem ausschließlich vegane und
+			vegetarische Köstlichkeiten auf dem Speiseplan stehen.
+			Erleben Sie kulinarischen Genuss inmitten historischer
+			Pracht und entspannen Sie im einzigartigen Ambiente der
+			Mensa »Am Neuen Palais«.`,
+		},
+		griebnitzsee: {
+			title: "Mensa Griebnitzsee",
+			description:
+				"Die Mensa Griebnitzsee ist auf dem Campus der Universität Potsdam",
+			body: `
+			Zentral am Bahnhof Griebnitzsee gelegen, verbindet die
+						Mensa Griebnitzsee die drei Hochschulstandorte der
+						Universität Potsdam durch eine tägliche Zugverbindung.
+						Diese Mensa zeichnet sich als eine der größten aus und
+						bietet neben ihrem vielfältigen Speisenangebot eine
+						besondere Nudelbar. Die Kaffeebar »Die Bohne« befindet
+						sich nur wenige Schritte weiter im Foyer von Haus 6 und
+						lockt mit verschiedenen Kaffeespezialitäten und Snacks.`,
+		},
+		wildau: {
+			title: "Mensa Wildau/Technische Hochschule Wildau",
+			description:
+				"Die Mensa Wildau ist auf dem Campus der Technischen Hochschule Wildau",
+			body: `
+			Erleben Sie modernes Essen in historischen Mauern in
+						unserer zweigeschossigen Mensa, einst eine Werkhalle,
+						auf dem angenehm gestalteten Campus der Technischen
+						Hochschule Wildau. Das historische Ambiente bildet den
+						perfekten Rahmen für täglich frisch zubereitete
+						Gerichte. Neben der Mensa befinden sich die Cafeteria
+						und die Kaffeebar »HaSi«, die gemeinsam einen belebten
+						Treffpunkt auf dem Campus bilden und nur wenige Meter
+						vom S-Bahnhof Wildau entfernt liegen.
+						\n\n
+						Die Mensa Wildau setzt auf gastronomische Vielfalt und
+						bietet von Montag bis Freitag eine Auswahl an veganen
+						Gerichten. Der »Veggie-Wednesday« präsentiert dabei
+						exklusiv vegane und vegetarische Optionen. Genießen Sie
+						eine zeitgemäße Kulinarik in historischer Kulisse und
+						lassen Sie sich von unserem vielfältigen Speiseangebot
+						auf dem Campus der Technischen Hochschule Wildau
+						begeistern.`,
+		},
+		brandenburg: {
+			title: "Mensa Brandenburg/Technische Hochschule Brandenburg",
+			description:
+				"Die Mensa Brandenburg ist auf dem Campus der Technischen Hochschule Brandenburg",
+			body: `
+			Direkt auf dem Campus der Technischen Hochschule
+						Brandenburg und in unmittelbarer Nähe unserer
+						studentischen Wohnanlage Zanderstraße befindet sich die
+						Mensa Brandenburg. Inmitten des Semesters präsentieren
+						wir täglich eine Auswahl an regionalen und
+						internationalen Gerichten. Die Cafeteria, räumlich von
+						der Mensa getrennt und im Erdgeschoss gelegen, bietet
+						eine Auswahl an Snacks, Heißgetränken und einer
+						wechselnden Tagessuppe.
+						\n\n
+						Die Mensa Brandenburg steht im Zeichen kulinarischer
+						Vielfalt und bietet von Montag bis Freitag auch vegane
+						Speisen an. Besonders hervorzuheben ist der »Veggie
+						Wednesday«, an dem ausschließlich vegane und
+						vegetarische Köstlichkeiten auf dem Speiseplan stehen.
+						Entdecken Sie die entspannte Atmosphäre der Mensa
+						Brandenburg, Ihr gastronomischer Treffpunkt auf dem
+						Campus der Technischen Hochschule Brandenburg.`,
+		},
+	} as const
+
+	const selectedMensa = {
+		title: mensaInformation[mensa.toString()].title,
+		description: mensaInformation[mensa.toString()].description,
+		body: mensaInformation[mensa.toString()].body,
+	}
+
 	return {
 		props: {
 			food: food,
 			mensenListReq: JSON.stringify(mensenList),
+			selectedMensa,
 		},
 	}
 }
