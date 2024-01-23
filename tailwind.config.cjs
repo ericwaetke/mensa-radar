@@ -8,10 +8,7 @@ module.exports = {
     fontFamily: {
       'sans': ['ui-sans-serif', 'system-ui'],
 
-      'serif-reg': ["IBM-Reg", "serif-reg"],
-      'serif-med': ["IBM-Medium", "serif-med"],
-      'serif-semi': ["IBM-Semi", "serif-semibold"],
-      'serif-bold': ["IBM-Bold", "serif-bold"],
+      'serif': ["BespokeSerif-Variable", "serif-reg"],
       'sans-reg': ["Noto-Reg", "sans-reg"],
       'sans-med': ["Noto-Medium", "sans-med"],
       'sans-semi': ["Noto-Semi", "sans-semibold"],

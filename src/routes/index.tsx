@@ -8,7 +8,7 @@ import {
 	createRouteData,
 	useRouteData,
 } from "solid-start"
-import Footer from "~/components/Footer"
+import Footer from "~/components/footer"
 import { currentMensaData, foodOfferings, mensen } from "~/server/dbSchema"
 import { drizzle } from "drizzle-orm/postgres-js"
 import * as schema from "../server/dbSchema"
@@ -138,7 +138,14 @@ export default function Home() {
 				<Meta name="twitter:image" content="/share_root.png" />
 			</Head>
 			<div class="flex w-full justify-center">
-				<h1 class="text-h1 font-serif-bold">Mensa-Radar</h1>
+				<h1 class="text-xl font-serif font-bold">
+					<img
+						src="/logo.svg"
+						class="h-6 inline-block mr-1"
+						alt="Mensa Radar Topf"
+					/>
+					Mensa-Radar
+				</h1>
 			</div>
 
 			<main class="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
@@ -148,7 +155,7 @@ export default function Home() {
 							<A
 								class="flex flex-col gap-0 py-3 pr-4"
 								href={"/potsdam/" + mensa.url}>
-								<h3 class="font-serif-semi text-xl font-normal">
+								<h3 class="font-serif text-xl font-normal">
 									{mensa.name}
 								</h3>
 								<div class="flex h-full items-center font-sans-reg text-sm">
