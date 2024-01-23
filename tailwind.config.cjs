@@ -6,14 +6,8 @@ module.exports = {
       padding: '2rem',
     },
     fontFamily: {
-      'sans': ['ui-sans-serif', 'system-ui'],
-
+      'sans': ['NotoSans-Variable', 'system-ui'],
       'serif': ["BespokeSerif-Variable", "serif-reg"],
-      'sans-reg': ["Noto-Reg", "sans-reg"],
-      'sans-med': ["Noto-Medium", "sans-med"],
-      'sans-semi': ["Noto-Semi", "sans-semibold"],
-      'sans-bold': ["Noto-Bold", "sans-bold"],
-      'sans-black': ["Noto-Black", "sans-black"],
     },
     screens: {
       'xs': '400px',
@@ -32,29 +26,47 @@ module.exports = {
       '2xl': '1536px',
       // => @media (min-width: 1536px) { ... }
     },
-    extend: {
-      colors: {
-        //green
-        'light-green': '#CFE0D1',
-        'arc-bg': 'var(--arc-pallette-background',
-
-        //foto-bg
-        'lightshiny-green': '#B3C0B5',
-        'main-green': '#88E2A1',
-        'dark-green': '#008C25',
-
-        //vegetarisch, fleisch, fisch
-        'vegeterian-yellow': '#CBE288',
-        'meat-red': '#FFB0A6',
-        'fish-blue': '#90D3FA',
-
-        'gray': '#1F2132',
-        'white': '#fff',
+    colors: {
+      white: "#fff",
+      backgrounds: {
+        "container": "#CFE0D1"
       },
+      sec: {
+        "light-text": "#596E5B",
+        green: {
+          "darker": "#008C25"
+        }
+      },
+    },
+    extend: {
       screens: {
         'xs': '370px'
       },
+      animation: {
+        expand: 'expand 250ms cubic-bezier(0.32,0.72,0,0.75)',
+        collapse: 'collapse 250ms cubic-bezier(0.32,0.72,0,0.75)',
+      },
+      keyframes: {
+        expand: {
+          '0%': {
+            height: '0px',
+          },
+          '100%': {
+            height: 'var(--corvu-disclosure-content-height)',
+          },
+        },
+        collapse: {
+          '0%': {
+            height: 'var(--corvu-disclosure-content-height)',
+          },
+          '100%': {
+            height: '0px',
+          },
+        },
+      },
     },
   },
-  plugins: []
+  plugins: [
+    require('@corvu/tailwind'),
+  ]
 };

@@ -16,6 +16,7 @@ import { sql, eq, gt } from "drizzle-orm"
 import { createServerData$ } from "solid-start/server"
 import { For, createSignal, onMount } from "solid-js"
 import { getOpeningTimes } from "~/lib/getOpeningTimes"
+import { MensaList } from "~/components/MensaList/MensaList"
 
 export function routeData() {
 	return createServerData$(async () => {
@@ -147,32 +148,9 @@ export default function Home() {
 					Mensa-Radar
 				</h1>
 			</div>
+			<MensaList />
 
 			<main class="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
-				<div class="flex max-w-xl flex-col divide-y divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
-					<For each={mensen()}>
-						{(mensa) => (
-							<A
-								class="flex flex-col gap-0 py-3 pr-4"
-								href={"/potsdam/" + mensa.url}>
-								<h3 class="font-serif text-xl font-normal">
-									{mensa.name}
-								</h3>
-								<div class="flex h-full items-center font-sans-reg text-sm">
-									<div
-										class={`my-auto mr-2 h-2 w-2 rounded-full ${
-											openingTimes().get(mensa.id!)?.open
-												? "bg-main-green"
-												: "bg-red-500"
-										}`}></div>
-									<span class="whitespace-nowrap opacity-60">
-										{openingTimes().get(mensa.id!)?.text}
-									</span>
-								</div>
-							</A>
-						)}
-					</For>
-				</div>
 				{/* <BugReportButton /> */}
 			</main>
 			<Footer />

@@ -1,4 +1,5 @@
 @import url("/fonts/bespoke-serif/bespoke-serif.css");
+@import url("/fonts/noto-sans/noto-sans.css");
 
 @tailwind base;
 @tailwind components;

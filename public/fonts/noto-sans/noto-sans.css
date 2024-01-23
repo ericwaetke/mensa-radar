@@ -1,0 +1,28 @@
+/**
+ * @license
+ *
+ * Font Family: Noto Sans
+ * This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at https://scripts.sil.org/OFL
+ * URL: 
+ * © 
+*/
+
+@font-face {
+	font-family: "NotoSans-Variable";
+	src: url("./NotoSans-Variable.woff2") format("woff2"),
+		url("./NotoSans-Variable.woff") format("woff"),
+		url("./NotoSans-Variable.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "NotoSans-VariableItalic";
+	src: url("./NotoSans-VariableItalic.woff2") format("woff2"),
+		url("./NotoSans-VariableItalic.woff") format("woff"),
+		url("./NotoSans-VariableItalic.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: italic;
+}
