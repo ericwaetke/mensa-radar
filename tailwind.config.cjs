@@ -33,6 +33,7 @@ module.exports = {
       },
       sec: {
         "light-text": "#596E5B",
+        kontur: "rgba(31, 33, 50, 0.17)",
         green: {
           "darker": "#008C25"
         }
@@ -43,8 +44,8 @@ module.exports = {
         'xs': '370px'
       },
       animation: {
-        expand: 'expand 250ms cubic-bezier(0.32,0.72,0,0.75)',
-        collapse: 'collapse 250ms cubic-bezier(0.32,0.72,0,0.75)',
+        expand: 'expand 250ms ease-in-out',
+        collapse: 'collapse 250ms ease-in-out',
       },
       keyframes: {
         expand: {
