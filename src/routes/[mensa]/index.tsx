@@ -9,7 +9,7 @@ import {
 	useParams,
 	useRouteData,
 } from "solid-start"
-import Footer from "~/components/Footer"
+import Footer from "~/components/footer"
 import { currentMensaData, foodOfferings, mensen } from "~/server/dbSchema"
 import { drizzle } from "drizzle-orm/postgres-js"
 import * as schema from "~/server/dbSchema"
@@ -17,6 +17,10 @@ import { sql, eq, gt } from "drizzle-orm"
 import { createServerData$ } from "solid-start/server"
 import { For, createSignal, onMount } from "solid-js"
 import { getOpeningTimes } from "~/lib/getOpeningTimes"
+
+// ts-ignore
+import Disclosure from "corvu/disclosure"
+import FoodOfferCard from "~/components/FoodOffer/FoodOfferCard"
 
 export function routeData() {
 	return createServerData$(async () => {
@@ -121,30 +125,44 @@ export default function Home() {
 			</div>
 
 			<main class="flex h-full max-w-xl w-full flex-col gap-4 lg:mx-auto">
-				<div class="flex max-w-xl flex-col divide-y divide-gray/20 rounded-xl bg-white py-0.5 pl-4">
-					<h1>Über Mensa Kiepenheuerallee (FHP)</h1>
-					<p>
-						Auf dem Campus der Fachhochschule Potsdam gelegen, ist
-						die Mensa Kiepenheuerallee als kulinarischer Knotenpunkt
-						für Studierende und Besucher gleichermaßen.
-					</p>
-					<p>
-						Die im Frühjahr 2009 eröffnete Mensa Kiepenheuerallee
-						ist ein fester Bestandteil des wachsenden Campus der
-						Fachhochschule Potsdam. In zwei großzügigen Mensen und
-						einer Cafeteria bietet die Mensa während des Semesters
-						täglich ein Menü mit regionalen und internationalen
-						Gerichten an. Durch die Verwendung saisonaler und
-						regionaler Produkte trägt die Mensa zu einem
-						nachhaltigen Speiseplan bei. Vegane Optionen sind an
-						jedem Wochentag verfügbar, wobei der "Veggie-Mittwoch"
-						eine exklusive vegane und vegetarische Auswahl bietet.
-						Entdecken Sie die Mensa Kiepenheuerallee für eine
-						Vielzahl von Mahlzeiten und einen bequemen
-						Essensstandort auf dem Campus der Fachhochschule
-						Potsdam.
-					</p>
-				</div>
+				<FoodOfferCard />
+
+				{/* Mensa Information hidden behind disclosure */}
+				<Disclosure.Root
+					collapseBehavior="hide"
+					initialExpanded={false}>
+					<Disclosure.Trigger class="w-full">
+						<h2 class="font-sans font-bold text-base tracking-wide text-sec-light-text uppercase text-center">
+							Über die Mensa
+						</h2>
+					</Disclosure.Trigger>
+					<Disclosure.Content class="overflow-clip corvu-expanded:animate-expand corvu-collapsed:animate-collapse bg-white rounded-lg p-4">
+						<h1>Über Mensa Kiepenheuerallee (FHP)</h1>
+						<p>
+							Auf dem Campus der Fachhochschule Potsdam gelegen,
+							ist die Mensa Kiepenheuerallee als kulinarischer
+							Knotenpunkt für Studierende und Besucher
+							gleichermaßen.
+						</p>
+						<p>
+							Die im Frühjahr 2009 eröffnete Mensa
+							Kiepenheuerallee ist ein fester Bestandteil des
+							wachsenden Campus der Fachhochschule Potsdam. In
+							zwei großzügigen Mensen und einer Cafeteria bietet
+							die Mensa während des Semesters täglich ein Menü mit
+							regionalen und internationalen Gerichten an. Durch
+							die Verwendung saisonaler und regionaler Produkte
+							trägt die Mensa zu einem nachhaltigen Speiseplan
+							bei. Vegane Optionen sind an jedem Wochentag
+							verfügbar, wobei der "Veggie-Mittwoch" eine
+							exklusive vegane und vegetarische Auswahl bietet.
+							Entdecken Sie die Mensa Kiepenheuerallee für eine
+							Vielzahl von Mahlzeiten und einen bequemen
+							Essensstandort auf dem Campus der Fachhochschule
+							Potsdam.
+						</p>
+					</Disclosure.Content>
+				</Disclosure.Root>
 			</main>
 			<Footer />
 		</div>

@@ -1,0 +1,69 @@
+/**
+ * @license
+ *
+ * Font Family: Bespoke Serif
+ * Designed by: Jeremie Hornus, Theo Guillard, Morgane Pambrun, Alisa Nowak, Joachim Vu
+ * URL: https://www.fontshare.com/fonts/bespoke-serif
+ * © 2024 Indian Type Foundry
+ *
+ * Font Styles:
+ * Bespoke Serif Variable(Variable font)
+ * Bespoke Serif Variable Italic(Variable font)
+ * Bespoke Serif Light
+ * Bespoke Serif Light Italic
+ * Bespoke Serif Regular
+ * Bespoke Serif Italic
+ * Bespoke Serif Medium
+ * Bespoke Serif Medium Italic
+ * Bespoke Serif Bold
+ * Bespoke Serif Bold Italic
+ * Bespoke Serif Extrabold         
+ * Bespoke Serif Extrabold Italic
+ *
+*/
+
+/**
+* This is a variable font
+* You can controll variable axes as shown below:
+* font-variation-settings: 'wght' 300.0 'wght' 800.0;
+*
+* available axes:
+
+* 'wght' (range from 300.0 to 800.0)
+
+* 'wght' (range from 300.0 to 800.0)
+
+*/
+
+@font-face {
+	font-family: "BespokeSerif-Variable";
+	src: url("./BespokeSerif-Variable.woff2") format("woff2"),
+		url("./BespokeSerif-Variable.woff") format("woff"),
+		url("./BespokeSerif-Variable.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: normal;
+}
+
+/**
+* This is a variable font
+* You can controll variable axes as shown below:
+* font-variation-settings: 'wght' 300.0 'wght' 800.0;
+*
+* available axes:
+
+* 'wght' (range from 300.0 to 800.0)
+
+* 'wght' (range from 300.0 to 800.0)
+
+*/
+
+@font-face {
+	font-family: "BespokeSerif-VariableItalic";
+	src: url("./BespokeSerif-VariableItalic.woff2") format("woff2"),
+		url("./BespokeSerif-VariableItalic.woff") format("woff"),
+		url("./BespokeSerif-VariableItalic.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: italic;
+}

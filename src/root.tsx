@@ -26,7 +26,7 @@ export default function Root() {
 					content="width=device-width, initial-scale=1"
 				/>
 			</Head>
-			<Body class="bg-light-green">
+			<Body class="bg-backgrounds-container">
 				<Suspense>
 					<ErrorBoundary>
 						<Routes>
