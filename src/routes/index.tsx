@@ -14,9 +14,9 @@ export default function Home() {
     <main class="w-full p-4 space-y-2">
       <For each={mensas()} fallback={<div>Loading...</div>}>
         {(mensa) => (
-          <a class="p-4 bg-white rounded-lg shadow-md block" href={`swp/${mensa.slug}/10-09-2024`}>
-            <h4 class="font-bold text-lg">{mensa.name}</h4>
-            <p>{mensa.address_city}</p>
+          <a class="p-4 bg-white rounded-lg shadow-md block" href={`${mensa.mensa_provider.slug}/${mensa.mensa.slug}/10-09-2024`}>
+            <h4 class="font-bold text-lg">{mensa.mensa.name}</h4>
+            <p>{mensa.mensa.address_city}</p>
           </a>
         )}
         </For>
