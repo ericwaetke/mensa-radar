@@ -1,23 +1,26 @@
 import { createAsync, type RouteDefinition } from "@solidjs/router";
-import { getUser, logout } from "~/api";
+import { For } from "solid-js";
+import { getMensas } from "~/api";
 
 export const route = {
   preload() {
-    getUser();
+    getMensas();
   }
 } satisfies RouteDefinition;
 
 export default function Home() {
-  const user = createAsync(async () => getUser(), { deferStream: true });
+  const mensas = createAsync(async () => getMensas(), { deferStream: true });
   return (
     <main class="w-full p-4 space-y-2">
-      <h2 class="font-bold text-3xl">Hello {user()?.username}</h2>
-      <h3 class="font-bold text-xl">Message board</h3>
-      <form action={logout} method="post">
-        <button name="logout" type="submit">
-          Logout
-        </button>
-      </form>
+      <For each={mensas()} fallback={<div>Loading...</div>}>
+        {(mensa) => (
+          <a class="p-4 bg-white rounded-lg shadow-md block" href={`swp/${mensa.slug}/10-09-2024`}>
+            <h4 class="font-bold text-lg">{mensa.name}</h4>
+            <p>{mensa.address_city}</p>
+          </a>
+        )}
+        </For>
+
     </main>
   );
 }

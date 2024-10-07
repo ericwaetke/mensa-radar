@@ -3,75 +3,21 @@ import { redirect } from "@solidjs/router";
 import { useSession } from "vinxi/http";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
-import { Users } from "../../drizzle/schema";
+import { mensa, recipes, recipes_locales, servings } from "../../drizzle/schema";
 
-function validateUsername(username: unknown) {
-  if (typeof username !== "string" || username.length < 3) {
-    return `Usernames must be at least 3 characters long`;
-  }
+
+export async function getMensas() {
+  const mensas = db.select().from(mensa)
+  return mensas;
 }
 
-function validatePassword(password: unknown) {
-  if (typeof password !== "string" || password.length < 6) {
-    return `Passwords must be at least 6 characters long`;
-  }
-}
-
-async function login(username: string, password: string) {
-  const user = db.select().from(Users).where(eq(Users.username, username)).get();
-  if (!user || password !== user.password) throw new Error("Invalid login");
-  return user;
-}
-
-async function register(username: string, password: string) {
-  const existingUser = db.select().from(Users).where(eq(Users.username, username)).get();
-  if (existingUser) throw new Error("User already exists");
-  return db.insert(Users).values({ username, password }).returning().get();
-}
-
-function getSession() {
-  return useSession({
-    password: process.env.SESSION_SECRET ?? "areallylongsecretthatyoushouldreplace"
-  });
-}
-
-export async function loginOrRegister(formData: FormData) {
-  const username = String(formData.get("username"));
-  const password = String(formData.get("password"));
-  const loginType = String(formData.get("loginType"));
-  let error = validateUsername(username) || validatePassword(password);
-  if (error) return new Error(error);
-
-  try {
-    const user = await (loginType !== "login"
-      ? register(username, password)
-      : login(username, password));
-    const session = await getSession();
-    await session.update(d => {
-      d.userId = user.id;
-    });
-  } catch (err) {
-    return err as Error;
-  }
-  throw redirect("/");
-}
-
-export async function logout() {
-  const session = await getSession();
-  await session.update(d => (d.userId = undefined));
-  throw redirect("/login");
-}
-
-export async function getUser() {
-  const session = await getSession();
-  const userId = session.data.userId;
-  if (userId === undefined) throw redirect("/login");
-
-  try {
-    const user = db.select().from(Users).where(eq(Users.id, userId)).get();
-    if (!user) throw redirect("/login");
-    return { id: user.id, username: user.username };
-  } catch {
-    throw logout();
-  }
+export async function getServings(mensaSlug: string) {
+  // get mensa from db
+  // const _mensa = db.select().from(mensa).where();
+  const _servings = db.select()
+    .from(servings)
+    .leftJoin(mensa, eq(servings.mensa_id, mensa.id)).where(eq(mensa.slug, mensaSlug))
+    .leftJoin(recipes, eq(servings.recipe_id, recipes.id))
+    .leftJoin(recipes_locales, eq(recipes_locales._parent_id, recipes.id))
+  return _servings;
 }
