@@ -6,7 +6,8 @@
     "build": "vinxi build",
     "start": "vinxi start",
     "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
+    "migrate": "drizzle-kit migrate",
+    "introspect": "drizzle-kit introspect"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.10",
