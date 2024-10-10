@@ -4,10 +4,15 @@ import { useSession } from "vinxi/http";
 import { and, eq, like } from "drizzle-orm";
 import { db } from "./db";
 import {
+	additives,
+	allergens,
+	features,
+	features_locales,
 	mensa,
 	mensa_provider,
 	recipes,
 	recipes_locales,
+	recipes_rels,
 	servings,
 } from "../../drizzle/schema";
 
@@ -19,6 +24,22 @@ export async function getMensas() {
 	return mensas;
 }
 
+export async function getMensa(slug: string) {
+	const res = await db
+		.select({
+			name: mensa.name,
+		})
+		.from(mensa)
+		.where(eq(mensa.slug, slug))
+		.innerJoin(mensa_provider, eq(mensa.provider_id, mensa_provider.id))
+		.limit(1);
+
+	return res[0];
+}
+
+type Recipe = typeof recipes.$inferSelect;
+type Feature = typeof features.$inferSelect;
+
 export async function getServings(
 	mensaSlug: string,
 	date: string,
@@ -26,19 +47,68 @@ export async function getServings(
 ) {
 	// get mensa from db
 	// const _mensa = db.select().from(mensa).where();
-	const _servings = db
-		.select()
+	const rows = await db
+		.select({
+			date: servings.date,
+			recipe: {
+				id: recipes.id,
+				name: recipes_locales.name,
+				price_students: recipes.price_students,
+				price_employees: recipes.price_employees,
+				price_guests: recipes.price_guests,
+			},
+			feature: {
+				name: features_locales.name,
+			},
+		})
 		.from(servings)
 		.innerJoin(mensa, eq(servings.mensa_id, mensa.id))
 		.innerJoin(recipes, eq(servings.recipe_id, recipes.id))
 		.innerJoin(recipes_locales, eq(recipes_locales._parent_id, recipes.id))
+		.innerJoin(recipes_rels, eq(recipes_rels.parent_id, recipes.id))
+		.innerJoin(features, eq(recipes_rels.features_id, features.id))
+		.innerJoin(
+			features_locales,
+			eq(features_locales._parent_id, features.id),
+		)
 		.where(
 			and(
 				eq(mensa.slug, mensaSlug),
 				eq(servings.date, date),
 				eq(recipes_locales._locale, language),
+				eq(features_locales._locale, language),
 			),
 		);
+
+	// Aggregate the rows into a list of servings
+	// with features as array
+	const _servings: {
+		date: string;
+		recipe: {
+			name: string;
+			price_students: string | null;
+			price_employees: string | null;
+			price_guests: string | null;
+		};
+		features: string[];
+	}[] = [];
+
+	for (const row of rows) {
+		const { date, recipe, feature } = row;
+		console.log(recipe.name);
+
+		const serving = _servings.find((s) => s.recipe.name === recipe.name);
+		if (serving) {
+			if (!feature.name) continue;
+			serving.features.push(feature.name!);
+		} else {
+			_servings.push({
+				date,
+				recipe,
+				features: feature.name ? [feature.name] : [],
+			});
+		}
+	}
 
 	return _servings;
 }

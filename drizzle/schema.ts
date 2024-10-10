@@ -12,7 +12,7 @@ import {
 	uniqueIndex,
 	unique,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const _locales = pgEnum("_locales", ["de", "en"]);
 export const enum_recipe_diet = pgEnum("enum_recipe_diet", [
@@ -502,6 +502,17 @@ export const servings = pgTable(
 	},
 );
 
+export const servingsRelations = relations(servings, ({ one }) => ({
+	recipes: one(recipes, {
+		fields: [servings.recipe_id],
+		references: [recipes.id],
+	}),
+	mensa: one(mensa, {
+		fields: [servings.mensa_id],
+		references: [mensa.id],
+	}),
+}));
+
 export const recipes = pgTable(
 	"recipes",
 	{
@@ -537,6 +548,12 @@ export const recipes = pgTable(
 		};
 	},
 );
+
+export const recipesRelations = relations(recipes, ({ many }) => ({
+	servings: many(servings),
+	recipes_rels: many(recipes_rels),
+	recipes_locales: many(recipes_locales),
+}));
 
 export const nutrient_labels = pgTable(
 	"nutrient_labels",
@@ -861,6 +878,13 @@ export const recipes_rels = pgTable(
 	},
 );
 
+export const recipes_relsRelations = relations(recipes_rels, ({ one }) => ({
+	recipes: one(recipes, {
+		fields: [recipes_rels.parent_id],
+		references: [recipes.id],
+	}),
+}));
+
 export const features_locales = pgTable(
 	"features_locales",
 	{
@@ -990,4 +1014,14 @@ export const recipes_locales = pgTable(
 			).on(table._locale, table._parent_id),
 		};
 	},
+);
+
+export const recipes_localesRelations = relations(
+	recipes_locales,
+	({ one }) => ({
+		recipes: one(recipes, {
+			fields: [recipes_locales._parent_id],
+			references: [recipes.id],
+		}),
+	}),
 );
