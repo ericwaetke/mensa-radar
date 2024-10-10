@@ -30,13 +30,14 @@
 'wght' (range from 300.0 to 800.0
 */
 @font-face {
-  font-family: 'BespokeSlab-Variable';
-  src: url('../fonts/BespokeSlab-Variable.woff2') format('woff2'),
-       url('../fonts/BespokeSlab-Variable.woff') format('woff'),
-       url('../fonts/BespokeSlab-Variable.ttf') format('truetype');
-  font-weight: 300 800;
-  font-display: swap;
-  font-style: normal;
+	font-family: "BespokeSlab-Variable";
+	src:
+		url("../fonts/BespokeSlab-Variable.woff2") format("woff2"),
+		url("../fonts/BespokeSlab-Variable.woff") format("woff"),
+		url("../fonts/BespokeSlab-Variable.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: normal;
 }
 /**
 * This is a variable font
@@ -47,11 +48,12 @@
 'wght' (range from 300.0 to 800.0
 */
 @font-face {
-  font-family: 'BespokeSlab-VariableItalic';
-  src: url('../fonts/BespokeSlab-VariableItalic.woff2') format('woff2'),
-       url('../fonts/BespokeSlab-VariableItalic.woff') format('woff'),
-       url('../fonts/BespokeSlab-VariableItalic.ttf') format('truetype');
-  font-weight: 300 800;
-  font-display: swap;
-  font-style: italic;
+	font-family: "BespokeSlab-VariableItalic";
+	src:
+		url("../fonts/BespokeSlab-VariableItalic.woff2") format("woff2"),
+		url("../fonts/BespokeSlab-VariableItalic.woff") format("woff"),
+		url("../fonts/BespokeSlab-VariableItalic.ttf") format("truetype");
+	font-weight: 300 800;
+	font-display: swap;
+	font-style: italic;
 }
