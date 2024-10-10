@@ -1,33 +1,33 @@
-import { relations } from "drizzle-orm/relations";
+import { relations } from 'drizzle-orm/relations'
 import {
-	payload_preferences,
-	payload_preferences_rels,
-	users,
-	mensa_provider,
-	mensa,
-	serving_time,
-	time_slot,
-	recipes,
-	servings,
-	nutrient_units,
-	nutrient_labels,
-	payload_locked_documents,
-	payload_locked_documents_rels,
-	media,
+	additives,
+	additives_locales,
+	allergens,
+	allergens_locales,
+	features,
+	features_locales,
 	info,
-	user_image_uploads,
+	media,
+	mensa,
+	mensa_provider,
+	nutrient_labels,
+	nutrient_labels_locales,
+	nutrient_units,
 	nutrient_values,
 	nutrients,
-	allergens,
-	additives,
-	features,
-	recipes_rels,
-	features_locales,
-	nutrient_labels_locales,
-	allergens_locales,
-	additives_locales,
+	payload_locked_documents,
+	payload_locked_documents_rels,
+	payload_preferences,
+	payload_preferences_rels,
+	recipes,
 	recipes_locales,
-} from "./schema";
+	recipes_rels,
+	serving_time,
+	servings,
+	time_slot,
+	user_image_uploads,
+	users,
+} from './schema'
 
 export const payload_preferences_relsRelations = relations(
 	payload_preferences_rels,
@@ -41,19 +41,19 @@ export const payload_preferences_relsRelations = relations(
 			references: [users.id],
 		}),
 	}),
-);
+)
 
 export const payload_preferencesRelations = relations(
 	payload_preferences,
 	({ many }) => ({
 		payload_preferences_rels: many(payload_preferences_rels),
 	}),
-);
+)
 
 export const usersRelations = relations(users, ({ many }) => ({
 	payload_preferences_rels: many(payload_preferences_rels),
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
-}));
+}))
 
 export const mensaRelations = relations(mensa, ({ one, many }) => ({
 	mensa_provider: one(mensa_provider, {
@@ -63,7 +63,7 @@ export const mensaRelations = relations(mensa, ({ one, many }) => ({
 	serving_times: many(serving_time),
 	servings: many(servings),
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
-}));
+}))
 
 export const mensa_providerRelations = relations(
 	mensa_provider,
@@ -73,7 +73,7 @@ export const mensa_providerRelations = relations(
 		payload_locked_documents_rels: many(payload_locked_documents_rels),
 		features: many(features),
 	}),
-);
+)
 
 export const serving_timeRelations = relations(
 	serving_time,
@@ -85,7 +85,7 @@ export const serving_timeRelations = relations(
 		time_slots: many(time_slot),
 		payload_locked_documents_rels: many(payload_locked_documents_rels),
 	}),
-);
+)
 
 export const time_slotRelations = relations(time_slot, ({ one, many }) => ({
 	serving_time: one(serving_time, {
@@ -93,7 +93,7 @@ export const time_slotRelations = relations(time_slot, ({ one, many }) => ({
 		references: [serving_time.id],
 	}),
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
-}));
+}))
 
 export const servingsRelations = relations(servings, ({ one, many }) => ({
 	recipe: one(recipes, {
@@ -105,7 +105,7 @@ export const servingsRelations = relations(servings, ({ one, many }) => ({
 		references: [mensa.id],
 	}),
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
-}));
+}))
 
 export const recipesRelations = relations(recipes, ({ one, many }) => ({
 	servings: many(servings),
@@ -118,7 +118,7 @@ export const recipesRelations = relations(recipes, ({ one, many }) => ({
 	user_image_uploads: many(user_image_uploads),
 	recipes_rels: many(recipes_rels),
 	recipes_locales: many(recipes_locales),
-}));
+}))
 
 export const nutrient_labelsRelations = relations(
 	nutrient_labels,
@@ -131,7 +131,7 @@ export const nutrient_labelsRelations = relations(
 		nutrients: many(nutrients),
 		nutrient_labels_locales: many(nutrient_labels_locales),
 	}),
-);
+)
 
 export const nutrient_unitsRelations = relations(
 	nutrient_units,
@@ -139,7 +139,7 @@ export const nutrient_unitsRelations = relations(
 		nutrient_labels: many(nutrient_labels),
 		payload_locked_documents_rels: many(payload_locked_documents_rels),
 	}),
-);
+)
 
 export const payload_locked_documents_relsRelations = relations(
 	payload_locked_documents_rels,
@@ -217,23 +217,23 @@ export const payload_locked_documents_relsRelations = relations(
 			references: [features.id],
 		}),
 	}),
-);
+)
 
 export const payload_locked_documentsRelations = relations(
 	payload_locked_documents,
 	({ many }) => ({
 		payload_locked_documents_rels: many(payload_locked_documents_rels),
 	}),
-);
+)
 
 export const mediaRelations = relations(media, ({ many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
 	user_image_uploads: many(user_image_uploads),
-}));
+}))
 
 export const infoRelations = relations(info, ({ many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
-}));
+}))
 
 export const user_image_uploadsRelations = relations(
 	user_image_uploads,
@@ -248,7 +248,7 @@ export const user_image_uploadsRelations = relations(
 			references: [recipes.id],
 		}),
 	}),
-);
+)
 
 export const nutrient_valuesRelations = relations(
 	nutrient_values,
@@ -256,7 +256,7 @@ export const nutrient_valuesRelations = relations(
 		payload_locked_documents_rels: many(payload_locked_documents_rels),
 		nutrients: many(nutrients),
 	}),
-);
+)
 
 export const nutrientsRelations = relations(nutrients, ({ one, many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
@@ -272,19 +272,19 @@ export const nutrientsRelations = relations(nutrients, ({ one, many }) => ({
 		fields: [nutrients.recipe_id],
 		references: [recipes.id],
 	}),
-}));
+}))
 
 export const allergensRelations = relations(allergens, ({ many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
 	recipes_rels: many(recipes_rels),
 	allergens_locales: many(allergens_locales),
-}));
+}))
 
 export const additivesRelations = relations(additives, ({ many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
 	recipes_rels: many(recipes_rels),
 	additives_locales: many(additives_locales),
-}));
+}))
 
 export const featuresRelations = relations(features, ({ one, many }) => ({
 	payload_locked_documents_rels: many(payload_locked_documents_rels),
@@ -294,7 +294,7 @@ export const featuresRelations = relations(features, ({ one, many }) => ({
 		fields: [features.mensa_provider_id],
 		references: [mensa_provider.id],
 	}),
-}));
+}))
 
 export const recipes_relsRelations = relations(recipes_rels, ({ one }) => ({
 	recipe: one(recipes, {
@@ -313,7 +313,7 @@ export const recipes_relsRelations = relations(recipes_rels, ({ one }) => ({
 		fields: [recipes_rels.features_id],
 		references: [features.id],
 	}),
-}));
+}))
 
 export const features_localesRelations = relations(
 	features_locales,
@@ -323,7 +323,7 @@ export const features_localesRelations = relations(
 			references: [features.id],
 		}),
 	}),
-);
+)
 
 export const nutrient_labels_localesRelations = relations(
 	nutrient_labels_locales,
@@ -333,7 +333,7 @@ export const nutrient_labels_localesRelations = relations(
 			references: [nutrient_labels.id],
 		}),
 	}),
-);
+)
 
 export const allergens_localesRelations = relations(
 	allergens_locales,
@@ -343,7 +343,7 @@ export const allergens_localesRelations = relations(
 			references: [allergens.id],
 		}),
 	}),
-);
+)
 
 export const additives_localesRelations = relations(
 	additives_locales,
@@ -353,7 +353,7 @@ export const additives_localesRelations = relations(
 			references: [additives.id],
 		}),
 	}),
-);
+)
 
 export const recipes_localesRelations = relations(
 	recipes_locales,
@@ -363,4 +363,4 @@ export const recipes_localesRelations = relations(
 			references: [recipes.id],
 		}),
 	}),
-);
+)

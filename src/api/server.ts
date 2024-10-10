@@ -1,8 +1,8 @@
-"use server";
-import { redirect } from "@solidjs/router";
-import { useSession } from "vinxi/http";
-import { and, eq, like } from "drizzle-orm";
-import { db } from "./db";
+'use server'
+import { redirect } from '@solidjs/router'
+import { useSession } from 'vinxi/http'
+import { and, eq, like } from 'drizzle-orm'
+import { db } from './db'
 import {
 	additives,
 	allergens,
@@ -14,14 +14,17 @@ import {
 	recipes_locales,
 	recipes_rels,
 	servings,
-} from "../../drizzle/schema";
+} from '../../drizzle/schema'
 
 export async function getMensas() {
 	const mensas = db
 		.select()
 		.from(mensa)
-		.innerJoin(mensa_provider, eq(mensa_provider.id, mensa.provider_id));
-	return mensas;
+		.innerJoin(
+			mensa_provider,
+			eq(mensa_provider.id, mensa.provider_id),
+		)
+	return mensas
 }
 
 export async function getMensa(slug: string) {
@@ -31,19 +34,22 @@ export async function getMensa(slug: string) {
 		})
 		.from(mensa)
 		.where(eq(mensa.slug, slug))
-		.innerJoin(mensa_provider, eq(mensa.provider_id, mensa_provider.id))
-		.limit(1);
+		.innerJoin(
+			mensa_provider,
+			eq(mensa.provider_id, mensa_provider.id),
+		)
+		.limit(1)
 
-	return res[0];
+	return res[0]
 }
 
-type Recipe = typeof recipes.$inferSelect;
-type Feature = typeof features.$inferSelect;
+type Recipe = typeof recipes.$inferSelect
+type Feature = typeof features.$inferSelect
 
 export async function getServings(
 	mensaSlug: string,
 	date: string,
-	language: "en" | "de" = "de",
+	language: 'en' | 'de' = 'de',
 ) {
 	// get mensa from db
 	// const _mensa = db.select().from(mensa).where();
@@ -64,7 +70,10 @@ export async function getServings(
 		.from(servings)
 		.innerJoin(mensa, eq(servings.mensa_id, mensa.id))
 		.innerJoin(recipes, eq(servings.recipe_id, recipes.id))
-		.innerJoin(recipes_locales, eq(recipes_locales._parent_id, recipes.id))
+		.innerJoin(
+			recipes_locales,
+			eq(recipes_locales._parent_id, recipes.id),
+		)
 		.innerJoin(recipes_rels, eq(recipes_rels.parent_id, recipes.id))
 		.innerJoin(features, eq(recipes_rels.features_id, features.id))
 		.innerJoin(
@@ -78,37 +87,37 @@ export async function getServings(
 				eq(recipes_locales._locale, language),
 				eq(features_locales._locale, language),
 			),
-		);
+		)
 
 	// Aggregate the rows into a list of servings
 	// with features as array
 	const _servings: {
-		date: string;
+		date: string
 		recipe: {
-			name: string;
-			price_students: string | null;
-			price_employees: string | null;
-			price_guests: string | null;
-		};
-		features: string[];
-	}[] = [];
+			name: string
+			price_students: string | null
+			price_employees: string | null
+			price_guests: string | null
+		}
+		features: string[]
+	}[] = []
 
 	for (const row of rows) {
-		const { date, recipe, feature } = row;
-		console.log(recipe.name);
+		const { date, recipe, feature } = row
+		console.log(recipe.name)
 
-		const serving = _servings.find((s) => s.recipe.name === recipe.name);
+		const serving = _servings.find((s) => s.recipe.name === recipe.name)
 		if (serving) {
-			if (!feature.name) continue;
-			serving.features.push(feature.name!);
+			if (!feature.name) continue
+			serving.features.push(feature.name!)
 		} else {
 			_servings.push({
 				date,
 				recipe,
 				features: feature.name ? [feature.name] : [],
-			});
+			})
 		}
 	}
 
-	return _servings;
+	return _servings
 }
