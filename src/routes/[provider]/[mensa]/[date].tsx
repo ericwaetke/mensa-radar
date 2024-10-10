@@ -12,6 +12,15 @@ export default function Home() {
   const params = useParams();
   const servings = createAsync(async () => getServings(params.mensa), { deferStream: true });
   console.log(servings())
+
+  // Parse Date from format: "DD-MM-YYYY"
+  function parseDate(date: string) {
+    const [day, month, year] = date.split("-");
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  }
+  const date = parseDate(params.date)
+  console.log(date)
+
   return (
     <main class="w-full p-4 space-y-2">
       <For each={servings()} fallback={<div>Loading...</div>}>
