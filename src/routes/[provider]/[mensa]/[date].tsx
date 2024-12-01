@@ -14,13 +14,17 @@ export default function Home() {
 
     return `${year}-${month}-${day}`
   }
-  const [servings] = createResource(() => {
-    return {
-      mensaSlug: params.mensa,
-      date: parseDate(params.date),
-      language: 'de' as const,
-    }
-  }, getServings, {
+  // const [servings] = createResource(() => {
+  //   return {
+  //     mensaSlug: params.mensa,
+  //     date: parseDate(params.date),
+  //     language: 'de' as const,
+  //   }
+  // }, getServings, {
+  //   deferStream: true,
+  // })
+
+  const servings = createAsync(() => getServings(params.mensa, parseDate(params.date), "de"), {
     deferStream: true,
   })
 
@@ -33,17 +37,14 @@ export default function Home() {
       <HeaderMensa mensa={mensa()?.mensa} />
 
       <div class='flex gap-3 mx-auto max-w-5xl p-4'>
-        <For each={[0, 1]}>
-          {(j) => (
-            <div class='flex basis-1/2 flex-col gap-3'>
-              <Suspense fallback={<div>Loading...</div>}>
+        <Show when={servings() && servings()!.length > 0} fallback={<>
+          <div>Leider ist an diesem Tag kein Essen vorgemerkt.</div>
+        </>}>
+          <For each={[0, 1]}>
+            {(j) => (
+              <div class='flex basis-1/2 flex-col gap-3'>
                 <For
                   each={servings()}
-                  fallback={
-                    <div>
-                      Loading...
-                    </div>
-                  }
                 >
                   {(serving, i) =>
                     i() %
@@ -67,10 +68,10 @@ export default function Home() {
                       />
                     )}
                 </For>
-              </Suspense>
-            </div>
-          )}
-        </For>
+              </div>
+            )}
+          </For>
+        </Show>
       </div>
     </main>
   )

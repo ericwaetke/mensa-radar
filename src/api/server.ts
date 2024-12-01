@@ -29,17 +29,18 @@ export async function getMensas() {
     )
 
   const sortedAfterProvider = new Map<
-    InferSelectModel<typeof mensaProvider>,
+    string,
     typeof mensas
   >()
   for (const mensa of mensas) {
     const provider = mensa.mensa_provider
     if (!provider) throw new Error('Provider slug is missing')
+    if (!provider.slug) continue
 
-    if (!sortedAfterProvider.has(provider)) {
-      sortedAfterProvider.set(provider, [])
+    if (!sortedAfterProvider.has(provider.slug)) {
+      sortedAfterProvider.set(provider.slug, [])
     }
-    sortedAfterProvider.get(provider)!.push(mensa)
+    sortedAfterProvider.get(provider.slug)!.push(mensa)
   }
 
   return sortedAfterProvider
@@ -63,14 +64,13 @@ type Recipe = typeof recipes.$inferSelect
 type Feature = typeof features.$inferSelect
 
 export async function getServings(
-  params: {
-    mensaSlug: string,
-    date: string,
-    language: 'en' | 'de',
-  }
+
+  mensaSlug: string,
+  date: string,
+  language: 'en' | 'de',
+
 ) {
-  console.log("Params: ", params)
-  const { mensaSlug, date, language = "de" } = params
+
   if (!mensaSlug) return
   console.log("mensaSlug: ", mensaSlug)
   // if (!mensaSlug) throw new Error('mensaSlug is missing')

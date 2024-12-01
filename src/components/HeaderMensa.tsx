@@ -51,6 +51,10 @@ export const HeaderMensa: VoidComponent<{
   function getDateString(date: Date) {
     // Check if its within the same calendar week
     if (areDatesInSameWeek(new Date(), date)) {
+      // Check if its today
+      if (date.toDateString() === new Date().toDateString()) {
+        return 'Heute'
+      }
       return date.toLocaleDateString('de-DE', { weekday: 'long' })
     }
     return date.toLocaleDateString('de-DE')

@@ -25,7 +25,7 @@ export default function Home() {
 
   const [accordionValue, setAccordionValue] = createSignal<string>()
   createEffect(() => {
-    console.log(accordionValue())
+    console.log(mensas())
   })
 
   return (
@@ -33,20 +33,20 @@ export default function Home() {
       <Header />
       <div class='p-2'>
         <div class='overflow-clip rounded-xl max-w-5xl mx-auto'>
-          <Accordion collapseBehavior='hide' value={accordionValue()} onValueChange={setAccordionValue}>
+          <Accordion collapseBehavior='hide' value={accordionValue()} onValueChange={setAccordionValue} initialValue={mensas()?.keys().next().value}>
             <For
               each={mensas()?.keys().toArray()}
               fallback={<div>Loading...</div>}
             >
               {(provider) => (
                 <Accordion.Item
-                  value={provider.slug ||
+                  value={provider ||
                     createUniqueId()}
                 >
                   <div>
                     <Accordion.Trigger class='items-center flex justify-between text-[#5A554D] font-bold tracking-[4%] uppercase font-noto w-full bg-[#C2D1C6] px-4 py-2 text-left transition-all duration-100 focus-visible:bg-corvu-200 focus-visible:outline-none'>
                       <h2>
-                        {provider.name}
+                        {mensas()?.get(provider)![0].mensa_provider.name}
                       </h2>
                       <ChevronUp class={cn('rotate-180 transition-transform', accordionValue() === provider.slug && "rotate-0")} />
                     </Accordion.Trigger>
