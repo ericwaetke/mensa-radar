@@ -1,62 +1,88 @@
 import { createAsync, type RouteDefinition } from '@solidjs/router'
-import { createEffect, For } from 'solid-js'
+import { createEffect, createSignal, createUniqueId, For } from 'solid-js'
 import { getMensas } from '~/api'
+import { Header } from '~/components/Header'
 import { Logo } from '~/components/Logo'
+import Accordion from '@corvu/accordion'
+import { ChevronUp } from '~/components/icons'
+import { cn } from '~/lib/cn'
 
 export const route = {
-	preload() {
-		getMensas()
-	},
+  preload() {
+    getMensas()
+  },
 } satisfies RouteDefinition
 
 export default function Home() {
-	const mensas = createAsync(async () => getMensas(), {
-		deferStream: true,
-	})
+  const mensas = createAsync(async () => getMensas(), {
+    deferStream: true,
+  })
 
-	createEffect(() => {
-		console.log(mensas(), mensas()?.keys().toArray())
-	})
+  // Format the date in the format "DD-MM-YYYY"
+  const currentDateTime = new Date()
+  const formattedDate = `${currentDateTime.getDate()}-${currentDateTime.getMonth() + 1
+    }-${currentDateTime.getFullYear()}`
 
-	// Format the date in the format "DD-MM-YYYY"
-	const currentDateTime = new Date()
-	const formattedDate = `${currentDateTime.getDate()}-${
-		currentDateTime.getMonth() + 1
-	}-${currentDateTime.getFullYear()}`
+  const [accordionValue, setAccordionValue] = createSignal<string>()
+  createEffect(() => {
+    console.log(accordionValue())
+  })
 
-	return (
-		<main class='h-full min-h-screen w-full bg-[#DDEDE2] p-4'>
-			<Logo />
-			<div class='overflow-clip rounded-xl'>
-				<For
-					each={mensas()?.keys().toArray()}
-					fallback={<div>Loading...</div>}
-				>
-					{(provider) => (
-						<div>
-							{provider.name}
-							<For each={mensas()?.get(provider)}>
-								{(mensa) => (
-									<a
-										class='flex bg-white p-4'
-										href={`${mensa.mensa_provider.slug}/${mensa.mensa.slug}/${formattedDate}`}
-									>
-										<h4 class='text-lg font-bold'>
-											{mensa.mensa
-												.name}
-										</h4>
-										<p>
-											{mensa.mensa
-												.address_city}
-										</p>
-									</a>
-								)}
-							</For>
-						</div>
-					)}
-					{}
-				</For>
-			</div>
-		</main>
-	)
+  return (
+    <main class='h-full min-h-screen w-full bg-[#DDEDE2]'>
+      <Header />
+      <div class='p-2'>
+        <div class='overflow-clip rounded-xl'>
+          <Accordion collapseBehavior='hide' value={accordionValue()} onValueChange={setAccordionValue}>
+            <For
+              each={mensas()?.keys().toArray()}
+              fallback={<div>Loading...</div>}
+            >
+              {(provider) => (
+                <Accordion.Item
+                  value={provider.slug ||
+                    createUniqueId()}
+                >
+                  <div>
+                    <Accordion.Trigger class='items-center flex justify-between text-[#5A554D] font-bold tracking-[4%] uppercase font-noto w-full bg-[#C2D1C6] px-4 py-2 text-left transition-all duration-100 focus-visible:bg-corvu-200 focus-visible:outline-none'>
+                      <h2>
+                        {provider.name}
+                      </h2>
+                      <ChevronUp class={cn('rotate-180 transition-transform', accordionValue() === provider.slug && "rotate-0")} />
+                    </Accordion.Trigger>
+                    <For each={mensas()?.get(provider)}>
+                      {(mensa) => (
+                        <Accordion.Content class='overflow-hidden bg-white corvu-expanded:animate-expand corvu-collapsed:animate-collapse'>
+                          <a
+                            href={`${mensa.mensa_provider.slug}/${mensa.mensa.slug}/${formattedDate}`}
+                            class='w-full py-3 px-4 flex flex-row items-center justify-between'
+                          >
+                            <div class='flex flex-col'>
+                              <h4 class='text-lg font-bold'>
+                                {mensa.mensa
+                                  .name}
+                              </h4>
+                              <div class='flex gap-1 items-center'>
+                                <div class='w-[6px] h-[6px] rounded-full bg-[#DCD631]' />
+                                <p class='text-[#726E00] font-noto text-[13px] font-medium'>
+                                  Öffnungszeiten
+                                  noch nicht
+                                  verfügbar
+                                </p>
+                              </div>
+                            </div>
+                            <ChevronUp class=' rotate-90' />
+                          </a>
+                        </Accordion.Content>
+                      )}
+                    </For>
+                  </div>
+                </Accordion.Item>
+              )}
+            </For>
+          </Accordion>
+        </div>
+      </div>
+    </main>
+  )
 }

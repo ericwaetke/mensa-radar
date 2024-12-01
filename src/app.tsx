@@ -4,6 +4,7 @@ import { FileRoutes } from '@solidjs/start/router'
 import { Suspense } from 'solid-js'
 import './app.css'
 import './bespoke-slab.css'
+import '@fontsource-variable/noto-sans'
 
 export default function App() {
 	return (
