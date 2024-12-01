@@ -13,6 +13,7 @@
 		"@types/better-sqlite3": "^7.6.10",
 		"@types/node": "^20.14.8",
 		"drizzle-kit": "^0.22.8",
+		"node-gyp": "^10.2.0",
 		"oxlint": "^0.9.10",
 		"prettier-plugin-tailwindcss": "^0.6.8"
 	},

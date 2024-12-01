@@ -3,8 +3,12 @@ import { defineConfig } from '@solidjs/start/config'
 export default defineConfig({
 	vite: {
 		server: {
-			port: 3333,
+			port: 4321,
+			strictPort: true,
 		},
 		ssr: { external: ['drizzle-orm'] },
+	},
+	server: {
+		preset: 'deno',
 	},
 })

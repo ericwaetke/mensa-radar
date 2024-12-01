@@ -1,7 +1,7 @@
 'use server'
 import { redirect } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
-import { and, eq, like } from 'drizzle-orm'
+import { and, eq, InferSelectModel, like } from 'drizzle-orm'
 import { db } from './db'
 import {
 	additives,
@@ -17,14 +17,29 @@ import {
 } from '../../drizzle/schema'
 
 export async function getMensas() {
-	const mensas = db
+	const mensas = await db
 		.select()
-		.from(mensa)
+		.from(mensa_provider)
 		.innerJoin(
-			mensa_provider,
+			mensa,
 			eq(mensa_provider.id, mensa.provider_id),
 		)
-	return mensas
+
+	const sortedAfterProvider = new Map<
+		InferSelectModel<typeof mensa_provider>,
+		typeof mensas
+	>()
+	for (const mensa of mensas) {
+		const provider = mensa.mensa_provider
+		if (!provider) throw new Error('Provider slug is missing')
+
+		if (!sortedAfterProvider.has(provider)) {
+			sortedAfterProvider.set(provider, [])
+		}
+		sortedAfterProvider.get(provider)!.push(mensa)
+	}
+
+	return sortedAfterProvider
 }
 
 export async function getMensa(slug: string) {
