@@ -7,31 +7,33 @@ import {
   additives,
   allergens,
   features,
-  features_locales,
+  featuresLocales,
   mensa,
-  mensa_provider,
+  mensaProvider,
   recipes,
-  recipes_locales,
-  recipes_rels,
+  recipesLocales,
+  recipesRels,
   servings,
+  locale,
+  localeRels
 } from '../../drizzle/schema'
-import { locale, localeRels } from '@/migrations/schema'
+import { sql } from 'drizzle-orm'
 
 export async function getMensas() {
   const mensas = await db
     .select()
-    .from(mensa_provider)
+    .from(mensaProvider)
     .innerJoin(
       mensa,
-      eq(mensa_provider.id, mensa.provider_id),
+      eq(mensaProvider.id, mensa.provider_id),
     )
 
   const sortedAfterProvider = new Map<
-    InferSelectModel<typeof mensa_provider>,
+    InferSelectModel<typeof mensaProvider>,
     typeof mensas
   >()
   for (const mensa of mensas) {
-    const provider = mensa.mensa_provider
+    const provider = mensa.mensaProvider
     if (!provider) throw new Error('Provider slug is missing')
 
     if (!sortedAfterProvider.has(provider)) {
@@ -51,8 +53,8 @@ export async function getMensa(slug: string) {
     .from(mensa)
     .where(eq(mensa.slug, slug))
     .innerJoin(
-      mensa_provider,
-      eq(mensa.provider_id, mensa_provider.id),
+      mensaProvider,
+      eq(mensa.providerId, mensaProvider.id),
     )
     .limit(1)
 
@@ -67,6 +69,7 @@ export async function getServings(
   date: string,
   language: 'en' | 'de' = 'de',
 ) {
+  console.log(date)
   // get mensa from db
   // const _mensa = db.select().from(mensa).where();
   const rows = await db
@@ -74,37 +77,35 @@ export async function getServings(
       date: servings.date,
       recipe: {
         id: recipes.id,
-        name: recipes_locales.name,
-        price_students: recipes.price_students,
-        price_employees: recipes.price_employees,
-        price_guests: recipes.price_guests,
+        name: locale.name,
+        price_students: recipes.priceStudents,
+        price_employees: recipes.priceEmployees,
+        price_guests: recipes.priceGuests,
       },
       feature: {
-        name: features_locales.name,
+        name: featuresLocales.name,
       },
     })
     .from(servings)
-    .innerJoin(mensa, eq(servings.mensa_id, mensa.id))
-    .innerJoin(recipes, eq(servings.recipe_id, recipes.id))
-    .innerJoin(
-      locale,
-      eq(locale.locale, language),
-    )
-    .innerJoin(localeRels, eq(localeRels.parentId, recipes.id))
-    .innerJoin(recipes_rels, eq(recipes_rels.parent_id, recipes.id))
-    .innerJoin(features, eq(recipes_rels.features_id, features.id))
-    .innerJoin(
-      features_locales,
-      eq(features_locales._parent_id, features.id),
+    .innerJoin(mensa, eq(servings.mensaId, mensa.id))
+    .innerJoin(recipes, eq(servings.recipeId, recipes.id))
+    .innerJoin(localeRels, eq(recipes.id, localeRels.recipesId))
+    .innerJoin(locale, eq(localeRels.parentId, locale.id))
+    .fullJoin(recipesRels, eq(recipes.id, recipesRels.parentId))
+    .fullJoin(features, eq(recipesRels.featuresId, features.id))
+    .fullJoin(
+      featuresLocales,
+      eq(featuresLocales.parentId, features.id),
     )
     .where(
       and(
         eq(mensa.slug, mensaSlug),
-        eq(servings.date, date),
-        eq(recipes_locales._locale, language),
-        eq(features_locales._locale, language),
+        sql`date::date = ${date}`,
+        eq(locale.locale, language),
+        // eq(featuresLocales.locale, language),
       ),
     )
+  // console.log(rows)
 
   // Aggregate the rows into a list of servings
   // with features as array
@@ -121,7 +122,6 @@ export async function getServings(
 
   for (const row of rows) {
     const { date, recipe, feature } = row
-    console.log(recipe.name)
 
     const serving = _servings.find((s) => s.recipe.name === recipe.name)
     if (serving) {
@@ -131,7 +131,7 @@ export async function getServings(
       _servings.push({
         date,
         recipe,
-        features: feature.name ? [feature.name] : [],
+        features: (feature && feature.name) ? [feature.name] : [],
       })
     }
   }
