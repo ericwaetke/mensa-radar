@@ -105,7 +105,7 @@ export async function getServings(
     .where(
       and(
         eq(mensa.slug, mensaSlug),
-        sql`date::date = ${date}`,
+        sql`(date AT TIME ZONE 'CET')::date = ${date}`,
         eq(locale.locale, language),
         // eq(featuresLocales.locale, language),
       ),
@@ -127,6 +127,7 @@ export async function getServings(
 
   for (const row of rows) {
     const { date, recipe, feature } = row
+    if (!date) continue
 
     const serving = _servings.find((s) => s.recipe.name === recipe.name)
     if (serving) {
