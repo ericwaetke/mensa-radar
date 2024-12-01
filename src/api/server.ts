@@ -25,7 +25,7 @@ export async function getMensas() {
     .from(mensaProvider)
     .innerJoin(
       mensa,
-      eq(mensaProvider.id, mensa.provider_id),
+      eq(mensaProvider.id, mensa.providerId),
     )
 
   const sortedAfterProvider = new Map<
@@ -33,7 +33,7 @@ export async function getMensas() {
     typeof mensas
   >()
   for (const mensa of mensas) {
-    const provider = mensa.mensaProvider
+    const provider = mensa.mensa_provider
     if (!provider) throw new Error('Provider slug is missing')
 
     if (!sortedAfterProvider.has(provider)) {
@@ -47,9 +47,7 @@ export async function getMensas() {
 
 export async function getMensa(slug: string) {
   const res = await db
-    .select({
-      name: mensa.name,
-    })
+    .select()
     .from(mensa)
     .where(eq(mensa.slug, slug))
     .innerJoin(
@@ -65,10 +63,17 @@ type Recipe = typeof recipes.$inferSelect
 type Feature = typeof features.$inferSelect
 
 export async function getServings(
-  mensaSlug: string,
-  date: string,
-  language: 'en' | 'de' = 'de',
+  params: {
+    mensaSlug: string,
+    date: string,
+    language: 'en' | 'de',
+  }
 ) {
+  console.log("Params: ", params)
+  const { mensaSlug, date, language = "de" } = params
+  if (!mensaSlug) return
+  console.log("mensaSlug: ", mensaSlug)
+  // if (!mensaSlug) throw new Error('mensaSlug is missing')
   console.log(date)
   // get mensa from db
   // const _mensa = db.select().from(mensa).where();
@@ -125,7 +130,7 @@ export async function getServings(
 
     const serving = _servings.find((s) => s.recipe.name === recipe.name)
     if (serving) {
-      if (!feature.name) continue
+      if (!feature || !feature.name) continue
       serving.features.push(feature.name!)
     } else {
       _servings.push({
@@ -135,6 +140,8 @@ export async function getServings(
       })
     }
   }
+
+  console.log(_servings)
 
   return _servings
 }

@@ -1,13 +1,9 @@
 import { createAsync, type RouteDefinition, useParams } from '@solidjs/router'
-import { createEffect, createSignal, For, Show, Suspense } from 'solid-js'
+import { createEffect, createMemo, createResource, createSignal, For, Show, Suspense } from 'solid-js'
 import { getMensa, getMensas, getServings } from '~/api'
+import { Header } from '~/components/Header'
+import { HeaderMensa } from '~/components/HeaderMensa'
 import { Serving } from '~/components/Serving'
-
-export const route = {
-  preload() {
-    // getServings();
-  },
-} satisfies RouteDefinition
 
 export default function Home() {
   const params = useParams()
@@ -18,59 +14,60 @@ export default function Home() {
 
     return `${year}-${month}-${day}`
   }
-  const date = parseDate(params.date)
-  const servings = createAsync(
-    async () => getServings(params.mensa, date, 'de'),
-    { deferStream: true },
-  )
+  const [servings] = createResource(() => {
+    return {
+      mensaSlug: params.mensa,
+      date: parseDate(params.date),
+      language: 'de' as const,
+    }
+  }, getServings, {
+    deferStream: true,
+  })
 
   const mensa = createAsync(() => getMensa(params.mensa), {
     deferStream: true,
   })
 
   return (
-    <main class='mx-auto h-full min-h-screen w-full max-w-5xl p-4 font-bespoke'>
-      <a href='/' class='flex gap-2'>
-        &lt;{' '}
-        <Suspense fallback={<div>Loading...</div>}>
-          {mensa()?.name}
-        </Suspense>
-      </a>
+    <main class='h-full min-h-screen w-full font-bespoke'>
+      <HeaderMensa mensa={mensa()?.mensa} />
 
-      <div class='flex gap-3'>
+      <div class='flex gap-3 mx-auto max-w-5xl p-4'>
         <For each={[0, 1]}>
           {(j) => (
             <div class='flex basis-1/2 flex-col gap-3'>
-              <For
-                each={servings()}
-                fallback={
-                  <div>
-                    Loading...
-                  </div>
-                }
-              >
-                {(serving, i) =>
-                  i() %
-                  2 ===
-                  j &&
-                  (
-                    <Serving
-                      name={serving
-                        .recipe.name}
-                      priceStudents={serving
-                        .recipe
-                        .price_students}
-                      priceEmployees={serving
-                        .recipe
-                        .price_employees}
-                      priceGuests={serving
-                        .recipe
-                        .price_guests}
-                      features={serving
-                        .features}
-                    />
-                  )}
-              </For>
+              <Suspense fallback={<div>Loading...</div>}>
+                <For
+                  each={servings()}
+                  fallback={
+                    <div>
+                      Loading...
+                    </div>
+                  }
+                >
+                  {(serving, i) =>
+                    i() %
+                    2 ===
+                    j &&
+                    (
+                      <Serving
+                        name={serving
+                          .recipe.name}
+                        priceStudents={serving
+                          .recipe
+                          .price_students}
+                        priceEmployees={serving
+                          .recipe
+                          .price_employees}
+                        priceGuests={serving
+                          .recipe
+                          .price_guests}
+                        features={serving
+                          .features}
+                      />
+                    )}
+                </For>
+              </Suspense>
             </div>
           )}
         </For>
