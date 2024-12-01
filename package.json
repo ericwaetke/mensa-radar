@@ -13,7 +13,6 @@
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/node": "^20.17.9",
 		"drizzle-kit": "^0.28.1",
-		"node-gyp": "^10.2.0",
 		"oxlint": "^0.9.10",
 		"prettier-plugin-tailwindcss": "^0.6.9"
 	},
@@ -24,7 +23,6 @@
 		"@solidjs/router": "^0.14.10",
 		"@solidjs/start": "^1.0.10",
 		"autoprefixer": "^10.4.20",
-		"better-sqlite3": "^11.6.0",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "^0.36.4",
 		"install": "^0.13.0",
