@@ -57,23 +57,25 @@ export const HeaderMensa: VoidComponent<{
   }
 
   return (
-    <div class='bg-white w-full px-2 pb-2 pt-16 flex flex-col justify-center gap-4'>
-      <a href='/' class='flex w-full justify-between items-center'>
-        <ChevronUp class='-rotate-90' />
-        <h1 class='text-[18px] font-bold'>{
-          props.mensa?.name
-        }</h1>
-        <div />
-      </a>
-      <div class='flex justify-between items-end'>
-        {/* Opening Times */}
-        <div class='h-fit bg-[#DCD631] text-[#494835] rounded-[4px] px-2 py-1 inline-block font-noto text-[12px] font-semibold'>Öffnungszeiten nicht verfügbar</div>
+    <div class='bg-white'>
+      <div class='w-full px-4 pb-2 pt-16 flex flex-col justify-center gap-4 max-w-5xl mx-auto'>
+        <a href='/' class='flex w-full justify-between items-center'>
+          <ChevronUp class='-rotate-90' />
+          <h1 class='text-[18px] font-bold'>{
+            props.mensa?.name
+          }</h1>
+          <div />
+        </a>
+        <div class='flex justify-between items-end'>
+          {/* Opening Times */}
+          <div class='h-fit bg-[#DCD631] text-[#494835] rounded-[4px] px-2 py-1 inline-block font-noto text-[12px] font-semibold'>Öffnungszeiten nicht verfügbar</div>
 
-        {/* Date Picker */}
-        <div class='bg-[#DDEDE2] rounded-[4px] flex font-noto text-base'>
-          <button class='h-9 w-9 flex items-center justify-center border-r border-black/15' onClick={() => { goToDate({ offset: -1 }) }}><ChevronUp class='-rotate-90' /></button>
-          <button class='px-3'>{getDateString(parsedDate())}</button>
-          <button class='h-9 w-9 flex items-center justify-center border-l border-black/15' onClick={() => { goToDate({ offset: 1 }) }}><ChevronUp class='rotate-90' /></button>
+          {/* Date Picker */}
+          <div class='bg-[#DDEDE2] rounded-[4px] flex font-noto text-base'>
+            <button class='h-9 w-9 flex items-center justify-center border-r border-black/15' onClick={() => { goToDate({ offset: -1 }) }}><ChevronUp class='-rotate-90' /></button>
+            <button class='px-3'>{getDateString(parsedDate())}</button>
+            <button class='h-9 w-9 flex items-center justify-center border-l border-black/15' onClick={() => { goToDate({ offset: 1 }) }}><ChevronUp class='rotate-90' /></button>
+          </div>
         </div>
       </div>
     </div>

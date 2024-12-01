@@ -32,7 +32,7 @@ export default function Home() {
     <main class='h-full min-h-screen w-full bg-[#DDEDE2]'>
       <Header />
       <div class='p-2'>
-        <div class='overflow-clip rounded-xl'>
+        <div class='overflow-clip rounded-xl max-w-5xl mx-auto'>
           <Accordion collapseBehavior='hide' value={accordionValue()} onValueChange={setAccordionValue}>
             <For
               each={mensas()?.keys().toArray()}
