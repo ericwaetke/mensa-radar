@@ -28,9 +28,36 @@ services:
     image: ghcr.io/ericwaetke/mensaradar:${GIT_COMMIT_HASH:-latest}
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.services.web.loadbalancer.server.port=3000'
+      - 'traefik.http.services.web.loadbalancer.server.port=4321'
       # - 'traefik.http.routers.web.rule=Host(`mensa-radar.de`)'
       - 'traefik.http.routers.web.rule=Host(`mensa-radar.de`)'
+      - 'traefik.http.routers.web.entrypoints=websecure'
+      - 'traefik.http.routers.web.tls.certresolver=myresolver'
+    ports:
+      - '4321:4321'
+    secrets:
+      - db-password
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=app
+      - POSTGRES_PORT=5432
+      - POSTGRES_SSLMODE=disable
+      - NITRO_PORT=4321
+      - PORT=4321
+    deploy:
+      update_config:
+        order: start-first
+    depends_on:
+      - db
+
+  hub:
+    image: ghcr.io/ericwaetke/mensa-hub:latest
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.services.web.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.web.rule=Host(`hub.mensa-radar.de`)'
       - 'traefik.http.routers.web.entrypoints=websecure'
       - 'traefik.http.routers.web.tls.certresolver=myresolver'
     ports:
@@ -50,33 +77,8 @@ services:
     depends_on:
       - db
 
-  hub:
-    image: ghcr.io/ericwaetke/mensa-hub:latest
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.services.web.loadbalancer.server.port=3333'
-      - 'traefik.http.routers.web.rule=Host(`hub.mensa-radar.de`)'
-      - 'traefik.http.routers.web.entrypoints=websecure'
-      - 'traefik.http.routers.web.tls.certresolver=myresolver'
-    ports:
-      - '3333:3333'
-    secrets:
-      - db-password
-    environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=app
-      - POSTGRES_PORT=5432
-      - POSTGRES_SSLMODE=disable
-    deploy:
-      update_config:
-        order: start-first
-    depends_on:
-      - db
-
   queue:
-    image: ghcr.io/ercwaetke/mensa-queue:latest
+    image: ghcr.io/ericwaetke/mensa-queue:latest
     secrets:
       - db-password
     environment:
