@@ -51,6 +51,7 @@ services:
         order: start-first
     depends_on:
       - db
+      - hub
 
   hub:
     image: ghcr.io/ericwaetke/mensa-hub:latest
@@ -71,6 +72,8 @@ services:
       - POSTGRES_DB=app
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
+      - PAYLOAD_SECRET=43bca53404a4663d51d0a0ee
+      - SERVER_URL=http://localhost:3000
     deploy:
       update_config:
         order: start-first
@@ -93,6 +96,7 @@ services:
         order: start-first
     depends_on:
       - db
+      - hub
 
   db:
     image: postgres
