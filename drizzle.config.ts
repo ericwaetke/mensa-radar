@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 
-const databasePassword = process.env.DATABASE_PASSWORD_FILE
-  ? readFileSync(process.env.DATABASE_PASSWORD_FILE, "utf8")
+const databasePassword = process.env.POSTGRES_PASSWORD_FILE
+  ? readFileSync(process.env.POSTGRES_PASSWORD_FILE, "utf8")
   : undefined;
 
 export default {
