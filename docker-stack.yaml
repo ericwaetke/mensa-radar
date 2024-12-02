@@ -25,7 +25,7 @@ services:
   #     - /var/run/docker.sock:/var/run/docker.sock
 
   web:
-    image: ghcr.io/ericwaetke/mensaradar:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/ericwaetke/mensaradar:latest
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.services.web.loadbalancer.server.port=4321'

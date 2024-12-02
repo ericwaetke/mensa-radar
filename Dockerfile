@@ -33,7 +33,10 @@ FROM base AS release
 COPY --from=prerelease /usr/src/app/.output .
 # COPY --from=prerelease /usr/src/app/package.json .
 
+RUN addgroup -S bun && adduser -S bun -G bun
+RUN chown -R bun:bun /usr/src/app
+
 # run the app
 USER bun
 EXPOSE 4321/tcp
-ENTRYPOINT [ "pnpm", "run", "./server/index.mjs" ]
+ENTRYPOINT [ "node", "./server/index.mjs" ]
