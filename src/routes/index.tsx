@@ -27,8 +27,7 @@ export default function Home() {
 
 	const [accordionValue, setAccordionValue] = createSignal<string>()
 	createEffect(() => {
-		console.log(mensas().keys().toArray())
-		setMensaProvider(mensas().keys().toArray())
+		setMensaProvider(Array.from(mensas().keys()))
 	})
 
 	const [mensaProvider, setMensaProvider] = createSignal<string[]>()
