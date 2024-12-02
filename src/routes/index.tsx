@@ -27,8 +27,11 @@ export default function Home() {
 
 	const [accordionValue, setAccordionValue] = createSignal<string>()
 	createEffect(() => {
-		console.log(mensas())
+		console.log(mensas().keys().toArray())
+		setMensaProvider(mensas().keys().toArray())
 	})
+
+	const [mensaProvider, setMensaProvider] = createSignal<string[]>()
 
 	return (
 		<main class='h-full min-h-screen w-full bg-[#DDEDE2]'>
@@ -39,7 +42,7 @@ export default function Home() {
 						fallback={(err) => <div>Error: {err.message}</div>}
 					>
 						<Show
-							when={mensas()?.keys().length > 0}
+							when={mensas()?.keys()}
 							fallback={'loading'}
 						>
 							<Accordion
@@ -49,7 +52,7 @@ export default function Home() {
 								initialValue={mensas()?.keys().next().value}
 							>
 								<For
-									each={mensas()?.keys()?.toArray()}
+									each={mensaProvider()}
 								>
 									{(provider) => (
 										<Accordion.Item
