@@ -7,12 +7,12 @@ WORKDIR /usr/src/app
 # this will cache them and speed up future builds
 FROM base AS install
 RUN mkdir -p /temp/dev
-COPY package.json bun.lockb /temp/dev/
+COPY package.json bun.lockb pnpm-lock.yaml* /temp/dev/
 RUN cd /temp/dev && corepack enable pnpm && pnpm i --frozen-lockfile
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /temp/prod
-COPY package.json bun.lockb /temp/prod/
+COPY package.json bun.lockb pnpm-lock.yaml* /temp/prod/
 RUN cd /temp/prod && corepack enable pnpm && pnpm i --frozen-lockfile --production
 
 # copy node_modules from temp directory
