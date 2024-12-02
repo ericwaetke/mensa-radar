@@ -40,4 +40,4 @@ RUN chown -R bun:bun /usr/src/app
 USER bun
 EXPOSE 4321/tcp
 # ENTRYPOINT [ "node", "./server/index.mjs" ]
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD HOSTNAME="0.0.0.0" node ./server/index.mjs
