@@ -28,13 +28,14 @@ ENV NODE_ENV=production
 RUN corepack enable pnpm && pnpm run build
 
 # copy production dependencies and source code into final image
-FROM base AS release
+# FROM base AS release
+FROM oven/bun:1 AS release
 # COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/.output .
 # COPY --from=prerelease /usr/src/app/package.json .
 
-RUN addgroup -S bun && adduser -S bun -G bun
-RUN chown -R bun:bun /usr/src/app
+# RUN addgroup -S bun && adduser -S bun -G bun
+# RUN chown -R bun:bun /usr/src/app
 
 # run the app
 USER bun
