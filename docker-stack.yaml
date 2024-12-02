@@ -1,34 +1,47 @@
 services:
-  # traefik:
-  #   image: traefik:v3.1
-  #   command:
-  #     - '--providers.docker'
-  #     - '--providers.docker.exposedbydefault=false'
-  #     - '--entryPoints.websecure.address=:443'
-  #     - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
-  #     - '--certificatesresolvers.myresolver.acme.email=eric@woven.design'
-  #     - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
-  #     - '--entrypoints.web.address=:80'
-  #     - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
-  #     - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
-  #   ports:
-  #     - mode: host
-  #       protocol: tcp
-  #       published: 80
-  #       target: 80
-  #     - mode: host
-  #       protocol: tcp
-  #       published: 443
-  #       target: 443
-  #   volumes:
-  #     - letsencrypt:/letsencrypt
-  #     - /var/run/docker.sock:/var/run/docker.sock
+  traefik:
+    image: traefik:v3.1
+    networks:
+         - proxy
+    command:
+      - '--providers.docker'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.docker.network=proxy'
+      - '--entryPoints.websecure.address=:443'
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
+      - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
+      - '--log.level=INFO'
+      - '--accesslog=true'
+      - '--api.insecure=true'
+      - '--providers.docker'
+      - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
+      - '--certificatesresolvers.myresolver.acme.email=eric@woven.design'
+      - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+      - mode: host
+        protocol: tcp
+        published: 8080
+        target: 8080
+    volumes:
+      - letsencrypt:/letsencrypt
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   web:
     image: ghcr.io/ericwaetke/mensaradar:latest
+    networks:
+      - proxy
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.services.web.loadbalancer.server.port=4321'
+      # - 'traefik.http.services.web.loadbalancer.server.port=4321'
       # - 'traefik.http.routers.web.rule=Host(`mensa-radar.de`)'
       - 'traefik.http.routers.web.rule=Host(`mensa-radar.de`)'
       - 'traefik.http.routers.web.entrypoints=websecure'
@@ -55,12 +68,14 @@ services:
 
   hub:
     image: ghcr.io/ericwaetke/mensa-hub:latest
+    networks:
+      - proxy
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.services.web.loadbalancer.server.port=3000'
-      - 'traefik.http.routers.web.rule=Host(`hub.mensa-radar.de`)'
-      - 'traefik.http.routers.web.entrypoints=websecure'
-      - 'traefik.http.routers.web.tls.certresolver=myresolver'
+      # - 'traefik.http.services.web.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.hub.rule=Host(`hub.mensa-radar.de`)'
+      - 'traefik.http.routers.hub.entrypoints=websecure'
+      - 'traefik.http.routers.hub.tls.certresolver=myresolver'
     ports:
       - '3000:3000'
     secrets:
@@ -73,7 +88,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
       - PAYLOAD_SECRET=43bca53404a4663d51d0a0ee
-      - SERVER_URL=http://localhost:3000
+      - SERVER_URL=https://hub.mensa-radar.de
     deploy:
       update_config:
         order: start-first
@@ -82,6 +97,8 @@ services:
 
   queue:
     image: ghcr.io/ericwaetke/mensa-queue:latest
+    networks:
+      - proxy
     secrets:
       - db-password
     environment:
@@ -91,15 +108,17 @@ services:
       - POSTGRES_DB=app
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
-    deploy:
-      update_config:
-        order: start-first
+    # deploy:
+    #   update_config:
+    #     order: start-first
     depends_on:
       - db
       - hub
 
   db:
     image: postgres
+    networks:
+      - proxy
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -117,6 +136,10 @@ services:
 volumes:
   db-data:
   letsencrypt:
+
+networks:
+  proxy:
+    name: proxy
 
 secrets:
   db-password:
