@@ -34,5 +34,5 @@ COPY --from=prerelease /usr/src/app/.output .
 
 # run the app
 USER bun
-EXPOSE 3421/tcp
+EXPOSE 4321/tcp
 ENTRYPOINT [ "bun", "run", "./server/index.mjs" ]
