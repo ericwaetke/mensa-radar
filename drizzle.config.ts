@@ -10,7 +10,7 @@ export default {
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD_FILE
       ? readFileSync(process.env.POSTGRES_PASSWORD_FILE, "utf8")
-      : undefined,
+      : process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
   },
 }
