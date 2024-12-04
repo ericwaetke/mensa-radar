@@ -69,9 +69,7 @@ export async function getServings(
   language: 'en' | 'de',
 ) {
   if (!mensaSlug) return
-  console.log("mensaSlug: ", mensaSlug)
   // if (!mensaSlug) throw new Error('mensaSlug is missing')
-  console.log(date)
   // get mensa from db
   // const _mensa = db.select().from(mensa).where();
   const recipeLocales = aliasedTable(locale, "recipeLocales")
@@ -86,9 +84,11 @@ export async function getServings(
         price_students: recipes.priceStudents,
         price_employees: recipes.priceEmployees,
         price_guests: recipes.priceGuests,
+        category: recipes.category,
       },
       feature: {
         name: featureLocales.name,
+        visible: features.visibleSmall
       },
     })
     .from(servings)
@@ -110,6 +110,8 @@ export async function getServings(
       ),
     )
 
+  console.log(rows)
+
   // Aggregate the rows into a list of servings
   // with features as array
   const _servings: {
@@ -119,6 +121,7 @@ export async function getServings(
       price_students: string | null
       price_employees: string | null
       price_guests: string | null
+      category: "main" | "dessert"
     }
     features: string[]
   }[] = []
@@ -129,16 +132,23 @@ export async function getServings(
 
     const serving = _servings.find((s) => s.recipe.name === recipe.name)
     if (serving) {
-      if (!feature || !feature.name) continue
+      if (!feature || !feature.name || !feature.visible) continue
       serving.features.push(feature.name!)
     } else {
       _servings.push({
         date,
         recipe,
-        features: (feature && feature.name) ? [feature.name] : [],
+        features: (feature && feature.name && feature.visible) ? [feature.name] : [],
       })
     }
   }
+
+  // Sort the servings by category
+  _servings.sort((a, b) => {
+    if (a.recipe.category === 'main' && b.recipe.category === 'dessert') return -1
+    if (a.recipe.category === 'dessert' && b.recipe.category === 'main') return 1
+    return 0
+  })
 
   // Sort the features for each serving
   _servings.forEach(serving => {

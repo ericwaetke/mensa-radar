@@ -24,7 +24,7 @@ export const Serving: Component<{
 					{(feature) => (
 						<div
 							class={cn(
-								"flex items-center bg-[#D3D6D4] text-[#3e3e3e] px-2 py-1 rounded-[4px] font-noto text-[12px] gap-1 font-semibold",
+								"flex items-center bg-[#D3D6D4] text-[#3e3e3e] px-2 py-1 rounded-[4px] font-noto text-[12px] gap-1 font-semibold ring-inset ring-1 ring-black/10",
 								feature.toLowerCase().includes("vegan") &&
 									"bg-[#33EFB3] text-[#354937]",
 								(feature

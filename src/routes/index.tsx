@@ -1,12 +1,12 @@
-import { createAsync, type RouteDefinition } from '@solidjs/router'
-import { createEffect, createSignal, createUniqueId, For, Show } from 'solid-js'
-import { getMensas } from '~/api'
-import { Header } from '~/components/Header'
-import { Logo } from '~/components/Logo'
-import Accordion from '@corvu/accordion'
-import { ChevronUp } from '~/components/icons'
-import { cn } from '~/lib/cn'
-import { ErrorBoundary } from 'solid-js'
+import { createAsync, type RouteDefinition } from "@solidjs/router"
+import { createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
+import { getMensas } from "~/api"
+import { Header } from "~/components/Header"
+import { Logo } from "~/components/Logo"
+import Accordion from "@corvu/accordion"
+import { ChevronUp } from "~/components/icons"
+import { cn } from "~/lib/cn"
+import { ErrorBoundary } from "solid-js"
 
 export const route = {
 	preload() {
@@ -27,76 +27,70 @@ export default function Home() {
 
 	const [accordionValue, setAccordionValue] = createSignal<string>()
 	createEffect(() => {
-		setMensaProvider(Array.from(mensas().keys()))
+		if (!mensas() || mensas() === undefined) return
+		setMensaProvider(Array.from(mensas()!.keys()))
 	})
 
 	const [mensaProvider, setMensaProvider] = createSignal<string[]>()
 
 	return (
-		<main class='h-full min-h-screen w-full bg-[#DDEDE2]'>
+		<main class="h-full min-h-screen w-full bg-[#DDEDE2]">
 			<Header />
-			<div class='p-2'>
-				<div class='overflow-clip rounded-xl max-w-5xl mx-auto'>
+			<div class="p-2">
+				<div class="overflow-clip rounded-xl max-w-5xl mx-auto">
 					<ErrorBoundary
-						fallback={(err) => <div>Error: {err.message}</div>}
-					>
-						<Show
-							when={mensas()?.keys()}
-							fallback={'loading'}
-						>
+						fallback={(err) => <div>Error: {err.message}</div>}>
+						<Show when={mensas()?.keys()} fallback={"loading"}>
 							<Accordion
-								collapseBehavior='hide'
+								collapseBehavior="hide"
 								value={accordionValue()}
 								onValueChange={setAccordionValue}
-								initialValue={mensas()?.keys().next().value}
-							>
-								<For
-									each={mensaProvider()}
-								>
+								initialValue={mensas()?.keys().next().value}>
+								<For each={mensaProvider()}>
 									{(provider) => (
 										<Accordion.Item
-											value={provider ||
-												createUniqueId()}
-										>
+											value={
+												provider || createUniqueId()
+											}>
 											<div>
-												<Accordion.Trigger class='items-center flex justify-between text-[#5A554D] font-bold tracking-[4%] uppercase font-noto w-full bg-[#C2D1C6] px-4 py-2 text-left transition-all duration-100 focus-visible:bg-corvu-200 focus-visible:outline-none'>
+												<Accordion.Trigger class="items-center flex justify-between text-[#5A554D] font-bold tracking-[4%] uppercase font-noto w-full bg-[#C2D1C6] px-4 py-2 text-left transition-all duration-100 focus-visible:bg-corvu-200 focus-visible:outline-none">
 													<h2>
-														{mensas()?.get(
-															provider,
-														)![0]
-															.mensa_provider
-															.name}
+														{
+															mensas()?.get(
+																provider
+															)![0].mensa_provider
+																.name
+														}
 													</h2>
 													<ChevronUp
 														class={cn(
-															'rotate-180 transition-transform',
+															"rotate-180 transition-transform",
 															accordionValue() ===
-																	provider
-																		.slug &&
-																'rotate-0',
+																provider.slug &&
+																"rotate-0"
 														)}
 													/>
 												</Accordion.Trigger>
 												<For
 													each={mensas()?.get(
-														provider,
-													)}
-												>
+														provider
+													)}>
 													{(mensa) => (
-														<Accordion.Content class='overflow-hidden bg-white corvu-expanded:animate-expand corvu-collapsed:animate-collapse'>
+														<Accordion.Content class="overflow-hidden bg-white corvu-expanded:animate-expand corvu-collapsed:animate-collapse">
 															<a
 																href={`${mensa.mensa_provider.slug}/${mensa.mensa.slug}/${formattedDate}`}
-																class='w-full py-3 px-4 flex flex-row items-center justify-between'
-															>
-																<div class='flex flex-col'>
-																	<h4 class='text-lg font-bold'>
-																		{mensa
-																			.mensa
-																			.name}
+																class="w-full py-3 px-4 flex flex-row items-center justify-between">
+																<div class="flex flex-col">
+																	<h4 class="text-lg font-bold">
+																		{
+																			mensa
+																				.mensa
+																				.name
+																		}
 																	</h4>
-																	<div class='flex gap-1 items-center'>
-																		<div class='w-[6px] h-[6px] rounded-full bg-[#DCD631]' />
-																		<p class='text-[#726E00] font-noto text-[13px] font-medium'>
+																	<div class="flex gap-1 items-center">
+																		<div class="w-[6px] h-[6px] rounded-full bg-[#DCD631]" />
+																		<p class="text-[#726E00] font-noto text-[13px] font-medium">
 																			Öffnungszeiten
 																			noch
 																			nicht
@@ -104,7 +98,7 @@ export default function Home() {
 																		</p>
 																	</div>
 																</div>
-																<ChevronUp class=' rotate-90' />
+																<ChevronUp class=" rotate-90" />
 															</a>
 														</Accordion.Content>
 													)}

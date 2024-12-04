@@ -1,22 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { mensaProvider, mensa, servingTime, timeSlot, media, recipes, servings, nutrientValues, nutrients, nutrientLabels, nutrientUnits, nutrientLabelsLocales, allergens, allergensLocales, additives, additivesLocales, recipesRels, features, userImageUploads, featuresLocales, locale, localeRels, payloadLockedDocuments, payloadLockedDocumentsRels, users, info, payloadPreferences, payloadPreferencesRels } from "./schema";
-
-export const mensaRelations = relations(mensa, ({one, many}) => ({
-	mensaProvider: one(mensaProvider, {
-		fields: [mensa.providerId],
-		references: [mensaProvider.id]
-	}),
-	servingTimes: many(servingTime),
-	servings: many(servings),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
-
-export const mensaProviderRelations = relations(mensaProvider, ({many}) => ({
-	mensas: many(mensa),
-	recipes: many(recipes),
-	features: many(features),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
+import { mensa, servingTime, timeSlot, recipes, servings, nutrientValues, nutrients, nutrientLabels, nutrientLabelsLocales, nutrientUnits, recipesRels, features, additives, allergens, allergensLocales, media, mensaProvider, userImageUploads, payloadPreferences, payloadPreferencesRels, users, payloadLockedDocuments, payloadLockedDocumentsRels, info, locale, additivesLocales, localeRels } from "./schema";
 
 export const servingTimeRelations = relations(servingTime, ({one, many}) => ({
 	mensa: one(mensa, {
@@ -27,34 +10,21 @@ export const servingTimeRelations = relations(servingTime, ({one, many}) => ({
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
+export const mensaRelations = relations(mensa, ({one, many}) => ({
+	servingTimes: many(servingTime),
+	servings: many(servings),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	mensaProvider: one(mensaProvider, {
+		fields: [mensa.providerId],
+		references: [mensaProvider.id]
+	}),
+}));
+
 export const timeSlotRelations = relations(timeSlot, ({one, many}) => ({
 	servingTime: one(servingTime, {
 		fields: [timeSlot.servingTimeId],
 		references: [servingTime.id]
 	}),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
-
-export const recipesRelations = relations(recipes, ({one, many}) => ({
-	media: one(media, {
-		fields: [recipes.aiThumbnailId],
-		references: [media.id]
-	}),
-	mensaProvider: one(mensaProvider, {
-		fields: [recipes.mensaProviderId],
-		references: [mensaProvider.id]
-	}),
-	servings: many(servings),
-	nutrients: many(nutrients),
-	recipesRels: many(recipesRels),
-	userImageUploads: many(userImageUploads),
-	localeRels: many(localeRels),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
-
-export const mediaRelations = relations(media, ({many}) => ({
-	recipes: many(recipes),
-	userImageUploads: many(userImageUploads),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
@@ -68,6 +38,23 @@ export const servingsRelations = relations(servings, ({one, many}) => ({
 		references: [mensa.id]
 	}),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+}));
+
+export const recipesRelations = relations(recipes, ({one, many}) => ({
+	servings: many(servings),
+	nutrients: many(nutrients),
+	recipesRels: many(recipesRels),
+	media: one(media, {
+		fields: [recipes.aiThumbnailId],
+		references: [media.id]
+	}),
+	mensaProvider: one(mensaProvider, {
+		fields: [recipes.mensaProviderId],
+		references: [mensaProvider.id]
+	}),
+	userImageUploads: many(userImageUploads),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	localeRels: many(localeRels),
 }));
 
 export const nutrientsRelations = relations(nutrients, ({one, many}) => ({
@@ -93,16 +80,11 @@ export const nutrientValuesRelations = relations(nutrientValues, ({many}) => ({
 
 export const nutrientLabelsRelations = relations(nutrientLabels, ({one, many}) => ({
 	nutrients: many(nutrients),
+	nutrientLabelsLocales: many(nutrientLabelsLocales),
 	nutrientUnit: one(nutrientUnits, {
 		fields: [nutrientLabels.unitId],
 		references: [nutrientUnits.id]
 	}),
-	nutrientLabelsLocales: many(nutrientLabelsLocales),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
-
-export const nutrientUnitsRelations = relations(nutrientUnits, ({many}) => ({
-	nutrientLabels: many(nutrientLabels),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
@@ -113,29 +95,8 @@ export const nutrientLabelsLocalesRelations = relations(nutrientLabelsLocales, (
 	}),
 }));
 
-export const allergensLocalesRelations = relations(allergensLocales, ({one}) => ({
-	allergen: one(allergens, {
-		fields: [allergensLocales.parentId],
-		references: [allergens.id]
-	}),
-}));
-
-export const allergensRelations = relations(allergens, ({many}) => ({
-	allergensLocales: many(allergensLocales),
-	recipesRels: many(recipesRels),
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-}));
-
-export const additivesLocalesRelations = relations(additivesLocales, ({one}) => ({
-	additive: one(additives, {
-		fields: [additivesLocales.parentId],
-		references: [additives.id]
-	}),
-}));
-
-export const additivesRelations = relations(additives, ({many}) => ({
-	additivesLocales: many(additivesLocales),
-	recipesRels: many(recipesRels),
+export const nutrientUnitsRelations = relations(nutrientUnits, ({many}) => ({
+	nutrientLabels: many(nutrientLabels),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
@@ -158,15 +119,43 @@ export const recipesRelsRelations = relations(recipesRels, ({one}) => ({
 	}),
 }));
 
-export const featuresRelations = relations(features, ({one, many}) => ({
+export const featuresRelations = relations(features, ({many}) => ({
 	recipesRels: many(recipesRels),
-	mensaProvider: one(mensaProvider, {
-		fields: [features.mensaProviderId],
-		references: [mensaProvider.id]
-	}),
-	featuresLocales: many(featuresLocales),
-	localeRels: many(localeRels),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	localeRels: many(localeRels),
+}));
+
+export const additivesRelations = relations(additives, ({many}) => ({
+	recipesRels: many(recipesRels),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	additivesLocales: many(additivesLocales),
+	localeRels: many(localeRels),
+}));
+
+export const allergensRelations = relations(allergens, ({many}) => ({
+	recipesRels: many(recipesRels),
+	allergensLocales: many(allergensLocales),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	localeRels: many(localeRels),
+}));
+
+export const allergensLocalesRelations = relations(allergensLocales, ({one}) => ({
+	allergen: one(allergens, {
+		fields: [allergensLocales.parentId],
+		references: [allergens.id]
+	}),
+}));
+
+export const mediaRelations = relations(media, ({many}) => ({
+	recipes: many(recipes),
+	userImageUploads: many(userImageUploads),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+}));
+
+export const mensaProviderRelations = relations(mensaProvider, ({many}) => ({
+	recipes: many(recipes),
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	mensas: many(mensa),
 }));
 
 export const userImageUploadsRelations = relations(userImageUploads, ({one, many}) => ({
@@ -181,30 +170,23 @@ export const userImageUploadsRelations = relations(userImageUploads, ({one, many
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
-export const featuresLocalesRelations = relations(featuresLocales, ({one}) => ({
-	feature: one(features, {
-		fields: [featuresLocales.parentId],
-		references: [features.id]
+export const payloadPreferencesRelsRelations = relations(payloadPreferencesRels, ({one}) => ({
+	payloadPreference: one(payloadPreferences, {
+		fields: [payloadPreferencesRels.parentId],
+		references: [payloadPreferences.id]
+	}),
+	user: one(users, {
+		fields: [payloadPreferencesRels.usersId],
+		references: [users.id]
 	}),
 }));
 
-export const localeRelsRelations = relations(localeRels, ({one}) => ({
-	locale: one(locale, {
-		fields: [localeRels.parentId],
-		references: [locale.id]
-	}),
-	recipe: one(recipes, {
-		fields: [localeRels.recipesId],
-		references: [recipes.id]
-	}),
-	feature: one(features, {
-		fields: [localeRels.featuresId],
-		references: [features.id]
-	}),
+export const payloadPreferencesRelations = relations(payloadPreferences, ({many}) => ({
+	payloadPreferencesRels: many(payloadPreferencesRels),
 }));
 
-export const localeRelations = relations(locale, ({many}) => ({
-	localeRels: many(localeRels),
+export const usersRelations = relations(users, ({many}) => ({
+	payloadPreferencesRels: many(payloadPreferencesRels),
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
@@ -291,26 +273,41 @@ export const payloadLockedDocumentsRelations = relations(payloadLockedDocuments,
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
-export const usersRelations = relations(users, ({many}) => ({
-	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
-	payloadPreferencesRels: many(payloadPreferencesRels),
-}));
-
 export const infoRelations = relations(info, ({many}) => ({
 	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
 }));
 
-export const payloadPreferencesRelsRelations = relations(payloadPreferencesRels, ({one}) => ({
-	payloadPreference: one(payloadPreferences, {
-		fields: [payloadPreferencesRels.parentId],
-		references: [payloadPreferences.id]
-	}),
-	user: one(users, {
-		fields: [payloadPreferencesRels.usersId],
-		references: [users.id]
+export const localeRelations = relations(locale, ({many}) => ({
+	payloadLockedDocumentsRels: many(payloadLockedDocumentsRels),
+	localeRels: many(localeRels),
+}));
+
+export const additivesLocalesRelations = relations(additivesLocales, ({one}) => ({
+	additive: one(additives, {
+		fields: [additivesLocales.parentId],
+		references: [additives.id]
 	}),
 }));
 
-export const payloadPreferencesRelations = relations(payloadPreferences, ({many}) => ({
-	payloadPreferencesRels: many(payloadPreferencesRels),
+export const localeRelsRelations = relations(localeRels, ({one}) => ({
+	locale: one(locale, {
+		fields: [localeRels.parentId],
+		references: [locale.id]
+	}),
+	recipe: one(recipes, {
+		fields: [localeRels.recipesId],
+		references: [recipes.id]
+	}),
+	feature: one(features, {
+		fields: [localeRels.featuresId],
+		references: [features.id]
+	}),
+	allergen: one(allergens, {
+		fields: [localeRels.allergensId],
+		references: [allergens.id]
+	}),
+	additive: one(additives, {
+		fields: [localeRels.additivesId],
+		references: [additives.id]
+	}),
 }));
