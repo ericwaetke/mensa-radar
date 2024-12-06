@@ -93,6 +93,8 @@ volumes:
 networks:
     mensaradar:
         driver: overlay
+    nginx:
+        external: true
 
 secrets:
     db-password:
