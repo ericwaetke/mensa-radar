@@ -5,6 +5,9 @@ import { InferSelectModel } from "drizzle-orm"
 import { ChevronUp } from "./icons"
 import { useNavigate, useParams } from "@solidjs/router"
 
+import { DatePicker } from "@ark-ui/solid/date-picker"
+import { Index, Portal } from "solid-js/web"
+
 export const HeaderMensa: VoidComponent<{
 	mensa?: InferSelectModel<typeof mensa>
 }> = (props) => {
@@ -85,9 +88,211 @@ export const HeaderMensa: VoidComponent<{
 							}}>
 							<ChevronUp class="-rotate-90" />
 						</button>
+
+						{/* <DatePicker.Root>
+							<DatePicker.Control>
+								<DatePicker.Trigger class="w-[106px]">
+									{getDateString(parsedDate())}
+								</DatePicker.Trigger>
+							</DatePicker.Control>
+
+							<Portal>
+								<DatePicker.Positioner>
+									<DatePicker.Content class="bg-white p-2 rounded-md">
+										<DatePicker.View view="day">
+											<DatePicker.Context>
+												{(context) => (
+													<>
+														<DatePicker.ViewControl>
+															<DatePicker.PrevTrigger>
+																Prev
+															</DatePicker.PrevTrigger>
+															<DatePicker.ViewTrigger>
+																<DatePicker.RangeText />
+															</DatePicker.ViewTrigger>
+															<DatePicker.NextTrigger>
+																Next
+															</DatePicker.NextTrigger>
+														</DatePicker.ViewControl>
+
+														<DatePicker.Table>
+															<DatePicker.TableHead>
+																<DatePicker.TableRow>
+																	<Index
+																		each={
+																			context()
+																				.weekDays
+																		}>
+																		{(
+																			weekDay
+																		) => (
+																			<DatePicker.TableHeader>
+																				{
+																					weekDay()
+																						.short
+																				}
+																			</DatePicker.TableHeader>
+																		)}
+																	</Index>
+																</DatePicker.TableRow>
+															</DatePicker.TableHead>
+
+															<DatePicker.TableBody>
+																<Index
+																	each={
+																		context()
+																			.weeks
+																	}>
+																	{(week) => (
+																		<DatePicker.TableRow>
+																			<Index
+																				each={week()}>
+																				{(
+																					day
+																				) => (
+																					<DatePicker.TableCell
+																						value={day()}>
+																						<DatePicker.TableCellTrigger>
+																							{
+																								day()
+																									.day
+																							}
+																						</DatePicker.TableCellTrigger>
+																					</DatePicker.TableCell>
+																				)}
+																			</Index>
+																		</DatePicker.TableRow>
+																	)}
+																</Index>
+															</DatePicker.TableBody>
+														</DatePicker.Table>
+													</>
+												)}
+											</DatePicker.Context>
+										</DatePicker.View>
+
+										<DatePicker.View view="month">
+											<DatePicker.Context>
+												{(context) => (
+													<>
+														<DatePicker.ViewControl>
+															<DatePicker.PrevTrigger>
+																Prev
+															</DatePicker.PrevTrigger>
+															<DatePicker.ViewTrigger>
+																<DatePicker.RangeText />
+															</DatePicker.ViewTrigger>
+															<DatePicker.NextTrigger>
+																Next
+															</DatePicker.NextTrigger>
+														</DatePicker.ViewControl>
+
+														<DatePicker.Table>
+															<DatePicker.TableBody>
+																<Index
+																	each={context().getMonthsGrid(
+																		{
+																			columns: 4,
+																			format: "short",
+																		}
+																	)}>
+																	{(
+																		months
+																	) => (
+																		<DatePicker.TableRow>
+																			<Index
+																				each={months()}>
+																				{(
+																					month
+																				) => (
+																					<DatePicker.TableCell
+																						value={
+																							month()
+																								.value
+																						}>
+																						<DatePicker.TableCellTrigger>
+																							{
+																								month()
+																									.label
+																							}
+																						</DatePicker.TableCellTrigger>
+																					</DatePicker.TableCell>
+																				)}
+																			</Index>
+																		</DatePicker.TableRow>
+																	)}
+																</Index>
+															</DatePicker.TableBody>
+														</DatePicker.Table>
+													</>
+												)}
+											</DatePicker.Context>
+										</DatePicker.View>
+
+										<DatePicker.View view="year">
+											<DatePicker.Context>
+												{(context) => (
+													<>
+														<DatePicker.ViewControl>
+															<DatePicker.PrevTrigger>
+																Prev
+															</DatePicker.PrevTrigger>
+															<DatePicker.ViewTrigger>
+																<DatePicker.RangeText />
+															</DatePicker.ViewTrigger>
+															<DatePicker.NextTrigger>
+																Next
+															</DatePicker.NextTrigger>
+														</DatePicker.ViewControl>
+
+														<DatePicker.Table>
+															<DatePicker.TableBody>
+																<Index
+																	each={context().getYearsGrid(
+																		{
+																			columns: 4,
+																		}
+																	)}>
+																	{(
+																		years
+																	) => (
+																		<DatePicker.TableRow>
+																			<Index
+																				each={years()}>
+																				{(
+																					year
+																				) => (
+																					<DatePicker.TableCell
+																						value={
+																							year()
+																								.value
+																						}>
+																						<DatePicker.TableCellTrigger>
+																							{
+																								year()
+																									.label
+																							}
+																						</DatePicker.TableCellTrigger>
+																					</DatePicker.TableCell>
+																				)}
+																			</Index>
+																		</DatePicker.TableRow>
+																	)}
+																</Index>
+															</DatePicker.TableBody>
+														</DatePicker.Table>
+													</>
+												)}
+											</DatePicker.Context>
+										</DatePicker.View>
+									</DatePicker.Content>
+								</DatePicker.Positioner>
+							</Portal>
+						</DatePicker.Root> */}
 						<button class="w-[106px]">
 							{getDateString(parsedDate())}
 						</button>
+
 						<button
 							class="h-9 w-9 flex items-center justify-center border-l border-black/15"
 							onClick={() => {
