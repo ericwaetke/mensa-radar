@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "@solidjs/router"
 
 import { DatePicker } from "@ark-ui/solid/date-picker"
 import { Index, Portal } from "solid-js/web"
+import { MetaProvider, Title, Meta } from "@solidjs/meta"
 
 export const HeaderMensa: VoidComponent<{
 	mensa?: InferSelectModel<typeof mensa>
@@ -69,6 +70,16 @@ export const HeaderMensa: VoidComponent<{
 
 	return (
 		<div class="bg-white">
+			<MetaProvider>
+				<Title>
+					{getDateString(parsedDate())} · {props.mensa?.name} · Mensa
+					Radar
+				</Title>
+				<Meta
+					property="og:image"
+					content="https://mensa-radar.de/og.png"
+				/>
+			</MetaProvider>
 			<div class="w-full px-4 pb-2 pt-16 flex flex-col justify-center gap-4 max-w-5xl mx-auto">
 				<a href="/" class="flex w-full justify-between items-center">
 					<ChevronUp class="-rotate-90" />
