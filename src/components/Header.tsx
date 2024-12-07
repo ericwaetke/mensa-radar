@@ -1,6 +1,7 @@
 import { VoidComponent } from "solid-js"
 import { Logo } from "./Logo"
 import { Meta, MetaProvider, Title } from "@solidjs/meta"
+import { A } from "@solidjs/router"
 
 export const Header: VoidComponent = () => {
 	return (
@@ -13,7 +14,9 @@ export const Header: VoidComponent = () => {
 						content="https://mensa-radar.de/og.png"
 					/>
 				</MetaProvider>
-				<Logo />
+				<A href="/">
+					<Logo />
+				</A>
 			</div>
 		</div>
 	)

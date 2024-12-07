@@ -1,15 +1,6 @@
-import { createAsync, type RouteDefinition, useParams } from "@solidjs/router"
-import {
-	createEffect,
-	createMemo,
-	createResource,
-	createSignal,
-	For,
-	Show,
-	Suspense,
-} from "solid-js"
-import { getMensa, getMensas, getServings } from "~/api"
-import { Header } from "~/components/Header"
+import { createAsync, useParams } from "@solidjs/router"
+import { For, Show } from "solid-js"
+import { getMensa, getServings } from "~/api"
 import { HeaderMensa } from "~/components/HeaderMensa"
 import { Serving } from "~/components/Serving"
 
@@ -22,15 +13,6 @@ export default function Home() {
 
 		return `${year}-${month}-${day}`
 	}
-	// const [servings] = createResource(() => {
-	//   return {
-	//     mensaSlug: params.mensa,
-	//     date: parseDate(params.date),
-	//     language: 'de' as const,
-	//   }
-	// }, getServings, {
-	//   deferStream: true,
-	// })
 
 	const servings = createAsync(
 		() => getServings(params.mensa, parseDate(params.date), "de"),
@@ -182,6 +164,7 @@ export default function Home() {
 									{(serving, i) =>
 										i() % 2 === j && (
 											<Serving
+												id={serving.recipe.id}
 												name={serving.recipe.name}
 												priceStudents={
 													serving.recipe

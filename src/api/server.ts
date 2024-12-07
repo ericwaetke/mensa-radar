@@ -1,13 +1,8 @@
 'use server'
-import { redirect } from '@solidjs/router'
-import { useSession } from 'vinxi/http'
-import { aliasedTable, and, eq, InferSelectModel, isNull, like, or } from 'drizzle-orm'
+import { aliasedTable, and, eq, isNull, or } from 'drizzle-orm'
 import { db } from './db'
 import {
-  additives,
-  allergens,
   features,
-  featuresLocales,
   mensa,
   mensaProvider,
   recipes,
@@ -17,7 +12,6 @@ import {
   localeRels
 } from '../../drizzle/schema'
 import { sql } from 'drizzle-orm'
-import { featuresRelations } from '@/relations'
 
 export async function getMensas() {
   const mensas = await db
@@ -110,13 +104,12 @@ export async function getServings(
       ),
     )
 
-  console.log(rows)
-
   // Aggregate the rows into a list of servings
   // with features as array
   const _servings: {
     date: string
     recipe: {
+      id: number
       name: string
       price_students: string | null
       price_employees: string | null
@@ -171,8 +164,40 @@ export async function getServings(
     });
   });
 
-  // Log the results to debug the sorting
-  console.log(_servings);
 
   return _servings
+}
+
+export async function getRecipe(id: number, language: 'en' | 'de',) {
+
+  const recipeLocales = aliasedTable(locale, "recipeLocales")
+  const featureLocaleRels = aliasedTable(localeRels, "featureLocaleRels")
+  const featureLocales = aliasedTable(locale, "featureLocales")
+  const res = await db
+    .select({
+      id: recipes.id,
+      name: recipeLocales.name,
+      priceStudents: recipes.priceStudents,
+      priceEmployees: recipes.priceEmployees,
+      priceGuests: recipes.priceGuests,
+    })
+    .from(recipes)
+    // Recipe Locale
+    .innerJoin(localeRels, eq(recipes.id, localeRels.recipesId))
+    .innerJoin(recipeLocales, eq(localeRels.parentId, recipeLocales.id))
+    .innerJoin(recipesRels, eq(recipes.id, recipesRels.parentId))
+    // Features
+    .innerJoin(features, eq(recipesRels.featuresId, features.id))
+    .innerJoin(featureLocaleRels, eq(features.id, featureLocaleRels.featuresId))
+    .innerJoin(featureLocales, eq(featureLocaleRels.parentId, featureLocales.id))
+    .where(
+      and(
+        eq(recipes.id, id),
+        eq(recipeLocales.locale, language),
+        or(eq(featureLocales.locale, language), isNull(featureLocales.name))
+      ),
+    )
+    .limit(1)
+
+  return res[0]
 }

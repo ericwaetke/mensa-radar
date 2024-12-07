@@ -1,8 +1,10 @@
 import { Component, For } from "solid-js"
 import { Price } from "./Serving/Price"
 import { cn } from "~/lib/cn"
+import { useParams } from "@solidjs/router"
 
 export const Serving: Component<{
+	id: number
 	name: string
 	priceStudents: string | null
 	priceEmployees: string | null
@@ -12,8 +14,14 @@ export const Serving: Component<{
 	const meatStrings = ["geflügel", "schwein", "rind"]
 	const fishStrings = ["fisch", "fish"]
 
+	const params = useParams()
+	const { provider, mensa, date } = params
+
+	const href = `/${provider}/${mensa}/${date}/${props.id}`
 	return (
-		<div class="flex h-fit flex-col items-start justify-center rounded-lg bg-white p-4 gap-4">
+		<a
+			class="flex h-fit flex-col items-start justify-center rounded-lg bg-white p-4 gap-4"
+			href={href}>
 			<h1 class="text-[14px] font-bold">{props.name}</h1>
 			<div class="flex flex-wrap gap-[6px]">
 				<Price
@@ -50,6 +58,6 @@ export const Serving: Component<{
 					)}
 				</For>
 			</div>
-		</div>
+		</a>
 	)
 }
