@@ -12,6 +12,10 @@ export default createHandler(() => (
 						content="width=device-width, initial-scale=1 user-scalable=0"
 					/>
 					<link rel="icon" href="/favicon.svg" />
+					<script
+						defer
+						data-domain="mensa-radar.de"
+						src="https://plausible.woven.design/js/script.js"></script>
 					{assets}
 				</head>
 				<body class="bg-[#DDEDE2] font-bespoke">
