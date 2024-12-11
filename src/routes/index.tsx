@@ -1,5 +1,6 @@
 import { createAsync, type RouteDefinition } from "@solidjs/router"
 import {
+	Component,
 	createEffect,
 	createSignal,
 	createUniqueId,
@@ -15,6 +16,8 @@ import { ChevronUp } from "~/components/icons"
 import { cn } from "~/lib/cn"
 import { ErrorBoundary } from "solid-js"
 import createTransitionSize from "solid-transition-size"
+import { mensa, mensaProvider } from "@/schema"
+import { MensaItem } from "~/components/MensaItem"
 
 export const route = {
 	preload() {
@@ -137,60 +140,22 @@ export default function Home() {
 										</Accordion.Trigger>
 										<For each={favouriteMensas()}>
 											{(mensaId) => (
-												<Accordion.Content class="overflow-hidden bg-white corvuexpanded:animate-expand corvu-collapsed:animate-collapse flex">
-													<button
-														onClick={() => {
-															// Toggle Favourite State of Mensa
-															toggleFavouriteState(
-																mensaId
-															)
-														}}>
-														<svg
-															class="w-8 h-8 ms-3 text-gray-300 dark:text-gray-500"
-															aria-hidden="true"
-															xmlns="http://www.w3.org/2000/svg"
-															fill={
-																favouriteMensas().includes(
-																	mensaId
-																)
-																	? "currentColor"
-																	: "none"
-															}
-															stroke={
-																favouriteMensas().includes(
-																	mensaId
-																)
-																	? "none"
-																	: "currentColor"
-															}
-															viewBox="0 0 22 20">
-															<path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-														</svg>
-													</button>
-													<a
-														href={`${getMensaById(mensaId)?.mensa_provider.slug}/${getMensaById(mensaId)?.mensa.slug}/${formattedDate}`}
-														class="w-full py-3 px-4 flex flex-row items-center justify-between">
-														<div class="flex flex-col">
-															<h4 class="text-lg font-bold">
-																{
-																	getMensaById(
-																		mensaId
-																	)?.mensa
-																		.name
-																}
-															</h4>
-															<div class="flex gap-1 items-center">
-																<div class="w-[6px] h-[6px] rounded-full bg-[#DCD631]" />
-																<p class="text-[#726E00] font-noto text-[13px] font-medium">
-																	Öffnungszeiten
-																	noch nicht
-																	verfügbar
-																</p>
-															</div>
-														</div>
-														<ChevronUp class=" rotate-90" />
-													</a>
-												</Accordion.Content>
+												<MensaItem
+													mensa={
+														getMensaById(mensaId)!
+													}
+													isFavourite={favouriteMensas().includes(
+														mensaId
+													)}
+													toggleFavouriteState={() =>
+														toggleFavouriteState(
+															mensaId
+														)
+													}
+													formattedDate={
+														formattedDate
+													}
+												/>
 											)}
 										</For>
 									</div>
@@ -215,7 +180,7 @@ export default function Home() {
 														class={cn(
 															"rotate-180 transition-transform",
 															accordionValue() ===
-																provider.slug &&
+																provider &&
 																"rotate-0"
 														)}
 													/>
@@ -225,66 +190,21 @@ export default function Home() {
 														provider
 													)}>
 													{(mensa) => (
-														<Accordion.Content class="overflow-hidden bg-white corvuexpanded:animate-expand corvu-collapsed:animate-collapse flex">
-															<button
-																onClick={() => {
-																	// Toggle Favourite State of Mensa
-																	toggleFavouriteState(
-																		mensa
-																			.mensa
-																			.id
-																	)
-																}}>
-																<svg
-																	class="w-8 h-8 ms-3 text-gray-300 dark:text-gray-500"
-																	aria-hidden="true"
-																	xmlns="http://www.w3.org/2000/svg"
-																	fill={
-																		favouriteMensas().includes(
-																			mensa
-																				.mensa
-																				.id
-																		)
-																			? "currentColor"
-																			: "none"
-																	}
-																	stroke={
-																		favouriteMensas().includes(
-																			mensa
-																				.mensa
-																				.id
-																		)
-																			? "none"
-																			: "currentColor"
-																	}
-																	viewBox="0 0 22 20">
-																	<path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-																</svg>
-															</button>
-															<a
-																href={`${mensa.mensa_provider.slug}/${mensa.mensa.slug}/${formattedDate}`}
-																class="w-full py-3 px-4 flex flex-row items-center justify-between">
-																<div class="flex flex-col">
-																	<h4 class="text-lg font-bold">
-																		{
-																			mensa
-																				.mensa
-																				.name
-																		}
-																	</h4>
-																	<div class="flex gap-1 items-center">
-																		<div class="w-[6px] h-[6px] rounded-full bg-[#DCD631]" />
-																		<p class="text-[#726E00] font-noto text-[13px] font-medium">
-																			Öffnungszeiten
-																			noch
-																			nicht
-																			verfügbar
-																		</p>
-																	</div>
-																</div>
-																<ChevronUp class=" rotate-90" />
-															</a>
-														</Accordion.Content>
+														<MensaItem
+															mensa={mensa}
+															isFavourite={favouriteMensas().includes(
+																mensa.mensa.id
+															)}
+															toggleFavouriteState={() =>
+																toggleFavouriteState(
+																	mensa.mensa
+																		.id
+																)
+															}
+															formattedDate={
+																formattedDate
+															}
+														/>
 													)}
 												</For>
 											</div>
