@@ -11,4 +11,5 @@ export default defineConfig({
   server: {
     preset: 'bun',
   },
+  devOverlay: false
 })
