@@ -7,7 +7,6 @@ import {
   additives,
   allergens,
   features,
-  featuresLocales,
   mensa,
   mensaProvider,
   recipes,
@@ -109,8 +108,6 @@ export async function getServings(
         or(eq(featureLocales.locale, language), isNull(featureLocales.name))
       ),
     )
-
-  console.log(rows)
 
   // Aggregate the rows into a list of servings
   // with features as array

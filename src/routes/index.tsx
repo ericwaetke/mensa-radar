@@ -89,10 +89,13 @@ export default function Home() {
 	}
 
 	function getMensaById(mensaId: number) {
-		return mensas()
-			?.values()
-			.flatMap((provider) => provider)
-			.find((mensa) => mensa.mensa.id === mensaId)
+		if (!mensas()) return
+
+		for (const mensaProvider of mensas()!.values()) {
+			for (const mensa of mensaProvider) {
+				if (mensa.mensa.id === mensaId) return mensa
+			}
+		}
 	}
 
 	const [ref, setRef] = createSignal<HTMLElement | null>(null)
