@@ -1,0 +1,5 @@
+[phases.build]
+cmd = "deno task build"
+
+[phases.start]
+cmd = "deno task start"
