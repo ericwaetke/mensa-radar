@@ -6,8 +6,9 @@ import { readFileSync } from 'fs'
 const databasePassword = process.env.POSTGRES_PASSWORD_FILE
 	? readFileSync(process.env.POSTGRES_PASSWORD_FILE, 'utf8')
 	: process.env.POSTGRES_PASSWORD
-const databaseURI =
-	`postgres://${process.env.POSTGRES_USER}:${databasePassword}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`
+
+
+const databaseURI = process.env.POSTGRES_URL || `postgres://${process.env.POSTGRES_USER}:${databasePassword}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`
 
 const queryClient = postgres(databaseURI)
 export const db = drizzle(queryClient, { schema })
