@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "start": "vinxi build && vinxi start"
+    "build": "vinxi build",
+    "start": "vinxi start"
   },
   "compilerOptions": {
     "lib": [
