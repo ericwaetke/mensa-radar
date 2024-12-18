@@ -28,7 +28,7 @@ services:
         networks:
             - mensaradar
         ports:
-            - "3000:3000"
+            - "3003:3000"
         secrets:
             - db-password
         environment:
