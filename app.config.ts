@@ -8,8 +8,8 @@ export default defineConfig({
     },
     ssr: { external: ['drizzle-orm'] },
   },
-  server: {
-    preset: 'deno-server',
-  },
+  // server: {
+  //   preset: '',
+  // },
   devOverlay: false
 })
