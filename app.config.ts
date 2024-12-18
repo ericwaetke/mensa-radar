@@ -9,7 +9,7 @@ export default defineConfig({
     ssr: { external: ['drizzle-orm'] },
   },
   server: {
-    preset: 'bun',
+    preset: 'deno-server',
   },
   devOverlay: false
 })

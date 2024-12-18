@@ -1,4 +1,7 @@
 {
+  "tasks": {
+    "start": "vinxi build && vinxi start"
+  },
   "compilerOptions": {
     "lib": [
       "deno.window",
