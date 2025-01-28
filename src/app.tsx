@@ -12,15 +12,13 @@ const SentryRouter = withSentryRouterRouting(Router)
 
 export default function App() {
 	return (
-		<SentryRouter>
-			<Router
-				root={(props) => (
-					<>
-						<Suspense>{props.children}</Suspense>
-					</>
-				)}>
-				<FileRoutes />
-			</Router>
+		<SentryRouter
+			root={(props) => (
+				<>
+					<Suspense>{props.children}</Suspense>
+				</>
+			)}>
+			<FileRoutes />
 		</SentryRouter>
 	)
 }
