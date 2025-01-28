@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "NODE_OPTIONS='--import ./public/instrument.server.mjs' vinxi start",
+    "start": "vinxi start",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "introspect": "drizzle-kit introspect"
