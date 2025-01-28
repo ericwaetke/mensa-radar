@@ -1,15 +1,27 @@
 import { defineConfig } from '@solidjs/start/config'
+import { sentrySolidStartVite, withSentry } from '@sentry/solidstart';
 
-export default defineConfig({
-  vite: {
-    server: {
-      port: 4321,
-      strictPort: true,
+export default defineConfig(
+  withSentry({
+    vite: {
+      server: {
+        port: 4321,
+        strictPort: true,
+      },
+      ssr: { external: ['drizzle-orm'] },
+      plugins: [
+
+      ]
     },
-    ssr: { external: ['drizzle-orm'] },
+    middleware: "./src/middleware.ts",
+    // server: {
+    //   preset: '',
+    // },
+    devOverlay: false
   },
-  // server: {
-  //   preset: '',
-  // },
-  devOverlay: false
-})
+    {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    })
+)
