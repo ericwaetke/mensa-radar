@@ -21,6 +21,7 @@
     "@corvu/accordion": "^0.2.3",
     "@corvu/tailwind": "^0.1.5",
     "@fontsource-variable/noto-sans": "^5.1.0",
+    "@sentry/solidstart": "^8.52.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.10",
     "@solidjs/start": "^1.0.10",
