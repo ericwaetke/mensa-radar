@@ -19,7 +19,7 @@ export default function Home() {
 		const [day, month, year] = date.split("-")
 		// '2024-10-10 22:00:00+00'
 
-		throw new Error("Not implemented")
+		// throw new Error("Not implemented")
 
 		return `${year}-${month}-${day}`
 	}
