@@ -9,7 +9,6 @@ import {
 	Suspense,
 } from "solid-js"
 import { getMensa, getMensas, getServings } from "~/api"
-import { Header } from "~/components/Header"
 import { HeaderMensa } from "~/components/HeaderMensa"
 import { Serving } from "~/components/Serving"
 
@@ -20,17 +19,10 @@ export default function Home() {
 		const [day, month, year] = date.split("-")
 		// '2024-10-10 22:00:00+00'
 
+		throw new Error("Not implemented")
+
 		return `${year}-${month}-${day}`
 	}
-	// const [servings] = createResource(() => {
-	//   return {
-	//     mensaSlug: params.mensa,
-	//     date: parseDate(params.date),
-	//     language: 'de' as const,
-	//   }
-	// }, getServings, {
-	//   deferStream: true,
-	// })
 
 	const servings = createAsync(
 		() => getServings(params.mensa, parseDate(params.date), "de"),
