@@ -1,6 +1,8 @@
 import { Header } from "~/components/Header"
+import * as Sentry from "@sentry/solidstart";
 
 export default function NotFound() {
+	Sentry.captureMessage("404", "warning");
 	return (
 		<main class="h-full min-h-screen w-full bg-[#DDEDE2]">
 			<Header />

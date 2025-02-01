@@ -12,7 +12,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^20.17.16",
-    "drizzle-kit": "^0.30.3",
+    "drizzle-kit": "^0.30.4",
     "prettier-plugin-tailwindcss": "^0.6.11"
   },
   "dependencies": {
@@ -20,13 +20,13 @@
     "@corvu/accordion": "^0.2.3",
     "@corvu/tailwind": "^0.1.6",
     "@fontsource-variable/noto-sans": "^5.1.1",
-    "@sentry/solidstart": "^8.52.0",
+    "@sentry/solidstart": "^8.53.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@solidjs/start": "^1.0.11",
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
-    "drizzle-orm": "^0.39.0",
+    "drizzle-orm": "^0.39.1",
     "install": "^0.13.0",
     "postcss": "^8.5.1",
     "postgres": "^3.4.5",
