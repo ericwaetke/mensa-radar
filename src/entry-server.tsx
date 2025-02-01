@@ -4,7 +4,7 @@ import { createHandler, StartServer } from "@solidjs/start/server"
 import * as Sentry from "@sentry/solidstart"
 
 Sentry.init({
-	dsn: "http://35b2ef5a19fd4d61b8a74bbd88b0e30f@glitchtip.woven.design/1",
+	dsn: "https://1d2fcc691c0c8ca9556f1fcf42f434fa@o4508727023632384.ingest.de.sentry.io/4508727024746576",
 	tracesSampleRate: 1.0, //  Capture 100% of the transactions,
 	registerEsmLoaderHooks: { onlyIncludeInstrumentedModules: true },
 })

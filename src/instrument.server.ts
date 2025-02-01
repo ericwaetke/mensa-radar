@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/solidstart";
 
 Sentry.init({
-	dsn: "https://1249558bccd4c0fac3463d5365ec9ad6@o231594.ingest.us.sentry.io/4508727012032512",
+	dsn: "https://1d2fcc691c0c8ca9556f1fcf42f434fa@o4508727023632384.ingest.de.sentry.io/4508727024746576",
 	tracesSampleRate: 1.0, //  Capture 100% of the transactions
 	registerEsmLoaderHooks: { onlyIncludeInstrumentedModules: true },
 });

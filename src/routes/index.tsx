@@ -1,6 +1,5 @@
 import { createAsync, type RouteDefinition } from "@solidjs/router"
 import {
-	Component,
 	createEffect,
 	createSignal,
 	createUniqueId,
@@ -10,13 +9,11 @@ import {
 } from "solid-js"
 import { getMensas } from "~/api"
 import { Header } from "~/components/Header"
-import { Logo } from "~/components/Logo"
 import Accordion from "@corvu/accordion"
 import { ChevronUp } from "~/components/icons"
 import { cn } from "~/lib/cn"
 import { ErrorBoundary } from "solid-js"
 import createTransitionSize from "solid-transition-size"
-import { mensa, mensaProvider } from "@/schema"
 import { MensaItem } from "~/components/MensaItem"
 
 export const route = {
@@ -32,9 +29,8 @@ export default function Home() {
 
 	// Format the date in the format "DD-MM-YYYY"
 	const currentDateTime = new Date()
-	const formattedDate = `${currentDateTime.getDate()}-${
-		currentDateTime.getMonth() + 1
-	}-${currentDateTime.getFullYear()}`
+	const formattedDate = `${currentDateTime.getDate()}-${currentDateTime.getMonth() + 1
+		}-${currentDateTime.getFullYear()}`
 
 	const [accordionValue, setAccordionValue] = createSignal<
 		string | string[]
@@ -136,8 +132,8 @@ export default function Home() {
 												class={cn(
 													"rotate-180 transition-transform",
 													accordionValue() ===
-														"favorites" &&
-														"rotate-0"
+													"favorites" &&
+													"rotate-0"
 												)}
 											/>
 										</Accordion.Trigger>
@@ -183,8 +179,8 @@ export default function Home() {
 														class={cn(
 															"rotate-180 transition-transform",
 															accordionValue() ===
-																provider &&
-																"rotate-0"
+															provider &&
+															"rotate-0"
 														)}
 													/>
 												</Accordion.Trigger>
