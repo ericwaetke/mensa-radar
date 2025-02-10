@@ -13,8 +13,8 @@ import { getMensa, getMensas, getServings } from "~/api"
 import { HeaderMensa } from "~/components/HeaderMensa"
 import { Serving } from "~/components/Serving"
 
-import * as Sentry from "@sentry/solidstart";
-const SentryErrorBoundary = Sentry.withSentryErrorBoundary(ErrorBoundary);
+import * as Sentry from "@sentry/solidstart"
+const SentryErrorBoundary = Sentry.withSentryErrorBoundary(ErrorBoundary)
 
 export default function Home() {
 	const params = useParams()
@@ -41,8 +41,7 @@ export default function Home() {
 
 	return (
 		<SentryErrorBoundary
-			fallback={(err) => <div>Error: {err.message}</div>}
-		>
+			fallback={(err) => <div>Error: {err.message}</div>}>
 			<main class="h-full min-h-screen w-full font-bespoke">
 				<HeaderMensa mensa={mensa()?.mensa} />
 
@@ -180,21 +179,7 @@ export default function Home() {
 									<For each={servings()}>
 										{(serving, i) =>
 											i() % 2 === j && (
-												<Serving
-													name={serving.recipe.name}
-													priceStudents={
-														serving.recipe
-															.price_students
-													}
-													priceEmployees={
-														serving.recipe
-															.price_employees
-													}
-													priceGuests={
-														serving.recipe.price_guests
-													}
-													features={serving.features}
-												/>
+												<Serving {...serving.recipe} />
 											)
 										}
 									</For>

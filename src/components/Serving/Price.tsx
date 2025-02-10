@@ -1,17 +1,16 @@
 import { VoidComponent } from "solid-js"
 
 export const Price: VoidComponent<{
-	pricePrimary?: string | null
-	priceSecondary?: string | null
+	pricePrimary?: number | null
+	priceSecondary?: number | null
 }> = (props) => {
-	function padPrice(price?: string | null) {
+	function padPrice(price?: number | null) {
 		if (!price) return null
-		const priceFloat = parseFloat(price)
 		return new Intl.NumberFormat("de-DE", {
 			style: "decimal",
 			maximumFractionDigits: 2,
 			minimumFractionDigits: 2,
-		}).format(priceFloat)
+		}).format(price)
 	}
 
 	return (
