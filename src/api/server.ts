@@ -108,8 +108,13 @@ export async function getServings(
 ) {
 	return withServerActionInstrumentation('getServings', async () => {
 		if (!mensaSlug) return
+		const hubUrlString = process.env.HUB_URL
+		if (!hubUrlString) {
+			throw new Error('HUB_URL is not defined')
+		}
+		const hubUrl = new URL(hubUrlString)
 
-		const servingsReq = await fetch(`http://localhost:3333/api/mensa/${mensaSlug}/servings/${date}`)
+		const servingsReq = await fetch(`${hubUrl.origin}/api/mensa/${mensaSlug}/servings/${date}`)
 
 		if (!servingsReq.ok) {
 			return []
