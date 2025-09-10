@@ -21,7 +21,8 @@ export const Serving: Component<Recipe> = (props) => {
 				<div class="flex flex-wrap gap-[6px]">
 					<Price
 						pricePrimary={props.price.students}
-						priceSecondary={props.price.guests}
+						priceSecondary={props.price.employees}
+						priceTertiary={props.price.guests}
 					/>
 					<For each={props.features}>
 						{(feature) => (
@@ -32,14 +33,14 @@ export const Serving: Component<Recipe> = (props) => {
 										feature.name
 											.toLowerCase()
 											.includes("vegan") &&
-											"bg-[#33EFB3] text-[#354937]",
+										"bg-[#33EFB3] text-[#354937]",
 										(feature.name
 											.toLowerCase()
 											.includes("vegetarisch") ||
 											feature.name
 												.toLowerCase()
 												.includes("vegetarian")) &&
-											"bg-[#CBE288] text-[#444935]",
+										"bg-[#CBE288] text-[#444935]",
 										meatStrings.some((item) =>
 											feature.name
 												.toLowerCase()

@@ -114,6 +114,8 @@ export async function getServings(
 		}
 		const hubUrl = new URL(hubUrlString)
 
+		console.log(date)
+
 		const servingsReq = await fetch(`${hubUrl.origin}/api/mensa/${mensaSlug}/servings/${date}`)
 
 		if (!servingsReq.ok) {
