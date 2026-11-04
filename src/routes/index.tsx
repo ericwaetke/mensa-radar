@@ -8,6 +8,7 @@ import {
 	Show,
 } from "solid-js"
 import { getMensas } from "~/api"
+import { formatRouteDate, todayBerlin } from "~/lib/date"
 import { Header } from "~/components/Header"
 import Accordion from "@corvu/accordion"
 import { ChevronUp } from "~/components/icons"
@@ -27,10 +28,9 @@ export default function Home() {
 		deferStream: true,
 	})
 
-	// Format the date in the format "DD-MM-YYYY"
-	const currentDateTime = new Date()
-	const formattedDate = `${currentDateTime.getDate()}-${currentDateTime.getMonth() + 1
-		}-${currentDateTime.getFullYear()}`
+	// "Today" has to be Berlin's calendar date, no matter which timezone the
+	// server rendering this page runs in (containers default to UTC).
+	const formattedDate = formatRouteDate(todayBerlin())
 
 	const [accordionValue, setAccordionValue] = createSignal<
 		string | string[]

@@ -10,6 +10,7 @@ import {
 	Suspense,
 } from "solid-js"
 import { getMensa, getMensas, getServings } from "~/api"
+import { formatApiDate, parseRouteDate } from "~/lib/date"
 import { HeaderMensa } from "~/components/HeaderMensa"
 import { Serving } from "~/components/Serving"
 
@@ -18,18 +19,22 @@ const SentryErrorBoundary = Sentry.withSentryErrorBoundary(ErrorBoundary)
 
 export default function Home() {
 	const params = useParams()
-	// Parse Date from format: "DD-MM-YYYY"
+	// Parse the date from the URL (format "D-M-YYYY") into the "YYYY-MM-DD"
+	// the hub API expects. Returns an empty string for an unparsable URL.
 	function parseDate(date: string): string {
-		const [day, month, year] = date.split("-")
-		// '2024-10-10 22:00:00+00'
-
-		// throw new Error("Not implemented")
-
-		return `${year}-${month}-${day}`
+		const parsed = parseRouteDate(date)
+		if (!parsed) return ""
+		return formatApiDate(parsed)
 	}
 
 	const servings = createAsync(
-		() => getServings(params.mensa, parseDate(params.date), "de"),
+		() => {
+			const date = parseDate(params.date)
+			// An unparsable URL never reaches the hub, it shows the empty state
+			return date
+				? getServings(params.mensa, date, "de")
+				: Promise.resolve([])
+		},
 		{
 			deferStream: true,
 		}

@@ -108,13 +108,16 @@ export async function getServings(
 ) {
 	return withServerActionInstrumentation('getServings', async () => {
 		if (!mensaSlug) return
+		if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+			throw new Error(
+				`getServings: "${date}" is not a YYYY-MM-DD date`,
+			)
+		}
 		const hubUrlString = process.env.HUB_URL
 		if (!hubUrlString) {
 			throw new Error('HUB_URL is not defined')
 		}
 		const hubUrl = new URL(hubUrlString)
-
-		console.log(date)
 
 		const servingsReq = await fetch(`${hubUrl.origin}/api/mensa/${mensaSlug}/servings/${date}`)
 

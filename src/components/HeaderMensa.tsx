@@ -4,6 +4,17 @@ import { mensa } from "@/schema"
 import { InferSelectModel } from "drizzle-orm"
 import { ChevronUp } from "./icons"
 import { useNavigate, useParams } from "@solidjs/router"
+import {
+	addDays,
+	formatDisplayDate,
+	formatRouteDate,
+	formatWeekday,
+	isSameDay,
+	isSameWeek,
+	parseRouteDate,
+	todayBerlin,
+	type CalendarDate,
+} from "~/lib/date"
 
 import { DatePicker } from "@ark-ui/solid/date-picker"
 import { Index, Portal } from "solid-js/web"
@@ -15,57 +26,33 @@ export const HeaderMensa: VoidComponent<{
 	const navigate = useNavigate()
 	const params = useParams()
 
-	const currentDate = params.date
 	const parsedDate = createMemo(() => {
-		return parseDate(params.date)
+		return parseRouteDate(params.date)
 	})
-
-	function parseDate(dateStr: string) {
-		const [day, month, year] = dateStr.split("-")
-		// Note: JavaScript months are 0-based (0 for January, 11 for December)
-		return new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
-	}
 
 	function goToDate(options: { offset?: number }) {
 		const { offset } = options
-		if (offset) {
-			const nextDate = new Date(parsedDate())
-			nextDate.setDate(nextDate.getDate() + offset)
-			const nextDateString = nextDate
-				.toLocaleDateString("de-DE")
-				.split(".")
-				.join("-")
-			navigate(`/${params.provider}/${params.mensa}/${nextDateString}`, {
-				replace: true,
-			})
-		}
+		if (!offset) return
+		// Fall back to today so the arrows also work from an unparsable URL
+		const base = parsedDate() ?? todayBerlin()
+		const nextDateString = formatRouteDate(addDays(base, offset))
+		navigate(`/${params.provider}/${params.mensa}/${nextDateString}`, {
+			replace: true,
+		})
 	}
 
-	function getStartOfWeek(date: Date) {
-		const startOfWeek = new Date(date)
-		const day = startOfWeek.getDay()
-		const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1) // Adjust for Sunday (0)
-		startOfWeek.setDate(diff)
-		startOfWeek.setHours(0, 0, 0, 0) // Set time to 00:00:00
-		return startOfWeek
-	}
+	function getDateString(date: CalendarDate | null) {
+		// Unknown date format: show it as it came in instead of guessing
+		if (!date) return params.date
 
-	function areDatesInSameWeek(date1: Date, date2: Date) {
-		const startOfWeek1 = getStartOfWeek(date1)
-		const startOfWeek2 = getStartOfWeek(date2)
-		return startOfWeek1.getTime() === startOfWeek2.getTime() // Compare start of the weeks
-	}
-
-	function getDateString(date: Date) {
+		const today = todayBerlin()
 		// Check if its within the same calendar week
-		if (areDatesInSameWeek(new Date(), date)) {
+		if (isSameWeek(today, date)) {
 			// Check if its today
-			if (date.toDateString() === new Date().toDateString()) {
-				return "Heute"
-			}
-			return date.toLocaleDateString("de-DE", { weekday: "long" })
+			if (isSameDay(today, date)) return "Heute"
+			return formatWeekday(date)
 		}
-		return date.toLocaleDateString("de-DE")
+		return formatDisplayDate(date)
 	}
 
 	return (
