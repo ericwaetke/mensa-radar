@@ -1,10 +1,13 @@
 name: pipeline
 on:
- push:
-   branches:
-     - "main"
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
 
+# The image is built entirely on the GitHub runner - the server only pulls it.
 permissions:
+  contents: read
   packages: write
 
 jobs:
@@ -27,9 +30,12 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: https://ghcr.io
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -39,25 +45,25 @@ jobs:
           tags: |
             ghcr.io/ericwaetke/mensaradar:latest
             ghcr.io/ericwaetke/mensaradar:${{ github.sha }}
+          # Layer cache in GitHub Actions so only changed steps rebuild
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - build-and-push-image
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
-
-  #   - name: create env file
-  #     run: |
-  #       echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
-
-  #   - name: Docker Stack Deploy
-  #     uses: cssnr/stack-deploy-action@v1
-  #     with:
-  #       name: zenfulstats
-  #       file: docker-stack.yaml
-  #       host: zenful.site
-  #       user: deploy
-  #       ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-  #       env_file: ./envfile
+      # Only runs if the Dokploy secrets are configured; the Dokploy app must
+      # be a "Docker" application pulling ghcr.io/ericwaetke/mensaradar:latest,
+      # so a deploy is a pull and never a build on the server.
+      - name: Trigger Dokploy Deployment
+        env:
+          DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
+          DOKPLOY_AUTH_TOKEN: ${{ secrets.DOKPLOY_AUTH_TOKEN }}
+          DOKPLOY_APPLICATION_ID: ${{ secrets.DOKPLOY_APPLICATION_ID }}
+        run: |
+          if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_AUTH_TOKEN" ] || [ -z "$DOKPLOY_APPLICATION_ID" ]; then
+            echo "Dokploy secrets not configured, skipping deploy trigger"
+            exit 0
+          fi
+          curl -fsS -X POST "$DOKPLOY_URL/api/trpc/application.deploy" \
+            -H 'accept: application/json' \
+            -H "x-api-key: $DOKPLOY_AUTH_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d "{\"json\":{\"applicationId\":\"$DOKPLOY_APPLICATION_ID\"}}"
