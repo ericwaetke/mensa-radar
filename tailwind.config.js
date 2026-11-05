@@ -5,6 +5,11 @@ module.exports = {
   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      colors: {
+        sec: {
+          lighttext: "#355C39"
+        }
+      },
       animation: {
         expand: 'expand 250ms cubic-bezier(0.32,0.72,0,0.75)',
         collapse: 'collapse 250ms cubic-bezier(0.32,0.72,0,0.75)',

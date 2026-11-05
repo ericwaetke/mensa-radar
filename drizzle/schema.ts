@@ -688,3 +688,51 @@ export const localeRels = pgTable("locale_rels", {
 		}).onDelete("cascade"),
 	}
 });
+
+// ---------------------------------------------------------------------------
+// Opening times (hand-added to mirror the Payload schema in mensa-hub)
+// ---------------------------------------------------------------------------
+
+export const enumOpeningDayDay = pgEnum("enum_opening_day_day", ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
+
+export const openingDay = pgTable("opening_day", {
+	id: serial().primaryKey().notNull(),
+	day: enumOpeningDayDay("day").notNull(),
+	openingFrom: varchar("opening_from").notNull(),
+	openingTo: varchar("opening_to").notNull(),
+	serviceFrom: varchar("service_from"),
+	serviceTo: varchar("service_to"),
+	updatedAt: timestamp("updated_at", { precision: 3, withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp("created_at", { precision: 3, withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+}, (table) => {
+	return {
+		createdAtIdx: index("opening_day_created_at_idx").using("btree", table.createdAt.asc().nullsLast().op("timestamptz_ops")),
+		updatedAtIdx: index("opening_day_updated_at_idx").using("btree", table.updatedAt.asc().nullsLast().op("timestamptz_ops")),
+		openingDayUnique: unique("opening_day_unique").on(table.day, table.openingFrom, table.openingTo, table.serviceFrom, table.serviceTo).nullsNotDistinct(),
+	}
+});
+
+export const mensaRels = pgTable("mensa_rels", {
+	id: serial().primaryKey().notNull(),
+	order: integer("order"),
+	parentId: integer("parent_id").notNull(),
+	path: varchar().notNull(),
+	openingDayId: integer("opening_day_id"),
+}, (table) => {
+	return {
+		orderIdx: index("mensa_rels_order_idx").using("btree", table.order.asc().nullsLast().op("int4_ops")),
+		parentIdx: index("mensa_rels_parent_idx").using("btree", table.parentId.asc().nullsLast().op("int4_ops")),
+		pathIdx: index("mensa_rels_path_idx").using("btree", table.path.asc().nullsLast().op("text_ops")),
+		openingDayIdIdx: index("mensa_rels_opening_day_id_idx").using("btree", table.openingDayId.asc().nullsLast().op("int4_ops")),
+		mensaRelsParentFk: foreignKey({
+			columns: [table.parentId],
+			foreignColumns: [mensa.id],
+			name: "mensa_rels_parent_fk"
+		}).onDelete("cascade"),
+		mensaRelsOpeningDayFk: foreignKey({
+			columns: [table.openingDayId],
+			foreignColumns: [openingDay.id],
+			name: "mensa_rels_opening_day_fk"
+		}).onDelete("cascade"),
+	}
+});

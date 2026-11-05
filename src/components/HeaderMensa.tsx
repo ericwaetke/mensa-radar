@@ -1,4 +1,4 @@
-import { createMemo, VoidComponent } from "solid-js"
+import { createMemo, Show, VoidComponent } from "solid-js"
 import { Logo } from "./Logo"
 import { mensa } from "@/schema"
 import { InferSelectModel } from "drizzle-orm"
@@ -15,6 +15,12 @@ import {
 	todayBerlin,
 	type CalendarDate,
 } from "~/lib/date"
+import {
+	formatHeaderSummary,
+	formatServiceRange,
+	openingInfo,
+	type OpeningDayRow,
+} from "~/lib/openingTimes"
 
 import { DatePicker } from "@ark-ui/solid/date-picker"
 import { Index, Portal } from "solid-js/web"
@@ -22,12 +28,25 @@ import { MetaProvider, Title, Meta } from "@solidjs/meta"
 
 export const HeaderMensa: VoidComponent<{
 	mensa?: InferSelectModel<typeof mensa>
+	openingDays?: OpeningDayRow[]
 }> = (props) => {
 	const navigate = useNavigate()
 	const params = useParams()
 
 	const parsedDate = createMemo(() => {
 		return parseRouteDate(params.date)
+	})
+
+	// Unparsable URLs fall back to today so the hours stay meaningful
+	const viewedDate = createMemo<CalendarDate>(
+		() => parsedDate() ?? todayBerlin(),
+	)
+	const info = createMemo(() => openingInfo(props.openingDays, viewedDate()))
+	const hasData = createMemo(() => (props.openingDays?.length ?? 0) > 0)
+	const summary = createMemo(() => formatHeaderSummary(info(), viewedDate()))
+	const serviceRange = createMemo(() => {
+		const day = info().day
+		return day ? formatServiceRange(day) : null
 	})
 
 	function goToDate(options: { offset?: number }) {
@@ -73,9 +92,26 @@ export const HeaderMensa: VoidComponent<{
 					<h1 class="text-[18px] font-bold">{props.mensa?.name}</h1>
 					<div />
 				</a>
-				<div class="flex justify-end items-end">
+				<div class="flex justify-between items-end gap-2 flex-wrap">
 					{/* Opening Times */}
-					{/* <div class='h-fit bg-[#DCD631] text-[#494835] rounded-[4px] px-2 py-1 inline-block font-noto text-[12px] font-semibold'>Öffnungszeiten nicht verfügbar</div> */}
+					<Show when={hasData()}>
+						<div class="flex items-center gap-1">
+							<div
+								class={
+									"h-fit rounded-[4px] px-2 py-1 inline-block font-noto text-[12px] font-semibold " +
+									(info().status === "closed"
+										? "bg-[##DDEDE2] text-[#494835]"
+										: "bg-[#DDEDE2] text-[#494835] border-black/10 border")
+								}>
+								{summary()}
+							</div>
+							<Show when={serviceRange()}>
+								<div class="h-fit text-[#494835] inline-block font-noto text-[12px] font-semibold">
+									{serviceRange()}
+								</div>
+							</Show>
+						</div>
+					</Show>
 
 					{/* Date Picker */}
 					<div class="bg-[#DDEDE2] rounded-[4px] flex font-noto text-base">

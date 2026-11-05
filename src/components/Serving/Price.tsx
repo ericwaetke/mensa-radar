@@ -15,7 +15,7 @@ export const Price: VoidComponent<{
 	}
 
 	return (
-		<div class="flex items-center bg-[#D3D6D4] px-2 py-1 rounded-[4px] font-noto text-[12px] gap-1 font-semibold ring-inset ring-1 ring-black/10">
+		<div class="flex flex-wrap items-center bg-[#D3D6D4] px-2 py-1 rounded-[4px] font-noto text-[12px] gap-1 font-semibold ring-inset ring-1 ring-black/10">
 			<span>{padPrice(props.pricePrimary)}&thinsp;€</span>
 			<Show when={props.priceSecondary}>
 				<span class="opacity-50">·</span>

@@ -48,7 +48,10 @@ export default function Home() {
 		<SentryErrorBoundary
 			fallback={(err) => <div>Error: {err.message}</div>}>
 			<main class="h-full min-h-screen w-full font-bespoke">
-				<HeaderMensa mensa={mensa()?.mensa} />
+				<HeaderMensa
+					mensa={mensa()?.mensa}
+					openingDays={mensa()?.openingDays}
+				/>
 
 				<div class="flex gap-3 mx-auto max-w-5xl p-4">
 					<Show

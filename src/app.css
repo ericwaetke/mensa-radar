@@ -17,4 +17,5 @@
 body {
 	background: rgb(var(--background-rgb));
 	color: rgb(var(--foreground-rgb));
+	hyphens: auto;
 }
