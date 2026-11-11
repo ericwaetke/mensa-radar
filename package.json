@@ -18,6 +18,7 @@
   "dependencies": {
     "@ark-ui/solid": "^4.10.1",
     "@corvu/accordion": "^0.2.3",
+    "@corvu/drawer": "^0.2.4",
     "@corvu/tailwind": "^0.1.6",
     "@fontsource-variable/noto-sans": "^5.1.1",
     "@sentry/solidstart": "^8.53.0",

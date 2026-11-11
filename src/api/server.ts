@@ -128,6 +128,18 @@ export async function getMensa(slug: string) {
 
 type Feature = typeof features.$inferSelect
 
+export type Nutrient = {
+	id: number
+	label: string
+	unit: string
+	value: number
+}
+
+export type LabeledEntity = {
+	id: number
+	name: string
+}
+
 export type Recipe = {
 	name: string
 	id: number
@@ -141,12 +153,9 @@ export type Recipe = {
 		name: string
 		visibleSmall: boolean
 	}>
-	nutrients: {
-		docs: Array<any>
-		hasNextPage: boolean
-	}
-	allergens: Array<any>
-	additives: Array<any>
+	nutrients: Nutrient[]
+	allergens: LabeledEntity[]
+	additives: LabeledEntity[]
 	aiThumbnail?: {
 		id: number
 		alt: string

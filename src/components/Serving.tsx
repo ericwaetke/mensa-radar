@@ -1,5 +1,6 @@
 import { Component, For, Show } from "solid-js"
 import { Price } from "./Serving/Price"
+import { NutrientDrawer, AllergenAdditiveChips } from "./Serving/NutrientDrawer"
 import { cn } from "~/lib/cn"
 import { Recipe } from "~/api/server"
 
@@ -23,6 +24,12 @@ export const Serving: Component<Recipe> = (props) => {
 						pricePrimary={props.price.students}
 						priceSecondary={props.price.employees}
 						priceTertiary={props.price.guests}
+					/>
+					<NutrientDrawer
+						name={props.name}
+						nutrients={props.nutrients}
+						allergens={props.allergens}
+						additives={props.additives}
 					/>
 					<For each={props.features}>
 						{(feature) => (
@@ -57,6 +64,10 @@ export const Serving: Component<Recipe> = (props) => {
 							</Show>
 						)}
 					</For>
+					<AllergenAdditiveChips
+						allergens={props.allergens}
+						additives={props.additives}
+					/>
 				</div>
 			</div>
 		</div>
